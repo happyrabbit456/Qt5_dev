@@ -108,6 +108,5 @@ int main(int argc, char *argv[])
         // No cleanup necessary.
     }
 
-
     return a.exec();
 }
