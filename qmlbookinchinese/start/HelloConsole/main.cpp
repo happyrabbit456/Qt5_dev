@@ -3,6 +3,8 @@
 // module or class includes
 #include <QtCore>
 
+#include <QQueue>
+
 // text stream is text-codec aware
 static QTextStream cout(stdout, QIODevice::WriteOnly);
 
@@ -62,6 +64,20 @@ int main(int argc, char *argv[])
         aList.append("Wednesday");
         QString str=aList[0];
         cout<<str<<endl;
+
+        QStack<int> stack;
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        while (!stack.isEmpty())
+            cout << stack.pop() << endl;
+
+        QQueue<int> queue;
+        queue.enqueue (10);
+        queue.enqueue(20);
+        queue.enqueue (30);
+        while (!queue.isEmpty())
+            cout << queue.dequeue() << endl;
     }
 
     if(true){
@@ -91,7 +107,6 @@ int main(int argc, char *argv[])
         }
         // No cleanup necessary.
     }
-
 
     return a.exec();
 }
