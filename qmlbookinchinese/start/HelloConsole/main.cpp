@@ -5,6 +5,8 @@
 
 #include <QQueue>
 
+#include <QtGlobal>
+
 // text stream is text-codec aware
 static QTextStream cout(stdout, QIODevice::WriteOnly);
 
@@ -39,6 +41,8 @@ QSet<T>                     QSet<T>::const_iterator                 QSet<T>::ite
 QMap<Key, P> QMultiMap<Kcy, T>      QMap<Key, T>::const_iterator	QMap<Key, T>:: iterator
 QHash<Key, T> QMultiHash<Key, T>	QHash<Key, T>: :const_iterator	QHash<Key, T>::iterator
 */
+
+//Qt 提供一个关键字 foreach (实际是 <QtGlobal> 里定义的一个宏）用于方便地访问容器里所有数据项。
 
 int main(int argc, char *argv[])
 {
@@ -78,6 +82,11 @@ int main(int argc, char *argv[])
             }
         }
         cout << "!" << endl;
+
+        QString str8;
+        foreach(str8,list){
+            qDebug()<<str8<<endl;
+        }
 
         QString str1=list[1]; //str1=="two"
         QString str0=list.at(0); //str0=="one"
@@ -132,6 +141,9 @@ int main(int argc, char *argv[])
         cout<<"num1:"<<num1<<endl<<"num2:"<<num2<<endl;
         cout<<"timeout:"<<timeout<<endl;
 
+        foreach (const QString &str, map.keys())
+            qDebug() << str << ':' << map.value(str);
+
         QMultiMap<QString, int> map1, map2, map3;
         map1.insert("plenty", 100);
         map1.insert("plenty", 2000); // map1.size() == 2
@@ -140,6 +152,11 @@ int main(int argc, char *argv[])
         QList<int> values = map3.values("plenty");
         for (int i = 0; i < values.size(); ++i)
             cout << values.at(i) << endl;
+
+        foreach (const QString &str, map.uniqueKeys()) {
+            foreach (int i, map.values(str))
+                qDebug() << str << ':' << i;
+        }
     }
 
     if(true){
