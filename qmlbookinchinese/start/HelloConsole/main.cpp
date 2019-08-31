@@ -44,6 +44,35 @@ QHash<Key, T> QMultiHash<Key, T>	QHash<Key, T>: :const_iterator	QHash<Key, T>::i
 
 //Qt 提供一个关键字 foreach (实际是 <QtGlobal> 里定义的一个宏）用于方便地访问容器里所有数据项。
 
+/*
+QString 类从字符串转换为整数的函数有：
+int toInt(bool * ok = Q_NULLPTR, int base = 10) const
+long toLong (bool * ok = Q_NULLPTR, int base = 10) const
+short toShort (bool * ok = Q_NULLPTR, int base = 10) const
+uint toUInt (bool *ok = Q_NULLPTR, int base = 10) const
+ulong toULong (bool *ok = Q_NULLPTR, int base = 10) const
+
+这些函数如果不设置参数，缺省表示从十进制表示的字符串转换为整数；若指定整数基参数，还可以直接将二进制、十六进制字符串转换为整数。
+
+QString 将字符串转换为浮点数的函数有：
+double toDouble(bool *ok = Q_NULLPTR) const
+float toFloat (bool * ok = Q_NULLPTR) const
+
+str=QString::number(total,'f',2);
+str=QString::asprintf ("%.2f", total);
+str=str.setNum(total,'f',2);
+str=str.sprintf ("%.2f，total);
+
+可以使用 QString 的静态函数 number() 和 asprintf()，也可以使用其公共函数 setNum() 和 sprintf()。 QString 的 sprintf() 函数与 C 语言里的 sprintf() 函数的格式是一样的，而 setNum() 和 number() 函数使用另外一种格式定义，而且 setNum 和 number 有多个重载函数定义，可以处理各种类型的整数和浮点数，在处理整数时还可以指定进制，例如将一个整数直接转换为十六进制或二进制字符串。
+进制转换
+
+将一个整数转换为不同进制的字符串，可以使用 QString 的函数 setNum() 或静态函数 number()，它们的函数原型是：
+Qstring &setNum (int n, int base = 10)
+QString number (int n, int base = 10)
+
+其中 n 是待转换的整数，base 是使用的进制，缺省为十进制，也可以指定为十六进制和二进制。下面是读取二进制字符串，然后转换为十进制和十六进制显示的按钮的槽函数代码。
+*/
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
