@@ -7,6 +7,13 @@
 
 #include <QtGlobal>
 
+#include <QTextCodec>
+
+#include <iostream>
+#include <string>
+
+//using namespace std;
+
 // text stream is text-codec aware
 static QTextStream cout(stdout, QIODevice::WriteOnly);
 
@@ -72,6 +79,19 @@ QString number (int n, int base = 10)
 
 其中 n 是待转换的整数，base 是使用的进制，缺省为十进制，也可以指定为十六进制和二进制。下面是读取二进制字符串，然后转换为十进制和十六进制显示的按钮的槽函数代码。
 */
+
+
+
+QString str2qstr(const std::string  str)
+{
+    return QString::fromLocal8Bit(str.data());
+}
+
+std::string qstr2str(const QString qstr)
+{
+    QByteArray cdata = qstr.toLocal8Bit();
+    return std::string(cdata);
+}
 
 int main(int argc, char *argv[])
 {
@@ -256,6 +276,96 @@ int main(int argc, char *argv[])
         }
     }
 
+    //    if(true){
+    //        //QString 内部采用的是Unicode
+    //        QString qstr="中国";
+    //        std::string str9=qstr.toStdString();
+    //        cout<<str9.c_str()<<endl;//乱码
+    //        QString str8=QString(str9.c_str());
+    //        cout<<str8<<endl;//乱码
+
+
+    //        QString str1=QString::fromUtf8("文");
+    //        QString str2=QString::fromUtf8("中");
+    //        QString str3=str1;
+    //        str1.append (str2) ; //str1="文中"
+    //        str3.prepend (str2) ; //str3="中文"
+    //        cout<<str1<<endl;//乱码
+    //        cout<<str3<<endl;//乱码
+    //    }
+
+    if(true){
+        //        QTextCodec::setCodecForLocale(QTextCodec::codecForName("GB2312"));
+
+        //        QString qstr="中国";
+        //        cout<<qstr<<endl;
+        QString str = QString::fromLocal8Bit("中文");
+        //        QString str = QString::fromUtf8("中文");
+        cout<<str<<endl;//正常
+
+
+        //        std::string str9=qstr.toStdString();
+        //        cout<<str9.c_str()<<endl;//乱码
+        //        QString str8=QString(str9.c_str());
+        //        cout<<str8<<endl;//乱码
+
+
+        //        QString str1=QString::fromUtf8("文");
+        //        QString str2=QString::fromUtf8("中");
+        //        QString str3=str1;
+        //        str1.append (str2) ; //str1="文中"
+        //        str3.prepend (str2) ; //str3="中文"
+        //        cout<<str1<<endl;//乱码
+        //        cout<<str3<<endl;//乱码
+
+        QString str1=QString::fromLocal8Bit("文");
+        QString str2=QString::fromLocal8Bit("中");
+        QString str3=str1;
+        str1.append (str2) ; //str1="文中"
+        str3.prepend (str2) ; //str3="中文"
+        cout<<str1<<endl;//乱码
+        cout<<str3<<endl;//乱码
+    }
+
+    if(true){
+//        isNull() 和 isEmpty()
+//        两个函数都判读字符串是否为空，但是稍有差别。如果一个空字符串，只有“\0”，isNull() 返回 false，而 isEmpty() 返回 true；只有未赋值的字符串，isNull() 才返回 true。
+
+        QString str1, str2="";
+        bool N=str1.isNull () ; // N=true 未赋值字符串变量
+        N=str2.isNull () ; // N=false 只有"\0"的字符串，也不是 Null
+        N=str1.isEmpty(); // N=true
+        N=str2.isEmpty(); // N=true
+    }
+
+    if(true)
+    {
+//        trimmed() 和 simplified()
+//        trimmed() 去掉字符串首尾的空格，simplified() 不仅去掉首尾的空格，中间连续的空格也用一个空格替换。
+        QString str1=" Are you     OK? ", str2;
+        str2=str1.trimmed () ; //str1="Are you OK? "
+        qDebug()<<str2<<endl;
+        str2=str1.simplified(); //str1="Are you OK?"
+        qDebug()<<str2<<endl;
+    }
+    if(true){
+//        section()
+//        section() 函数的原型为：
+//        QString section (const QString &sep, int start, int end = -1, SectionFlags flags = SectionDefault) const
+
+//        其功能是从字符串中提取以 sep 作为分隔符，从 start 端到 end 端的字符串。
+//        纯文本复制
+        QString str2, str1=str2qstr("学生姓名,男,1984-3-4,汉族,山东");
+        str2=str1.section (",",0,0); // str2="学生姓名"， 第 1 段的编号为 0
+        qDebug()<<str2<<endl;
+        str2=str1.section (",",1,1); // str2="男"
+        qDebug()<<str2<<endl;
+        str2=str1.section (",",0,1); // str2="学生姓名，男"
+        qDebug()<<str2<<endl;
+        str2=str1.section (",",4,4); // str2="山东"
+        qDebug()<<str2<<endl;
+    }
 
     return a.exec();
 }
+
