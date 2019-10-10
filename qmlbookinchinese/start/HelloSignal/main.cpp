@@ -1,3 +1,8 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
 //#include <QGuiApplication>
 //#include <QQmlApplicationEngine>
 
@@ -40,6 +45,26 @@
 #include "newspaper.h"
 #include "reader.h"
 
+void callback_fun(int times, void (*print)(int len));
+
+void printWelcome(int len)
+{
+    cout<<"Hello "<<len<<endl;
+}
+
+void printGoodbye(int len)
+{
+    cout<<"Goodbye "<<len<<endl;
+}
+
+void callback_fun(int times, void (*print)(int len))
+{
+    for(int i=0;i<times;i++)
+    {
+        print(i);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -49,6 +74,9 @@ int main(int argc, char *argv[])
     QObject::connect(&newspaper, &Newspaper::newPaper,
                      &reader,    &Reader::receiveNewspaper);
     newspaper.send();
+
+    callback_fun(2,printWelcome);
+    callback_fun(2,printGoodbye);
 
     return app.exec();
 }
