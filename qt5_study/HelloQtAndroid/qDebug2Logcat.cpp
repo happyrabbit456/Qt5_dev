@@ -9,6 +9,8 @@ static void messageOutput2Logcat(QtMsgType type,
                                  const QMessageLogContext &context,
                                  const QString &msg)
 {
+    Q_UNUSED(context)
+
     int prio = ANDROID_LOG_VERBOSE;
     QByteArray localMsg = msg.toLocal8Bit();
     switch (type) {
