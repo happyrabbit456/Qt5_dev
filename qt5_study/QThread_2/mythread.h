@@ -9,7 +9,7 @@ class MyThread : public QThread
 {
     Q_OBJECT
 public:
-    explicit MyThread(QObject *parent = 0);
+    explicit MyThread(QObject *parent = nullptr);
     //自定义发送的信号
 signals:
     void myThreadSignal(const int);
