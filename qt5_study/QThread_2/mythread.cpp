@@ -3,6 +3,7 @@
 
 MyThread::MyThread(QObject *parent) : QThread(parent)
 {
+    m_bStopped=false;
 }
 
 void MyThread::run()
@@ -13,7 +14,17 @@ void MyThread::run()
     int count = 0;
     for(int i = 0;i!=1000000;++i)
     {
-     ++count;
+        ++count;
+        // 检测是否停止
+        {
+            QMutexLocker locker(&m_mutex);
+            if (m_bStopped)
+            {
+                qDebug()<<"m_bStopped true..."<<endl;
+                break;
+            }
+        }
+        // locker超出范围并释放互斥锁
     }
     // 发送结束信号
     emit myThreadSignal(count);
@@ -28,6 +39,6 @@ void MyThread::myThreadSlot(const int val)
     int count = val;
     for(int i = 0;i!=1000000;++i)
     {
-     ++count;
+        ++count;
     }
 }

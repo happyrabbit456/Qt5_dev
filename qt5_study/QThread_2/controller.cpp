@@ -17,6 +17,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 
 Controller::~Controller()
 {
+    myThrd->stop();
     myThrd->quit();
     myThrd->wait();
 }

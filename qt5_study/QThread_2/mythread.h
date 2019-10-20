@@ -5,6 +5,8 @@
 #include <QThread>
 #include <QDebug>
 
+#include <QMutexLocker>
+
 class MyThread : public QThread
 {
     Q_OBJECT
@@ -18,6 +20,17 @@ public slots:
     void myThreadSlot(const int);
 protected:
     void run() override;
+
+public:
+    void stop()
+    {
+        qDebug() << "Worker Stop Thread : " << QThread::currentThreadId();
+        QMutexLocker locker(&m_mutex);
+        m_bStopped = true;
+    }
+private:
+    bool m_bStopped;
+    QMutex m_mutex;
 };
 
 #endif // MYTHREAD_H
