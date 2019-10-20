@@ -5,6 +5,31 @@
 #include <QThread>
 #include <QDebug>
 
+/*
+//内部实现居然也用了互斥锁QMutex
+void QThread::requestInterruption()
+{
+    Q_D(QThread);
+    QMutexLocker locker(&d->mutex);
+    if (!d->running || d->finished || d->isInFinish)
+        return;
+    if (this == QCoreApplicationPrivate::theMainThread) {
+        qWarning("QThread::requestInterruption has no effect on the main thread");
+        return;
+    }
+    d->interruptionRequested = true;
+}
+
+bool QThread::isInterruptionRequested() const
+{
+    Q_D(const QThread);
+    QMutexLocker locker(&d->mutex);
+    if (!d->running || d->finished || d->isInFinish)
+        return false;
+    return d->interruptionRequested;
+}
+*/
+
 class WorkerThread : public QThread
 {
     Q_OBJECT
