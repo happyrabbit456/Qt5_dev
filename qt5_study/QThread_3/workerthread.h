@@ -53,6 +53,14 @@ protected:
 
             // 准备更新
             emit resultReady(nValue);
+
+            // 是否请求终止
+            if(isInterruptionRequested())
+            {
+                qDebug()<<"isInterruptionRequested() true ..."<<endl;
+                break;
+            }
+
         }
 
         if(nValue>=100){

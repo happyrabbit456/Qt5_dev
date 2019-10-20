@@ -25,7 +25,7 @@ private slots:
     // 开启线程
     void startThread()
     {
-        //        WorkerThread *workerThread = new WorkerThread(this);
+//        WorkerThread *workerThread = new WorkerThread(this);
         //        当多次点击“开始”按钮的时候，就会多次connect()，从而启动多个线程，同时更新进度条
         WorkerThread *workerThread = m_workerThread;
         if(workerThread->isRunning())
