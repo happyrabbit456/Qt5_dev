@@ -155,7 +155,7 @@ bool MainWindow::ScanningCodeHandle(QString str)
 
         ui->label->setText("Pass");
 
-        QTimer::singleShot(1000, this, SLOT(updateWidget()));
+        QTimer::singleShot(10000, this, SLOT(updateWidget()));
 
         return true;
     }
