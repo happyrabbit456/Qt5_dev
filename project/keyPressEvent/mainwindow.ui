@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>768</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>扫描码检测</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="numlineEdit">
@@ -22,6 +22,9 @@
       <width>251</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="clearButton">
@@ -34,7 +37,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Clear</string>
+     <string>清除</string>
     </property>
    </widget>
    <widget class="QComboBox" name="comboBox">
@@ -57,13 +60,32 @@
      </property>
     </item>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>150</y>
+      <width>101</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>768</width>
      <height>23</height>
     </rect>
    </property>

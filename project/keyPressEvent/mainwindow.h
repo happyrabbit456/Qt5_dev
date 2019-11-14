@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
 
 /*
 Index 0 :  "国光"
@@ -25,12 +26,28 @@ public:
 private:
     QString str;
     int combIndex;
+    QString criticalStr;
+
+protected:
+    bool ScanningCodeHandle(QString str);
+    void LabelDefaultShow();
+
+protected slots:
+    void updateWidget();
 
 private slots:
     void on_clearButton_clicked();
 
 
     void on_comboBox_currentIndexChanged(int index);
+
+    void on_numlineEdit_editingFinished();
+
+    void on_numlineEdit_textChanged(const QString &arg1);
+
+    void on_numlineEdit_textEdited(const QString &arg1);
+
+    void on_numlineEdit_returnPressed();
 
 private:
     Ui::MainWindow *ui;
