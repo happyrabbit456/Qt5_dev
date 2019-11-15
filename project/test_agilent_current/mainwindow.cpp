@@ -28,3 +28,8 @@ void MainWindow::on_chargingCurrentBtn_clicked()
 {
 
 }
+
+void MainWindow::on_testButton_clicked()
+{
+
+}

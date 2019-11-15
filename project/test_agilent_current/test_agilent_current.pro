@@ -39,3 +39,6 @@ INCLUDEPATH += "C:\Program Files (x86)\National Instruments\Shared\ExternalCompi
 #QMAKE_LIBDIR += "C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc\ni4882.obj"
 
 LIBS += -L"C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc" -lni4882
+
+
+RC_ICONS = logo.ico
