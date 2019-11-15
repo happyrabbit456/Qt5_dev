@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-
+#if 0
     //caijx
     int   PrimaryAddress = 22;// 2;      /* Primary address of the device           */
     int   SecondaryAddress = 0;    /* Secondary address of the device         */
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         GpibError("ibonl Error");
     }
 
-
+#endif
 
     return a.exec();
 }
