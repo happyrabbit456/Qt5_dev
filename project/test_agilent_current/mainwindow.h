@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "barscannerdlg.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -29,7 +31,11 @@ private slots:
 
     void on_chargingCurrentBtn_clicked();
 
+    void on_testButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    BarScannerDlg *barScannerDlg;
 };
 #endif // MAINWINDOW_H
