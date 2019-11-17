@@ -118,6 +118,56 @@ bool MainWindow::SaveBarScanningCode(QString code)
 
 }
 
+void MainWindow::ShowErrorDlg()
+{
+    //弹框提示
+//    int ret = QMessageBox::critical(nullptr, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+//    switch (ret) {
+//    case QMessageBox::Yes:
+//        // Yes was clicked
+//        qDebug()<<"Yes was clicked";
+//        //                    QTimer::singleShot(1000, this, SLOT(updateWidget()));
+//        ui->numlineEdit->setText("");
+
+//        //                    LabelDefaultShow();
+
+//        ui->label->setHidden(true);
+
+//        break;
+//    case QMessageBox::No:
+//        // No was clicked
+//        qDebug()<<"No was clicked";
+
+//        break;
+//    default:
+//        // should never be reached
+//        break;
+//    }
+
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Critical, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No);
+
+    msgBox->button(QMessageBox::Yes)->setText("是");
+    msgBox->button(QMessageBox::No)->setText("否");
+
+    // 启动对话框，用res变量记录用户最终点选的按钮
+    int res = msgBox->exec();
+    if(QMessageBox::Yes == res)
+    {
+        // Yes was clicked
+        qDebug()<<"Yes was clicked";
+        //                    QTimer::singleShot(1000, this, SLOT(updateWidget()));
+        ui->numlineEdit->setText("");
+
+        //                    LabelDefaultShow();
+
+        ui->label->setHidden(true);
+    }
+    if(QMessageBox::No == res)
+    {
+        qDebug()<<"No was clicked";
+    }
+}
+
 bool MainWindow::ScanningCodeHandle(QString str)
 {
     if(!str.isNull() && !str.isEmpty())
@@ -134,28 +184,7 @@ bool MainWindow::ScanningCodeHandle(QString str)
                 LabelShow(Qt::blue,Qt::red,m_fontPointSize,"Fail");
 
                 //弹框提示
-                int ret = QMessageBox::critical(nullptr, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-                switch (ret) {
-                case QMessageBox::Yes:
-                    // Yes was clicked
-                    qDebug()<<"Yes was clicked";
-                    //                    QTimer::singleShot(1000, this, SLOT(updateWidget()));
-                    ui->numlineEdit->setText("");
-
-                    //                    LabelDefaultShow();
-
-                    ui->label->setHidden(true);
-
-                    break;
-                case QMessageBox::No:
-                    // No was clicked
-                    qDebug()<<"No was clicked";
-
-                    break;
-                default:
-                    // should never be reached
-                    break;
-                }
+                ShowErrorDlg();
 
                 return false;
             }
@@ -171,30 +200,7 @@ bool MainWindow::ScanningCodeHandle(QString str)
                 LabelShow(Qt::blue,Qt::red,m_fontPointSize,"Fail");
 
                 //弹框提示
-                int ret = QMessageBox::critical(nullptr, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-                switch (ret) {
-                case QMessageBox::Yes:
-                    // Yes was clicked
-                    qDebug()<<"Yes was clicked";
-
-                    //                    QTimer::singleShot(1000, this, SLOT(updateWidget()));
-                    ui->numlineEdit->setText("");
-
-                    //                    LabelDefaultShow();
-
-                    ui->label->setHidden(true);
-
-                    break;
-                case QMessageBox::No:
-                    // No was clicked
-                    qDebug()<<"No was clicked";
-                    break;
-                default:
-                    // should never be reached
-                    break;
-                }
-
+                ShowErrorDlg();
 
                 return false;
             }

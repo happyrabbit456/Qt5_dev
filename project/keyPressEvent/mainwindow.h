@@ -50,7 +50,7 @@ protected:
                                int fontPointSize,QString labelText);
     void LabelDefaultShow();
     bool SaveBarScanningCode(QString code);
-
+    void ShowErrorDlg();
 protected slots:
     void updateWidget();
     void check();
