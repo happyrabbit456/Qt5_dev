@@ -5,18 +5,38 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
+#include <iostream>
+#include <string>
+
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , str("")
+    , strLineEdit("")
     , combIndex(0)
     , ui(new Ui::MainWindow)
 
 {
+//    string test="111";
+//    string ch=" ";
+//    test.insert(1,ch);
+//    qDebug()<<test.c_str()<<endl;
+//    const char *pp=test.c_str();
+//    char *ppp=nullptr;
+//    ppp=const_cast<char*>(pp);
+//    ppp[3]='3';
+//    qDebug()<<ppp<<endl;
+
+//    string strTest;
+//    cout<<strTest.max_size();
+
     ui->setupUi(this);
 
     ui->label->setHidden(true);
 
     criticalStr="检测扫描码和厂商设置不匹配，确认进行下一次检测吗？";
+
+    m_fontPointSize=20;
 
     //ui->label->setStyleSheet("color:red;");
     //setStyleSheet("color:#ff6600;");
@@ -26,6 +46,20 @@ MainWindow::MainWindow(QWidget *parent)
     //    LabelDefaultShow();
 
     checkTimer=nullptr;
+
+    int index = ui->comboBox->currentIndex();
+    qDebug()<<"Index"<< index <<": "<< ui->comboBox->currentText();
+    QString currentComboBoxText = ui->comboBox->currentText();
+    if(!currentComboBoxText.isNull() && !currentComboBoxText.isEmpty())
+    {
+        saveFileName=currentComboBoxText;
+    }
+    qDebug()<<saveFileName;
+
+//    SaveBarScanningCode(QString("111")+QString("\n"));
+//    SaveBarScanningCode(QString("222")+QString("\n"));
+
+
 }
 
 MainWindow::~MainWindow()
@@ -33,26 +67,62 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::LabelDefaultShow()
+void MainWindow::LabelShow(const QColor &textColor,const QColor &backgroudColor,
+                           int fontPointSize, QString labelText)
 {
     ui->label->clear();
     QPalette palette;
-    palette.setColor(QPalette::WindowText,Qt::blue);//white);
-    palette.setColor(QPalette::Background, QColor(Qt::white));//(R, G, B));
+    palette.setColor(QPalette::WindowText,textColor);//Qt::blue);//white);
+    palette.setColor(QPalette::Background, backgroudColor);//QColor(Qt::white));//(R, G, B));
     ui->label->setAutoFillBackground(true);  //一定要这句，否则不行
     ui->label->setPalette(palette);
 
     //设置字号
     QFont ft;
-    ft.setPointSize(20);
+    ft.setPointSize(fontPointSize);//20);
     ui->label->setFont(ft);
-    ui->label->setText("default");
+    ui->label->setText(labelText);//"default");
+}
+
+void MainWindow::LabelDefaultShow()
+{
+    LabelShow(Qt::blue,Qt::white,m_fontPointSize,"default");
+}
+
+bool MainWindow::SaveBarScanningCode(QString code)
+{
+    //如果检测 Pass ，保存扫描码到文件
+    if(!saveFileName.isNull() && !saveFileName.isEmpty())
+    {
+        saveFile.setFileName(saveFileName);
+        if(!saveFile.open(QIODevice::ReadWrite|QIODevice::Append|QIODevice::Text))
+        {
+            QMessageBox::critical(nullptr, tr("错误提示"), tr("打开保存文件失败"), QMessageBox::Yes , QMessageBox::Yes);
+            return false;
+        }
+        else{
+            code=code+QString("\n");
+
+            string codeStr=code.toStdString();
+            const char* codeString=codeStr.c_str();
+            saveFile.write(codeString,qstrlen(codeString));
+            saveFile.close();
+            return true;
+        }
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("错误提示"), tr("扫描码保存文件名为空"), QMessageBox::Yes , QMessageBox::Yes);
+        return false;
+    }
+
 }
 
 bool MainWindow::ScanningCodeHandle(QString str)
 {
     if(!str.isNull() && !str.isEmpty())
     {
+        /**/
         str=str.trimmed();
         if(combIndex == 0) //Index 0 :  "国光"  31位
         {
@@ -60,17 +130,11 @@ bool MainWindow::ScanningCodeHandle(QString str)
             if(str.length()!=31 || pos!=11 )
             {
                 ui->label->setHidden(false);
-                ui->label->clear();
-                QPalette palette;
-                palette.setColor(QPalette::WindowText,Qt::blue);
-                palette.setColor(QPalette::Background, QColor(Qt::red));//(R, G, B));
-                ui->label->setAutoFillBackground(true);  //一定要这句，否则不行
-                ui->label->setPalette(palette);
 
-                ui->label->setText("Fail");
+                LabelShow(Qt::blue,Qt::red,m_fontPointSize,"Fail");
 
                 //弹框提示
-                int ret = QMessageBox::critical(nullptr, "critical", criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+                int ret = QMessageBox::critical(nullptr, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
                 switch (ret) {
                 case QMessageBox::Yes:
                     // Yes was clicked
@@ -103,17 +167,11 @@ bool MainWindow::ScanningCodeHandle(QString str)
             if(str.length()!=20 ||!str.startsWith("BD") || !(str.at(6)=='B' || str.at(6)=='R' ) || str.at(7)!='S' )
             {
                 ui->label->setHidden(false);
-                ui->label->clear();
-                QPalette palette;
-                palette.setColor(QPalette::WindowText,Qt::blue);
-                palette.setColor(QPalette::Background, QColor(Qt::red));//(R, G, B));
-                ui->label->setAutoFillBackground(true);  //一定要这句，否则不行
-                ui->label->setPalette(palette);
 
-                ui->label->setText("Fail");
+                LabelShow(Qt::blue,Qt::red,m_fontPointSize,"Fail");
 
                 //弹框提示
-                int ret = QMessageBox::critical(nullptr, "critical", criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+                int ret = QMessageBox::critical(nullptr, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
                 switch (ret) {
                 case QMessageBox::Yes:
@@ -146,17 +204,15 @@ bool MainWindow::ScanningCodeHandle(QString str)
             return false;
         }
 
-        ui->label->setHidden(false);
-        ui->label->clear();
-        QPalette palette;
-        palette.setColor(QPalette::WindowText,Qt::blue);
-        palette.setColor(QPalette::Background, QColor(Qt::green));//(R, G, B));
-        ui->label->setAutoFillBackground(true);  //一定要这句，否则不行
-        ui->label->setPalette(palette);
 
-        ui->label->setText("Pass");
+        bool retOK=SaveBarScanningCode(str);
+        if(retOK){
+            ui->label->setHidden(false);
 
-        QTimer::singleShot(1000, this, SLOT(updateWidget()));
+            LabelShow(Qt::blue,Qt::green,m_fontPointSize,"Pass");
+
+            QTimer::singleShot(1000, this, SLOT(updateWidget()));
+        }
 
         return true;
     }
@@ -174,7 +230,6 @@ void MainWindow::updateWidget()
     ui->label->setHidden(true);
     /*
     qDebug()<<"updateWidget() done.";
-// this->showNormal();
 
     ui->numlineEdit->clear();
     ui->numlineEdit->setText("");
@@ -188,32 +243,6 @@ void MainWindow::updateWidget()
 
     qApp->processEvents();
 
-
-    str=ui->numlineEdit->text();
-    bool ret=ScanningCodeHandle(str);
-    qDebug()<<"ret:"<<ret<<endl;
-    if(ret)
-    {
-        ui->numlineEdit->setText("");
-
-
-
-
-//    ui->numlineEdit->setText("");
-
-    ui->numlineEdit->clear();
-
-        ui->numlineEdit->update();
-        ui->numlineEdit->repaint();
-        ui->numlineEdit->showNormal();
-        ui->numlineEdit->resize(ui->numlineEdit->size());
-        ui->numlineEdit->adjustSize();
-
-        qApp->processEvents();
-
-//     qDebug()<<ui->numlineEdit->text();
-    }
-
     */
 }
 
@@ -224,11 +253,15 @@ void MainWindow::check()
     if(elapsed>50) //扫描完成
     {
         QString strScannerCode=ui->numlineEdit->text();
-        bool ret=ScanningCodeHandle(strScannerCode);
+        ScanningCodeHandle(strScannerCode);
 
         //检查Timer停止
-        checkTimer->stop();
-        checkTimer=nullptr;
+        if(checkTimer!=nullptr){
+            checkTimer->stop();
+            delete checkTimer;
+            checkTimer=nullptr;
+            qDebug()<<"checkTimer->stop(); --->>> call done.";
+        }
     }
 }
 
@@ -239,8 +272,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         qDebug()<<ui->numlineEdit->text();
 
-        str=ui->numlineEdit->text();
-        bool ret=ScanningCodeHandle(str);
+        strLineEdit=ui->numlineEdit->text();
+        bool ret=ScanningCodeHandle(strLineEdit);
         if(ret)
         {
             //            ui->numlineEdit->setText("");
@@ -267,6 +300,16 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     qDebug()<<"Index"<< index <<": "<< ui->comboBox->currentText();
 
     combIndex=index;
+
+    QString currentComboBoxText = ui->comboBox->currentText();
+    if(!currentComboBoxText.isNull() && !currentComboBoxText.isEmpty())
+    {
+        saveFileName=currentComboBoxText;
+    }
+    qDebug()<<saveFileName;
+
+//    SaveBarScanningCode(QString("111")+QString("\n"));
+//    SaveBarScanningCode(QString("222")+QString("\n"));
 }
 
 
@@ -305,32 +348,6 @@ void MainWindow::on_numlineEdit_editingFinished()
     //qDebug()<<"on_numlineEdit_editingFinished"<<endl;
 
     //    qDebug()<<ui->numlineEdit->text();
-
-    //    QTimer::singleShot(1000, this, SLOT(updateWidget()));          //等待一定时间再显示
-
-    /*
-
-    str=ui->numlineEdit->text();
-    bool ret=ScanningCodeHandle(str);
-    qDebug()<<"ret:"<<ret<<endl;
-    if(ret)
-    {
-//        ui->numlineEdit->setText("");
-
-//        ui->numlineEdit->update();
-//        ui->numlineEdit->repaint();
-//        ui->numlineEdit->showNormal();
-//        ui->numlineEdit->resize(ui->numlineEdit->size());
-//        ui->numlineEdit->adjustSize();
-
-//        qApp->processEvents();
-
-        QTimer::singleShot(500, this, SLOT(updateWidget()));          //等待一定时间再显示
-
-//        qDebug()<<ui->numlineEdit->text();
-    }
-
-    */
 }
 
 void MainWindow::on_numlineEdit_textChanged(const QString &arg1)
@@ -372,27 +389,11 @@ void MainWindow::on_numlineEdit_textChanged(const QString &arg1)
 //    int elapsed = startTime.msecsTo(stopTime);
 //    qDebug()<<"QTime.currentTime ="<<elapsed<<"ms";
 
-
-    /*
-    bool ret=false;
-    if(combIndex == 0 && !arg1.isNull() && !arg1.isEmpty() && arg1.length() == 31) //Index 0 :  "国光" 31位
-    {
-        qDebug()<<"11111 "<<arg1;
-        ret=ScanningCodeHandle(arg1);
-    }
-    if(combIndex == 1 && !arg1.isNull() && !arg1.isEmpty() && arg1.length() == 20) //Index 1 :  "台德"  20位
-    {
-        qDebug()<<"22222 "<<arg1;
-        ret=ScanningCodeHandle(arg1);
-    }
-    */
-
-
-
 }
 
 void MainWindow::on_numlineEdit_textEdited(const QString &arg1)
 {
+    Q_UNUSED(arg1)
     //        qDebug()<<"on_numlineEdit_textEdited"<<endl;
     //    qDebug()<<arg1;
 }
@@ -404,5 +405,6 @@ void MainWindow::on_numlineEdit_returnPressed()
 
 void MainWindow::on_numlineEdit_cursorPositionChanged(int arg1, int arg2)
 {
-
+    Q_UNUSED(arg1)
+    Q_UNUSED(arg2)
 }

@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QTime>
 #include <QThread>
+#include <QFile>
 
 /*
 Index 0 :  "国光"  31位
@@ -26,9 +27,11 @@ public:
     void keyPressEvent(QKeyEvent *event);
 
 private:
-    QString str;
+    QString strLineEdit;
     int combIndex;
     QString criticalStr;
+
+    int m_fontPointSize;
 
     QTime currTime;
     QTime lastTime;
@@ -38,9 +41,15 @@ private:
 
     QTimer *checkTimer;
 
+    QFile saveFile;
+    QString saveFileName;
+
 protected:
     bool ScanningCodeHandle(QString str);
+    void LabelShow(const QColor &textColor,const QColor &backgroudColor,
+                               int fontPointSize,QString labelText);
     void LabelDefaultShow();
+    bool SaveBarScanningCode(QString code);
 
 protected slots:
     void updateWidget();
