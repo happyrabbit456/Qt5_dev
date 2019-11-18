@@ -26,7 +26,7 @@ public:
 private:
     Ui::BarScannerDlg *ui;
 
-    QString questionStr;
+    QString m_questionStr;
 
 public:
     QString m_barScannerCode;
