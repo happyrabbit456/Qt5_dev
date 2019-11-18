@@ -4,11 +4,12 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QTime>
+#include <QDateTime>
 #include <QThread>
 #include <QFile>
 
 /*
-Index 0 :  "国光"  31位
+Index 0 :  "国光"  20位
 Index 1 :  "台德"  20位
 */
 
@@ -51,6 +52,9 @@ protected:
     void LabelDefaultShow();
     bool SaveBarScanningCode(QString code);
     void ShowErrorDlg();
+
+    bool GetYearMonthCharacter(char &chYear, char &chMonth);
+    bool CheckYearMonthCharacter(char chYear, char chMonth);
 protected slots:
     void updateWidget();
     void check();

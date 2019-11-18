@@ -59,7 +59,12 @@ MainWindow::MainWindow(QWidget *parent)
 //    SaveBarScanningCode(QString("111")+QString("\n"));
 //    SaveBarScanningCode(QString("222")+QString("\n"));
 
+    char yearChar;
+    char monthChar;
+    bool ret=GetYearMonthCharacter(yearChar,monthChar);
+    if(ret){
 
+    }
 }
 
 MainWindow::~MainWindow()
@@ -169,16 +174,160 @@ void MainWindow::ShowErrorDlg()
     }
 }
 
+bool MainWindow::GetYearMonthCharacter(char &chYear, char &chMonth)
+{
+    bool ok=false;
+    bool yearCharRet=false;
+    bool monthCharRet=false;
+
+    //9代表2019，A代表2020，B代表2021，以此英文字母方式类推，占1位
+
+//    //26
+    unsigned char ch='A'; //65
+    unsigned char chTest;
+    for(unsigned int i=0;i<26;i++)
+    {
+
+        chTest=(char)ch+i;
+        qDebug()<<"chTest:"<<(char)chTest;
+    }
+
+    QDateTime current_date_time =QDateTime::currentDateTime();
+//        QString current_date = current_date_time.toString("yyyy.MM.dd hh:mm:ss.zzz ddd");
+    QString strYear = current_date_time.toString("yyyy");
+    qDebug()<<strYear;
+    QString strMonth = current_date_time.toString("MM");
+    qDebug()<<strMonth;
+
+    if(strYear.compare(QString("2019"))==0)
+    {
+        chYear='9';
+        qDebug()<<chYear;
+        yearCharRet = true;
+    }
+    else
+    {
+        unsigned int baseYear=2019;
+
+        unsigned int numDecYear = strYear.toUInt(&ok, 10);
+        if(ok){
+            qDebug() << ok << ":" << numDecYear;//true : 2019
+
+            char chLetter;
+            unsigned int temp=numDecYear-baseYear;//25;
+            if(temp>=1 && temp <= 25)
+            {
+                chLetter=(char)ch+temp;
+                qDebug()<<"chLetter:"<<(char)chLetter;
+
+                chYear=chLetter;
+                qDebug()<<chYear;
+                yearCharRet = true;
+            }
+            else
+            {
+                //error，超过字母上限
+                QMessageBox::critical(nullptr, tr("错误提示"), tr("年份编码超过字母上限"), QMessageBox::Yes , QMessageBox::Yes);
+                return false;
+            }
+        }
+    }
+
+
+
+    unsigned int baseMonth=1;
+    unsigned int numDecMonth = strMonth.toUInt(&ok, 10);
+    if(ok){
+        qDebug() << ok << ":" << numDecMonth;//true : 11
+
+        char chLetter;
+        unsigned int temp=numDecMonth-baseMonth;//12;
+        if(temp>=1 && temp <= 12)
+        {
+            chLetter=(char)ch+temp;
+            qDebug()<<"chLetter:"<<(char)chLetter;
+
+            chMonth=chLetter;
+            qDebug()<<chMonth;
+            monthCharRet = true;
+        }
+        else
+        {
+            //error，超过字母上限
+            QMessageBox::critical(nullptr, tr("错误提示"), tr("月份编码超过字母上限"), QMessageBox::Yes , QMessageBox::Yes);
+            return false;
+        }
+    }
+
+    if(yearCharRet && monthCharRet)
+    {
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool MainWindow::CheckYearMonthCharacter(char chYear, char chMonth)
+{
+    bool yearCharRet=false;
+    bool monthCharRet=false;
+
+    if(chYear == '9')
+    {
+        yearCharRet = true;
+    }
+    else if(chYear >= 'A' && chYear<='Z')
+    {
+        yearCharRet = true;
+    }
+    else
+    {
+        yearCharRet = false;
+    }
+
+    if(chMonth>='A'&&chMonth<='L')
+    {
+        monthCharRet=true;
+    }
+    else
+    {
+        monthCharRet=false;
+    }
+
+    if(yearCharRet && monthCharRet)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 bool MainWindow::ScanningCodeHandle(QString str)
 {
-    if(!str.isNull() && !str.isEmpty())
+    if(!str.isNull() && !str.isEmpty() && str.length()==20)
     {
         /**/
         str=str.trimmed();
-        if(combIndex == 0) //Index 0 :  "国光"  31位
+
+//        char chYear;
+//        char chMonth;
+//        bool bCharOK = GetYearMonthCharacter(chYear, chMonth);
+
+        bool bYearMonthChar=false;
+        QChar yearChar = str.at(8);
+        QChar monthChar = str.at(9);
+        char yearCh=yearChar.unicode();
+        char monthCh=monthChar.unicode();
+        bYearMonthChar=CheckYearMonthCharacter(yearCh,monthCh);
+        qDebug()<<"yearCh:"<<yearCh<<" "<<"monthCh:"<<monthCh;
+
+        if(combIndex == 0) //Index 0 :  "国光"  20位
         {
-            int pos=str.indexOf("P1556");
-            if(str.length()!=31 || pos!=11 )
+            int pos=str.indexOf("G001");
+            if(str.length()!=20 ||!str.startsWith("BD") || pos!=2|| !(str.at(6)=='B' || str.at(6)=='R' ) || str.at(7)!='S' || !bYearMonthChar )
             {
                 ui->label->setHidden(false);
 
@@ -193,8 +342,10 @@ bool MainWindow::ScanningCodeHandle(QString str)
         }
         else if(combIndex == 1)   //Index 1 :  "台德" 20位
         {
-            qDebug()<<str.at(6)<<" "<<str.at(7)<<endl;
-            if(str.length()!=20 ||!str.startsWith("BD") || !(str.at(6)=='B' || str.at(6)=='R' ) || str.at(7)!='S' )
+//            qDebug()<<str.at(6)<<" "<<str.at(7)<<endl;
+            int pos1=str.indexOf("0329");
+            int pos2=str.indexOf("0330");
+            if(str.length()!=20 ||!str.startsWith("BD") || !(str.at(6)=='B' || str.at(6)=='R' ) || !(pos1!=2 || pos2!=2) || str.at(7)!='S'  || !bYearMonthChar )
             {
                 ui->label->setHidden(false);
 
@@ -225,6 +376,14 @@ bool MainWindow::ScanningCodeHandle(QString str)
     }
     else
     {
+        ui->label->setHidden(false);
+
+        LabelShow(Qt::blue,Qt::red,m_fontPointSize,"Fail");
+
+        //弹框提示
+        ShowErrorDlg();
+
+
         return false;
     }
 }
