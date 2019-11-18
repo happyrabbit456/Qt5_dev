@@ -146,6 +146,7 @@ void MainWindow::ShowErrorDlg()
 
     QMessageBox *msgBox = new QMessageBox(QMessageBox::Critical, tr("错误提示"), criticalStr, QMessageBox::Yes | QMessageBox::No);
 
+    msgBox->setAttribute(Qt::WA_DeleteOnClose, true);
     msgBox->button(QMessageBox::Yes)->setText("是");
     msgBox->button(QMessageBox::No)->setText("否");
 
