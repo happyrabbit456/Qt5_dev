@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>images/Fail.jpg</file>
+        <file>images/MINAMI_logo.jpg</file>
+        <file>images/None.jpg</file>
+        <file>images/Pass.jpg</file>
+        <file>images/Testing.jpg</file>
+    </qresource>
+</RCC>
