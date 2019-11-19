@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+#include "testform.h"
+#include "showdatabaseform.h"
+#include "versionform.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -17,5 +21,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    TestForm *m_pTestForm;
+    ShowDataBaseForm *m_pShowDataForm;
+    VersionForm *m_pVersionForm;
 };
 #endif // MAINWINDOW_H
