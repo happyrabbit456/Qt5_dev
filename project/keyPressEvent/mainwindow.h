@@ -55,6 +55,8 @@ protected:
 
     bool GetYearMonthCharacter(char &chYear, char &chMonth);
     bool CheckYearMonthCharacter(char chYear, char chMonth);
+
+    bool isDigitStr(QString str);
 protected slots:
     void updateWidget();
     void check();

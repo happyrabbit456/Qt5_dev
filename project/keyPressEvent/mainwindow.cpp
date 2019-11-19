@@ -13,7 +13,7 @@ using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , strLineEdit("")
-    , combIndex(0)
+    , combIndex(1)
     , ui(new Ui::MainWindow)
 
 {
@@ -65,6 +65,13 @@ MainWindow::MainWindow(QWidget *parent)
     if(ret){
 
     }
+
+
+    //BDG001BS9K001A093904
+    //BD0329BS9K001A195904
+//    QString str111="BDG001BS9K001A093904";
+    QString str111="BD0329BS9K001A195904";
+    ScanningCodeHandle(str111);
 }
 
 MainWindow::~MainWindow()
@@ -305,6 +312,27 @@ bool MainWindow::CheckYearMonthCharacter(char chYear, char chMonth)
     }
 }
 
+/***
+  *判断一个字符串是否为纯数字
+  */
+bool MainWindow::isDigitStr(QString str)
+{
+    QByteArray ba = str.toLatin1();//QString 转换为 char*
+     const char *temp = ba.data();
+
+//    std::string temp = str.toStdString();
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (temp[i]<'0' || temp[i]>'9')
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 bool MainWindow::ScanningCodeHandle(QString str)
 {
     if(!str.isNull() && !str.isEmpty() && str.length()==20)
@@ -324,10 +352,51 @@ bool MainWindow::ScanningCodeHandle(QString str)
         bYearMonthChar=CheckYearMonthCharacter(yearCh,monthCh);
         qDebug()<<"yearCh:"<<yearCh<<" "<<"monthCh:"<<monthCh;
 
+        //            1、mid()函数接受两个参数，第一个是起始位置，第二个是取串的长度。如果省略第二个参数，则会从起始位置截取到末尾。正如上面的例子显示的那样
+
+        //            2、函数left()和rigt()类似，都接受一个int类型的参数n，都是对字符串进行截取。不同之处在于，left()函数从左侧截取n个字符，而right()从右侧开始截取。
+        //            QString x = "Nine pineapples";
+        //            QString y = x.mid(5, 4);            // y == "pine"
+        //            QString z = x.mid(5);               // z == "pineapples"
+        QString flowCode=str.right(6);
+        qDebug()<<"flowCode:"<<flowCode;
+
         if(combIndex == 0) //Index 0 :  "国光"  20位
         {
-            int pos=str.indexOf("G001");
-            if(str.length()!=20 ||!str.startsWith("BD") || pos!=2|| !(str.at(6)=='B' || str.at(6)=='R' ) || str.at(7)!='S' || !bYearMonthChar )
+//            int pos=str.indexOf("G001");
+
+            QString manufacturerCode=str.mid(2,4);//厂商
+            bool bManufacturerCode = (manufacturerCode.compare("G001") == 0) ? true : false;
+
+//            int pos1=str.indexOf("001A");//天健生产 Cube A Speaker Box
+//            int pos2=str.indexOf("001B");//天健生产 Cube B Speaker Box
+//            int pos3=str.indexOf("002A");//正阳生产 Cube A Speaker Box
+//            int pos4=str.indexOf("002B");//正阳生产 Cube B Speaker Box
+
+//            "001A" 天健生产 Cube A Speaker Box
+//            "001B" 天健生产 Cube B Speaker Box
+//            "002A" 正阳生产 Cube A Speaker Box
+//            "002B" 正阳生产 Cube B Speaker Box
+            QString supplierCode=str.mid(10,4); //供应商
+            bool bSupplierCode=false;
+            if(supplierCode.compare("001A")==0 || supplierCode.compare("001B")==0)
+            {
+                bSupplierCode=true;
+            }
+            else
+            {
+                bSupplierCode=false;
+            }
+
+            //BDG001BS9K001A093904
+            if(str.length()!=20
+                    ||!str.startsWith("BD")
+                    || !bManufacturerCode
+                    || !(str.at(6)=='B' || str.at(6)=='R' )
+                    || str.at(7)!='S'
+                    || !bYearMonthChar
+                    || !bSupplierCode
+                    || !isDigitStr(flowCode))
             {
                 ui->label->setHidden(false);
 
@@ -342,10 +411,43 @@ bool MainWindow::ScanningCodeHandle(QString str)
         }
         else if(combIndex == 1)   //Index 1 :  "台德" 20位
         {
+            //BD0329BS9K001A195906
 //            qDebug()<<str.at(6)<<" "<<str.at(7)<<endl;
-            int pos1=str.indexOf("0329");
-            int pos2=str.indexOf("0330");
-            if(str.length()!=20 ||!str.startsWith("BD") || !(str.at(6)=='B' || str.at(6)=='R' ) || !(pos1!=2 || pos2!=2) || str.at(7)!='S'  || !bYearMonthChar )
+//            int pos1=str.indexOf("0329");
+//            int pos2=str.indexOf("0330");
+
+            QString manufacturerCode=str.mid(2,4);//厂商
+            bool bManufacturerCode = false;
+            if(manufacturerCode.compare("0329")==0 ||manufacturerCode.compare("0330")==0)
+            {
+                bManufacturerCode=true;
+            }
+            else
+            {
+                bManufacturerCode=false;
+            }
+
+            QString supplierCode=str.mid(10,4); //供应商
+            bool bSupplierCode=false;
+            if((manufacturerCode.compare("0329")==0 && supplierCode.compare("001A")==0) || (manufacturerCode.compare("0330")==0&&supplierCode.compare("001B")==0))
+            {
+                bSupplierCode=true;
+            }
+            else
+            {
+                bSupplierCode=false;
+            }
+
+//            int pos3=str.indexOf("001A");//天健生产 Cube A Speaker Box
+//            int pos4=str.indexOf("001B");//天健生产 Cube B Speaker Box
+            if(str.length()!=20
+                    ||!str.startsWith("BD")
+                    || !(str.at(6)=='B' || str.at(6)=='R' )
+                    || str.at(7)!='S'
+                    || !bYearMonthChar
+                    || !bManufacturerCode
+                    || !bSupplierCode
+                    || !isDigitStr(flowCode))// 0330对应001B
             {
                 ui->label->setHidden(false);
 
