@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+#include <QBasicTimer>
+#include <QDateTime>
+#include <QDebug>
+
 #include "testform.h"
 #include "showdatabaseform.h"
 #include "versionform.h"
@@ -19,11 +23,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void timerEvent(QTimerEvent *event) override;
+
+private:
+    void SetCurrDateTime();
+
 private:
     Ui::MainWindow *ui;
 
     TestForm *m_pTestForm;
     ShowDataBaseForm *m_pShowDataForm;
     VersionForm *m_pVersionForm;
+
+    QBasicTimer m_timer;
 };
 #endif // MAINWINDOW_H
