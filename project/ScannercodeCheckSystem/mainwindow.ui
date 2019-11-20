@@ -48,7 +48,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(85, 85, 255);</string>
+      <string notr="true">color: rgb(1, 94, 173);</string>
      </property>
      <property name="text">
       <string>Date:</string>
@@ -71,7 +71,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(85, 85, 255);</string>
+      <string notr="true">color: rgb(1, 94, 173);</string>
      </property>
      <property name="text">
       <string>Time:</string>
@@ -114,7 +114,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(85, 85, 255);</string>
+      <string notr="true">color: rgb(1, 94, 173);</string>
      </property>
      <property name="text">
       <string>Duration:</string>
@@ -161,7 +161,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(0, 0, 255);</string>
+      <string notr="true">color: rgb(1, 94, 173);</string>
      </property>
      <property name="text">
       <string>Baidu Speaker Barcode Check Test</string>
@@ -185,7 +185,8 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(0, 0, 255);</string>
+      <string notr="true">color: rgb(1, 94, 173);
+</string>
      </property>
      <property name="text">
       <string>Manufacturing Test System</string>
@@ -260,6 +261,9 @@
        <width>1141</width>
        <height>481</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(1, 94, 173);</string>
      </property>
      <property name="currentIndex">
       <number>-1</number>
