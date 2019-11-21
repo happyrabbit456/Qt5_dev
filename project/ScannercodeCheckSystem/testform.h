@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QDebug>
 #include <QPlainTextEdit>
+#include <QTime>
+#include <QTimer>
+#include <QMap>
 
 namespace Ui {
 class TestForm;
@@ -20,8 +23,6 @@ typedef enum enumManufacturer{
     TaiDe=0,
     GuoGuang,
 }Manufacturer;
-
-#include <QMap>
 
 class TestForm : public QWidget
 {
@@ -42,6 +43,10 @@ private slots:
 
     void on_comboManufacturer_currentIndexChanged(int index);
 
+    void on_lineEditSN_textChanged(const QString &arg1);
+
+    void  CheckAutoScannerHandle();
+
 private:
     Ui::TestForm *ui;
 
@@ -49,6 +54,14 @@ private:
     QMap<QString,QString> m_mapTestStatus;
     QMap<int,QString> m_mapManufacturer;
     int m_currManufacturerIndex;
+
+    QTime m_lastTime;
+    QTime m_currTime;
+    QString m_strCurrChangedCode;
+    QString m_strLastChangedCode;
+
+    QTimer *checkAutoScannerTimer;
+    bool m_bAutoScan;
 };
 
 #endif // TESTFORM_H

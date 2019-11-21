@@ -9,6 +9,8 @@ TestForm::TestForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->lineEditSN->setText("");
+
     QImage image;
     image.load(":/res/images/None.jpg");
     ui->labelStatusImage->clear();
@@ -194,7 +196,7 @@ bool TestForm::ScanningCodeHandle(QString strCode)
         return false;
     }
 
-    UpdateTestStatus("1",Status_Fail,m_mapTestStatus["1"]);
+    UpdateTestStatus("1",Status_Pass,m_mapTestStatus["1"]);
 
 
     return true;
@@ -264,4 +266,66 @@ void TestForm::on_btnTest_clicked()
 void TestForm::on_comboManufacturer_currentIndexChanged(int index)
 {
     m_currManufacturerIndex=index;
+}
+
+void TestForm::on_lineEditSN_textChanged(const QString &arg1)
+{
+    qDebug()<<arg1;
+
+    if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()==1){
+        m_currTime=QTime::currentTime();
+        m_lastTime=m_currTime;
+
+        m_strCurrChangedCode=arg1;
+        m_strLastChangedCode=m_strCurrChangedCode;
+
+        m_bAutoScan=true;
+        checkAutoScannerTimer=new QTimer(this);
+        connect(checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
+        checkAutoScannerTimer->start();
+    }
+
+    if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()>1){
+        m_currTime=QTime::currentTime();
+        int elapsed = m_lastTime.msecsTo(m_currTime);
+
+        m_lastTime=m_currTime;
+        int pos=arg1.indexOf(m_strLastChangedCode);
+        m_strLastChangedCode=arg1;
+
+        if(elapsed<50 && pos==0){
+            m_bAutoScan=true;
+        }
+        else{
+            m_bAutoScan=false;
+        }
+
+        qDebug()<<"elapsed ="<<elapsed<<"ms"<<" pos:"<<pos<<" m_bAutoScan:"<<m_bAutoScan;
+    }
+}
+
+void TestForm::CheckAutoScannerHandle()
+{
+    QTime checkTime=QTime::currentTime();
+    int elapsed = m_lastTime.msecsTo(checkTime);
+
+    if(!m_bAutoScan){
+        if(checkAutoScannerTimer!=nullptr){
+            checkAutoScannerTimer->stop();
+            delete checkAutoScannerTimer;
+            checkAutoScannerTimer=nullptr;
+        }
+    }
+
+    if(elapsed>50 && m_bAutoScan) //扫描完成
+    {
+        qDebug()<<"m_strLastChangedCode:"<<m_strLastChangedCode;
+        if(checkAutoScannerTimer!=nullptr){
+            checkAutoScannerTimer->stop();
+            delete checkAutoScannerTimer;
+            checkAutoScannerTimer=nullptr;
+        }
+
+        ScanningCodeHandle(m_strLastChangedCode);
+    }
 }
