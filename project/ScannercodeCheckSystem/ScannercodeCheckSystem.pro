@@ -47,21 +47,15 @@ RESOURCES += \
 
 # 版本信息
 VERSION = 1.0.0.0
-
 # 图标
 #RC_ICONS = Images/MyApp.ico
-
 # 公司名称
 QMAKE_TARGET_COMPANY = "MINAMI Co. Ltd"
-
 # 产品名称
 QMAKE_TARGET_PRODUCT = "Baidu BarCode Check"
-
 # 文件说明
 QMAKE_TARGET_DESCRIPTION = "Baidu BarCode Check"
-
 # 版权信息
 QMAKE_TARGET_COPYRIGHT = "MINAMI Co. Ltd. All rights reserved."
-
 # 中文（简体）
 RC_LANG = 0x0004

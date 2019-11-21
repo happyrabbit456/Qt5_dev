@@ -8,9 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //Logo图片显示
+//    ui->labelLogo->clear();
 //    ui->labelLogo->setPixmap(QPixmap(":/res/images/MINAMI_logo.jpg"));
-//    ui->labelLogo->show();
 //    ui->labelLogo->setScaledContents(true);
+//    ui->labelLogo->show();
+
 
     m_pTestForm=new TestForm();
     m_pShowDataForm=new ShowDataBaseForm();

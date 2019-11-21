@@ -256,16 +256,6 @@
      <string>厂商选择</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboManufacturer">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>60</y>
-      <width>69</width>
-      <height>16</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnLock">
     <property name="geometry">
      <rect>
@@ -367,6 +357,25 @@
      <string>Test</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="comboManufacturer">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>55</y>
+      <width>69</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxMsg">
    <property name="geometry">
@@ -390,6 +399,27 @@
    <property name="title">
     <string>MessageBox</string>
    </property>
+   <widget class="QPlainTextEdit" name="plainTextEditMsg">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>1061</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBoxTestStatus">
    <property name="geometry">
@@ -468,7 +498,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
@@ -499,7 +529,16 @@
       <string>ErrorCode:</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEditErrorCode"/>
+    <widget class="QLineEdit" name="lineEditErrorCode">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(0, 0, 0);</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
