@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    virtual ~MainWindow() override;
 
 protected:
     void timerEvent(QTimerEvent *event) override;

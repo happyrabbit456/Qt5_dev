@@ -298,6 +298,12 @@
        <height>481</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="styleSheet">
       <string notr="true">color: rgb(1, 94, 173);</string>
      </property>
