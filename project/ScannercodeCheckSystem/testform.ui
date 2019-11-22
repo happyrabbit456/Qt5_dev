@@ -90,6 +90,15 @@
       <height>17</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
    </widget>
    <widget class="QLineEdit" name="lineEditLine">
     <property name="geometry">
@@ -99,6 +108,15 @@
       <width>111</width>
       <height>17</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelModel">
@@ -202,6 +220,15 @@
       <height>17</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
    </widget>
    <widget class="QLineEdit" name="lineEditOPID">
     <property name="geometry">
@@ -211,6 +238,15 @@
       <width>91</width>
       <height>17</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditLineLeader">
@@ -222,6 +258,15 @@
       <height>17</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
+    </property>
    </widget>
    <widget class="QLineEdit" name="lineEditTestStation">
     <property name="geometry">
@@ -231,6 +276,15 @@
       <width>111</width>
       <height>17</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelManufacturer">
@@ -332,6 +386,15 @@
       <width>181</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(0, 0, 0);</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btnTest">

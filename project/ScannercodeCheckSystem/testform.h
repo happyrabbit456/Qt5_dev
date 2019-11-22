@@ -7,6 +7,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QMap>
+#include <QSettings>
 
 namespace Ui {
 class TestForm;
@@ -37,6 +38,8 @@ private:
     bool UpdateTestStatus(QString errorCode,TestStatus status,QString info);
     void UpdateTestStatusImage(QString imagePath);
     void InitTestStatusMap();
+    void ReadAppSettings();
+    void WriteAppSettings();
 
 private slots:
     void on_btnTest_clicked();
@@ -46,6 +49,10 @@ private slots:
     void on_lineEditSN_textChanged(const QString &arg1);
 
     void  CheckAutoScannerHandle();
+
+    void on_btnLock_clicked();
+
+    void on_btnUnlock_clicked();
 
 private:
     Ui::TestForm *ui;
@@ -60,8 +67,10 @@ private:
     QString m_strCurrChangedCode;
     QString m_strLastChangedCode;
 
-    QTimer *checkAutoScannerTimer;
+    QTimer *m_checkAutoScannerTimer;
     bool m_bAutoScan;
+
+    QSettings *m_settings;
 };
 
 #endif // TESTFORM_H

@@ -7,7 +7,7 @@ TestForm::TestForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TestForm)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);    
 
     ui->lineEditSN->setText("");
 
@@ -39,17 +39,23 @@ TestForm::TestForm(QWidget *parent) :
     for (int i = 0; i < ui->comboManufacturer->count(); i++) {
         pItemModel->item(i)->setForeground(QColor(0, 0, 255));
     }
-
     m_currManufacturerIndex=TaiDe;
     ui->comboManufacturer->setCurrentIndex(m_currManufacturerIndex);
 
     InitTestStatusMap();
 
     UpdateTestStatus("0",Status_Ready,m_mapTestStatus["0"]);
+
+    m_settings = new QSettings("settings.ini", QSettings::IniFormat);
+    ReadAppSettings();
 }
 
 TestForm::~TestForm()
 {
+    if(m_settings!=nullptr){
+        delete m_settings;
+        m_settings=nullptr;
+    }
     delete ui;    
 }
 
@@ -67,6 +73,55 @@ void TestForm::InitTestStatusMap()
     m_mapTestStatus.insert("-8","测试失败，条码串中月份编码错误");
     m_mapTestStatus.insert("-9","测试失败，条码串中供应商编码错误");
     m_mapTestStatus.insert("-10","测试失败，条码串中流水码编码错误");
+}
+
+void TestForm::ReadAppSettings()
+{
+    QString strWorkOrder=m_settings->value("WorkOrder","TJHS700315").toString();
+    ui->lineEditWorkOrder->setText(strWorkOrder);
+
+    QString strLine=m_settings->value("Line","A1").toString();
+    ui->lineEditLine->setText(strLine);
+
+    QString strModel=m_settings->value("Model","Baidu").toString();
+    ui->lineEditModel->setText(strModel);
+
+    QString strOPID=m_settings->value("OPID","065165").toString();
+    ui->lineEditOPID->setText(strOPID);
+
+    QString strTestStation=m_settings->value("TestStation","BarcodeCheck").toString();
+    ui->lineEditTestStation->setText(strTestStation);
+
+    QString strLineLeader=m_settings->value("LineLeader","065166").toString();
+    ui->lineEditLineLeader->setText(strLineLeader);
+
+    m_currManufacturerIndex=m_settings->value("ManufacturerIndex",TaiDe).toInt();
+    ui->comboManufacturer->setCurrentIndex(m_currManufacturerIndex);
+}
+
+void TestForm::WriteAppSettings()
+{
+    QString strWorkOrder=ui->lineEditWorkOrder->text();
+    m_settings->setValue("WorkOrder",strWorkOrder);
+
+    QString strLine=ui->lineEditLine->text();
+    m_settings->setValue("Line",strLine);
+    ui->lineEditLine->setText(strLine);
+
+
+    QString strModel=ui->lineEditModel->text();
+    m_settings->setValue("Model",strModel);
+
+    QString strOPID=ui->lineEditOPID->text();
+    m_settings->setValue("OPID",strOPID);
+
+    QString strTestStation=ui->lineEditTestStation->text();
+    m_settings->setValue("TestStation",strTestStation);
+
+    QString strLineLeader=ui->lineEditLineLeader->text();
+    m_settings->setValue("LineLeader",strLineLeader);
+
+    m_settings->setValue("ManufacturerIndex",m_currManufacturerIndex);
 }
 
 bool TestForm::ScanningCodeHandle(QString strCode)
@@ -181,16 +236,26 @@ bool TestForm::ScanningCodeHandle(QString strCode)
     //11.
     QString flowCode=strCode.right(6);
     bool bFlowCode=true;
-    QByteArray ba = flowCode.toLatin1();//QString 转换为 char*
-    const char *temp = ba.data();
-    for (int i = 0; i < flowCode.length(); i++)
-    {
-        if (temp[i]<'0' || temp[i]>'9')
-        {
+
+//    QByteArray ba = flowCode.toLatin1();//QString 转换为 char*
+//    const char *temp = ba.data();
+//    for (int i = 0; i < flowCode.length(); i++)
+//    {
+//        if (temp[i]<'0' || temp[i]>'9')
+//        {
+//            bFlowCode=false;
+//            break;
+//        }
+//    }
+
+    for (int i = 0; i < flowCode.length(); i++){
+        if(!flowCode[i].isDigit()){
             bFlowCode=false;
             break;
         }
     }
+
+
     if(!bFlowCode){
         UpdateTestStatus("-10",Status_Fail,m_mapTestStatus["-10"]);
         return false;
@@ -270,7 +335,7 @@ void TestForm::on_comboManufacturer_currentIndexChanged(int index)
 
 void TestForm::on_lineEditSN_textChanged(const QString &arg1)
 {
-    qDebug()<<arg1;
+//    qDebug()<<arg1;
 
     if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()==1){
         m_currTime=QTime::currentTime();
@@ -280,9 +345,9 @@ void TestForm::on_lineEditSN_textChanged(const QString &arg1)
         m_strLastChangedCode=m_strCurrChangedCode;
 
         m_bAutoScan=true;
-        checkAutoScannerTimer=new QTimer(this);
-        connect(checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
-        checkAutoScannerTimer->start();
+        m_checkAutoScannerTimer=new QTimer(this);
+        connect(m_checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
+        m_checkAutoScannerTimer->start();
     }
 
     if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()>1){
@@ -310,22 +375,46 @@ void TestForm::CheckAutoScannerHandle()
     int elapsed = m_lastTime.msecsTo(checkTime);
 
     if(!m_bAutoScan){
-        if(checkAutoScannerTimer!=nullptr){
-            checkAutoScannerTimer->stop();
-            delete checkAutoScannerTimer;
-            checkAutoScannerTimer=nullptr;
+        if(m_checkAutoScannerTimer!=nullptr){
+            m_checkAutoScannerTimer->stop();
+            delete m_checkAutoScannerTimer;
+            m_checkAutoScannerTimer=nullptr;
         }
     }
 
     if(elapsed>50 && m_bAutoScan) //扫描完成
     {
         qDebug()<<"m_strLastChangedCode:"<<m_strLastChangedCode;
-        if(checkAutoScannerTimer!=nullptr){
-            checkAutoScannerTimer->stop();
-            delete checkAutoScannerTimer;
-            checkAutoScannerTimer=nullptr;
+        if(m_checkAutoScannerTimer!=nullptr){
+            m_checkAutoScannerTimer->stop();
+            delete m_checkAutoScannerTimer;
+            m_checkAutoScannerTimer=nullptr;
         }
 
         ScanningCodeHandle(m_strLastChangedCode);
     }
+}
+
+void TestForm::on_btnLock_clicked()
+{
+    WriteAppSettings();
+
+    ui->lineEditWorkOrder->setEnabled(false);
+    ui->lineEditLine->setEnabled(false);
+    ui->lineEditModel->setEnabled(false);
+    ui->lineEditOPID->setEnabled(false);
+    ui->lineEditTestStation->setEnabled(false);
+    ui->lineEditLineLeader->setEnabled(false);
+    ui->comboManufacturer->setEnabled(false);
+}
+
+void TestForm::on_btnUnlock_clicked()
+{
+    ui->lineEditWorkOrder->setEnabled(true);
+    ui->lineEditLine->setEnabled(true);
+    ui->lineEditModel->setEnabled(true);
+    ui->lineEditOPID->setEnabled(true);
+    ui->lineEditTestStation->setEnabled(true);
+    ui->lineEditLineLeader->setEnabled(true);
+    ui->comboManufacturer->setEnabled(true);
 }
