@@ -29,12 +29,16 @@ protected:
 private:
     void SetCurrDateTime();
 
-private:
-    Ui::MainWindow *ui;
-
+public:
     TestForm *m_pTestForm;
     ShowDataBaseForm *m_pShowDataForm;
     VersionForm *m_pVersionForm;
+
+//    MainWindow* getMainWindow();
+    static MainWindow* getMainWindow();
+
+private:
+    Ui::MainWindow *ui;    
 
     QBasicTimer m_timer;
 };

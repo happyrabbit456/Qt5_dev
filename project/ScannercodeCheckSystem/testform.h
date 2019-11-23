@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QMap>
 #include <QSettings>
+#include <QMainWindow>
 
 namespace Ui {
 class TestForm;
@@ -71,6 +72,8 @@ private:
     bool m_bAutoScan;
 
     QSettings *m_settings;
+
+//    void *m_pMainWindow;
 };
 
 #endif // TESTFORM_H

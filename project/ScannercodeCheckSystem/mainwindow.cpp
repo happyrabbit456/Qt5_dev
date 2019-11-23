@@ -63,3 +63,11 @@ void MainWindow::SetCurrDateTime()
     ui->lineEditTime->setText(time);
 }
 
+MainWindow *MainWindow::getMainWindow()
+{
+    foreach (QWidget *w, qApp->topLevelWidgets())
+        if (MainWindow* mainWin = qobject_cast<MainWindow*>(w))
+            return mainWin;
+    return nullptr;
+}
+

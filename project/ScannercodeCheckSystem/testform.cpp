@@ -1,13 +1,22 @@
 #include "testform.h"
 #include "ui_testform.h"
 
+#include "mainwindow.h"
+
 #include <QStandardItemModel>
+#include "showdatabaseform.h"
+
+#include <QSqlQuery>
 
 TestForm::TestForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TestForm)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
+
+    if(parent!=nullptr){
+        QSqlQuery query=((qobject_cast<MainWindow*>(parent)))->m_pShowDataForm->m_query;
+    }
 
     ui->lineEditSN->setText("");
 
@@ -63,6 +72,7 @@ void TestForm::InitTestStatusMap()
 {
     m_mapTestStatus.insert("1","测试完成，测试结果Pass");
     m_mapTestStatus.insert("0","测试准备中......");
+
     m_mapTestStatus.insert("-1","测试失败，条码串不能为空串");
     m_mapTestStatus.insert("-2","测试失败，条码串长度不为20");
     m_mapTestStatus.insert("-3","测试失败，条码串中Baidu固定编码不是BD");
@@ -73,6 +83,7 @@ void TestForm::InitTestStatusMap()
     m_mapTestStatus.insert("-8","测试失败，条码串中月份编码错误");
     m_mapTestStatus.insert("-9","测试失败，条码串中供应商编码错误");
     m_mapTestStatus.insert("-10","测试失败，条码串中流水码编码错误");
+    m_mapTestStatus.insert("-11","测试失败，条码串重复，测试站已经有测试数据了");
 }
 
 void TestForm::ReadAppSettings()
@@ -254,13 +265,14 @@ bool TestForm::ScanningCodeHandle(QString strCode)
             break;
         }
     }
-
-
     if(!bFlowCode){
         UpdateTestStatus("-10",Status_Fail,m_mapTestStatus["-10"]);
         return false;
     }
 
+    //12. 其他条件检测通过，插入数据库SN重复
+
+    //OK.
     UpdateTestStatus("1",Status_Pass,m_mapTestStatus["1"]);
 
 
@@ -269,6 +281,8 @@ bool TestForm::ScanningCodeHandle(QString strCode)
 
 bool TestForm::UpdateTestStatus(QString errorCode, TestStatus status, QString info)
 {
+    //插入数据库
+
     m_pPlainTextEditMsg->appendPlainText(m_mapTestStatus[errorCode]);
 
     ui->lineEditErrorCode->setText(errorCode);
