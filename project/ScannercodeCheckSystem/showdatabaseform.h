@@ -23,13 +23,18 @@ public:
     explicit ShowDataBaseForm(QWidget *parent = nullptr);
     ~ShowDataBaseForm();
 
+private slots:
+    void on_btnQueryData_clicked();
+
 private:
     void testTableView();
 
     void initializeModel(QSqlTableModel *model);
 
 private:
-    Ui::ShowDataBaseForm *ui;    
+    Ui::ShowDataBaseForm *ui;
+
+    QSqlTableModel *m_model;
 };
 
 #endif // SHOWDATABASEFORM_H
