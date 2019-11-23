@@ -28,12 +28,18 @@ protected:
 
 private:
     void SetCurrDateTime();
+    bool createSQLiteConnection();
 
 public:
     TestForm *m_pTestForm;
     ShowDataBaseForm *m_pShowDataForm;
     VersionForm *m_pVersionForm;
 
+    QSqlDatabase m_db;
+    QSqlQuery m_query;
+    bool m_bSQLiteConnection;
+
+public:
 //    MainWindow* getMainWindow();
     static MainWindow* getMainWindow();
 

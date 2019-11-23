@@ -15,7 +15,8 @@ TestForm::TestForm(QWidget *parent) :
     ui->setupUi(this);
 
     if(parent!=nullptr){
-        QSqlQuery query=((qobject_cast<MainWindow*>(parent)))->m_pShowDataForm->m_query;
+        QSqlQuery query=((qobject_cast<MainWindow*>(parent)))->m_query;
+        qDebug()<<"((qobject_cast<MainWindow*>(parent)))->m_query done.";
     }
 
     ui->lineEditSN->setText("");
@@ -282,6 +283,28 @@ bool TestForm::ScanningCodeHandle(QString strCode)
 bool TestForm::UpdateTestStatus(QString errorCode, TestStatus status, QString info)
 {
     //插入数据库
+    MainWindow* pMainWindow=MainWindow::getMainWindow();
+    if(pMainWindow!=nullptr){
+        if(pMainWindow->m_bSQLiteConnection){
+            QString strQuery="insert into record values(NULL,"
+                    "(select strftime('%Y/%m/%d %H:%M','now','localtime')),"
+                    "'TJHS700315',"
+                    "'Bardu',"
+                    "'BarcodeCheck',"
+                    "'A1',"
+                    "'065165',"
+                    "'065166',"
+                    "'BD0329BS9K001A195906',"
+                    "'',"
+                    "'P',"
+                    "'0')";
+            bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
+            if(!bInsertRecord){
+                qDebug() << pMainWindow->m_query.lastError();
+            }
+
+        }
+    }
 
     m_pPlainTextEditMsg->appendPlainText(m_mapTestStatus[errorCode]);
 

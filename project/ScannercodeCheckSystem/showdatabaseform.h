@@ -25,17 +25,11 @@ public:
 
 private:
     void testTableView();
-    bool createSQLiteConnection();
+
     void initializeModel(QSqlTableModel *model);
 
-public:
-    QSqlQuery m_query;
-    bool m_bSQLiteConnection;
-
 private:
-    Ui::ShowDataBaseForm *ui;
-
-    QSqlDatabase m_db;
+    Ui::ShowDataBaseForm *ui;    
 };
 
 #endif // SHOWDATABASEFORM_H

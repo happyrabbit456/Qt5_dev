@@ -72,8 +72,6 @@ private:
     bool m_bAutoScan;
 
     QSettings *m_settings;
-
-//    void *m_pMainWindow;
 };
 
 #endif // TESTFORM_H
