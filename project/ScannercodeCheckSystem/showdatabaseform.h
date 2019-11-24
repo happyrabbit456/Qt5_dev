@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTableView>
+#include <QTableWidget>
 #include <QStandardItemModel>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
@@ -26,10 +27,15 @@ public:
 private slots:
     void on_btnQueryData_clicked();
 
+    void on_btnExport_clicked();
+
 private:
     void testTableView();
 
     void initializeModel(QSqlTableModel *model);
+
+    void tableWidgetToExcel(QTableWidget *table,QString title);
+    void tableViewToExcel(QTableView *tableView,QString title);
 
 private:
     Ui::ShowDataBaseForm *ui;

@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -59,3 +59,15 @@ QMAKE_TARGET_DESCRIPTION = "Baidu BarCode Check"
 QMAKE_TARGET_COPYRIGHT = "MINAMI Co. Ltd. All rights reserved."
 # 中文（简体）
 RC_LANG = 0x0004
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxContainer
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxContainerd
+
+INCLUDEPATH += $$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib
+DEPENDPATH += $$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxBase
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxBased
+
+INCLUDEPATH += $$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib
+DEPENDPATH += $$PWD/../../../../../Qt/Qt5.12.5/5.12.5/mingw73_64/lib
