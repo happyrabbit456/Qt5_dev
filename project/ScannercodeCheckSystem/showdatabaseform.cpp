@@ -136,12 +136,7 @@ void ShowDataBaseForm::tableWidgetToExcel(QTableWidget *table,QString title)
             //QTablewidget 获取数据的行数
             int rowscount=table->rowCount();
 
-                    //QTableView 获取列数
-                    //int colount=ui->tableview->model->columnCount();
-                    //QTableView 获取行数
-                    //int rowcount=ui->tableview->model->rowCount();
-
-                    QAxObject *cell,*col;
+             QAxObject *cell,*col;
             //标题行
             cell=worksheet->querySubObject("Cells(int,int)", 1, 1);
             cell->dynamicCall("SetValue(const QString&)", title);
@@ -170,8 +165,7 @@ void ShowDataBaseForm::tableWidgetToExcel(QTableWidget *table,QString title)
                 cell=worksheet->querySubObject("Cells(int,int)", 2, i+1);
                 //QTableWidget 获取表格头部文字信息
                 columnName=table->horizontalHeaderItem(i)->text();
-                //QTableView 获取表格头部文字信息
-                // columnName=ui->tableView_right->model()->headerData(i,Qt::Horizontal,Qt::DisplayRole).toString();
+
                 cell->dynamicCall("SetValue(const QString&)", columnName);
                 cell->querySubObject("Font")->setProperty("Bold", true);
                 cell->querySubObject("Interior")->setProperty("Color",QColor(191, 191, 191));
@@ -188,19 +182,6 @@ void ShowDataBaseForm::tableWidgetToExcel(QTableWidget *table,QString title)
                     worksheet->querySubObject("Cells(int,int)", i+3, j+1)->dynamicCall("SetValue(const QString&)", table->item(i,j)?table->item(i,j)->text():"");
                 }
             }
-
-
-            //QTableView 获取表格数据部分
-            //  for(i=0;i<rowcount;i++) //行数
-            //     {
-            //         for (j=0;j<colcount;j++)   //列数
-            //         {
-            //             QModelIndex index = ui->tableView_right->model()->index(i, j);
-            //             QString strdata=ui->tableView_right->model()->data(index).toString();
-            //             worksheet->querySubObject("Cells(int,int)", i+3, j+1)->dynamicCall("SetValue(const QString&)", strdata);
-            //         }
-            //     }
-
 
             //画框线
             QString lrange;
@@ -257,6 +238,9 @@ void ShowDataBaseForm::tableViewToExcel(QTableView *tableView,QString title)
             int rowcount=tableView->model()->rowCount();// tableView->model->rowCount();
 
             QAxObject *cell,*col;
+            QAxObject *range;
+
+            /**/
             //标题行
             cell=worksheet->querySubObject("Cells(int,int)", 1, 1);
 
@@ -270,7 +254,7 @@ void ShowDataBaseForm::tableViewToExcel(QTableView *tableView,QString title)
             cellTitle.append("A1:");
             cellTitle.append(QChar(colcount - 1 + 'A'));
             cellTitle.append(QString::number(1));
-            QAxObject *range = worksheet->querySubObject("Range(const QString&)", cellTitle);
+            range = worksheet->querySubObject("Range(const QString&)", cellTitle);
             range->setProperty("WrapText", true);
             range->setProperty("MergeCells", true);
             range->setProperty("HorizontalAlignment", -4108);//xlCenter
@@ -285,7 +269,7 @@ void ShowDataBaseForm::tableViewToExcel(QTableView *tableView,QString title)
                 col = worksheet->querySubObject("Columns(const QString&)", columnName);
                 col->setProperty("ColumnWidth", tableView->columnWidth(i)/6);
                 cell=worksheet->querySubObject("Cells(int,int)", 2, i+1);
-//
+
                 //QTableView 获取表格头部文字信息
                 columnName=tableView->model()->headerData(i,Qt::Horizontal,Qt::DisplayRole).toString();
                 cell->dynamicCall("SetValue(const QString&)", columnName);
@@ -294,6 +278,7 @@ void ShowDataBaseForm::tableViewToExcel(QTableView *tableView,QString title)
                 cell->setProperty("HorizontalAlignment", -4108);//xlCenter
                 cell->setProperty("VerticalAlignment", -4108);//xlCenter
             }
+
             //数据区 QTableView 获取表格数据部分
             for(i=0;i<rowcount;i++) //行数
             {
@@ -309,7 +294,7 @@ void ShowDataBaseForm::tableViewToExcel(QTableView *tableView,QString title)
             QString lrange;
             lrange.append("A2:");
             lrange.append(colcount - 1 + 'A');
-            lrange.append(QString::number(tableView->model()->rowCount()));// ->rowCount() + 2));
+            lrange.append(QString::number(tableView->model()->rowCount() + 2));
             range = worksheet->querySubObject("Range(const QString&)", lrange);
             range->querySubObject("Borders")->setProperty("LineStyle", QString::number(1));
             range->querySubObject("Borders")->setProperty("Color", QColor(0, 0, 0));
