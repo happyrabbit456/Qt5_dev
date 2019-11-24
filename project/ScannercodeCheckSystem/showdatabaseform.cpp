@@ -109,7 +109,9 @@ void ShowDataBaseForm::updateTableView()
      tableView->verticalHeader()->hide();
      tableView->setWordWrap(false);
 
-     // column width
+     tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignHCenter);//表头居中
+     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);//设置固定宽度
+
      // column width
      tableView->setColumnWidth(0, 60);
      tableView->setColumnWidth(1, 120);
