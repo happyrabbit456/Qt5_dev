@@ -9,6 +9,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlTableModel>
 #include <QtSql/QSqlError>
+#include <QSqlQueryModel>
 #include <QDebug>
 #include <QMessageBox>
 
@@ -32,7 +33,8 @@ private slots:
 private:
     void testTableView();
 
-    void initializeModel(QSqlTableModel *model);
+    void initializeModel(QSqlQueryModel *model);
+    void updateTableView();
 
     void tableWidgetToExcel(QTableWidget *table,QString title);
     void tableViewToExcel(QTableView *tableView,QString title);
@@ -40,7 +42,7 @@ private:
 private:
     Ui::ShowDataBaseForm *ui;
 
-    QSqlTableModel *m_model;
+    QSqlQueryModel  *m_model;
 };
 
 #endif // SHOWDATABASEFORM_H

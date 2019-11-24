@@ -8,6 +8,8 @@
 #include <QAxObject>
 #include <ActiveQt/QAxObject>
 
+#include "mainwindow.h"
+
 ShowDataBaseForm::ShowDataBaseForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ShowDataBaseForm)
@@ -16,13 +18,15 @@ ShowDataBaseForm::ShowDataBaseForm(QWidget *parent) :
 
     //    TestTableView();
 
-    m_model=new QSqlTableModel(this);
+    m_model = new QSqlQueryModel(ui->tableView);
 
-
+    updateTableView();
 }
 
 ShowDataBaseForm::~ShowDataBaseForm()
 {    
+    delete m_model;
+    m_model=nullptr;
     delete ui;
 }
 
@@ -61,11 +65,18 @@ void ShowDataBaseForm::testTableView()
     ui->tableView->show();
 }
 
-void ShowDataBaseForm::initializeModel(QSqlTableModel *model)
+void ShowDataBaseForm::initializeModel(QSqlQueryModel *model)
 {
-    model->setTable("record");
-    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model->select();
+    //数据库数据
+    MainWindow* pMainWindow=MainWindow::getMainWindow();
+    if(pMainWindow!=nullptr){
+        if(pMainWindow->m_bSQLiteConnection){
+            model->setQuery("select * from record",pMainWindow->m_db);
+            if (model->lastError().isValid()){
+                qDebug() << model->lastError();
+            }
+        }
+    }
 
     //只读
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -88,30 +99,24 @@ void ShowDataBaseForm::initializeModel(QSqlTableModel *model)
     model->setHeaderData(11, Qt::Horizontal, QObject::tr("ErrorCode"));
 }
 
-
+void ShowDataBaseForm::updateTableView()
+{
+    initializeModel(m_model);
+    ui->tableView->setModel(m_model);
+    ui->tableView->resizeColumnsToContents();
+    ui->tableView->show();
+}
 
 void ShowDataBaseForm::on_btnQueryData_clicked()
 {
-    testTableView();
-    //    ui->tableView->setModel(m_model);
+    //    testTableView();
 
-    //    //只读
-    //    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //    //设置选中模式为选中行
-    //    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //    //设置选中单行
-    //    ui->tableView->setSelectionMode( QAbstractItemView::SingleSelection);
-
-    //    initializeModel(m_model);
-    //    ui->tableView->setModel(m_model);
-    //    ui->tableView->resizeColumnsToContents();
-
-    //    ui->tableView->show();
+    updateTableView();
 }
 
 void ShowDataBaseForm::on_btnExport_clicked()
 {
-    tableViewToExcel(ui->tableView,"111");
+    tableViewToExcel(ui->tableView,tr("Baidu BarCode Check"));
 }
 
 //第一个参数是页面上的表格，第二个是导出文件的表头数据
@@ -136,7 +141,7 @@ void ShowDataBaseForm::tableWidgetToExcel(QTableWidget *table,QString title)
             //QTablewidget 获取数据的行数
             int rowscount=table->rowCount();
 
-             QAxObject *cell,*col;
+            QAxObject *cell,*col;
             //标题行
             cell=worksheet->querySubObject("Cells(int,int)", 1, 1);
             cell->dynamicCall("SetValue(const QString&)", title);
