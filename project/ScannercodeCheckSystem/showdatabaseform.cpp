@@ -78,13 +78,6 @@ void ShowDataBaseForm::initializeModel(QSqlQueryModel *model)
         }
     }
 
-    //只读
-    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //设置选中模式为选中行
-    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //设置选中单行
-    ui->tableView->setSelectionMode( QAbstractItemView::SingleSelection);
-
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("TIME"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("WorkOrder"));
@@ -101,9 +94,44 @@ void ShowDataBaseForm::initializeModel(QSqlQueryModel *model)
 
 void ShowDataBaseForm::updateTableView()
 {
+    QTableView *tableView=ui->tableView;
     initializeModel(m_model);
     ui->tableView->setModel(m_model);
-    ui->tableView->resizeColumnsToContents();
+
+    //只读
+    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //设置选中模式为选中行
+    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    //设置选中单行
+    tableView->setSelectionMode( QAbstractItemView::SingleSelection);
+
+     tableView->setSortingEnabled(false);
+     tableView->verticalHeader()->hide();
+     tableView->setWordWrap(false);
+
+     // column width
+     // column width
+     tableView->setColumnWidth(0, 60);
+     tableView->setColumnWidth(1, 120);
+     tableView->setColumnWidth(2, 100);
+     tableView->setColumnWidth(3, 80);
+     tableView->setColumnWidth(4, 120);
+     tableView->setColumnWidth(5, 60);
+     tableView->setColumnWidth(6, 60);
+     tableView->setColumnWidth(7, 100);
+     tableView->setColumnWidth(8, 180);
+     tableView->setColumnWidth(9, 60);
+     tableView->setColumnWidth(10, 60);
+     tableView->setColumnWidth(11, 80);
+
+    /*设置tableview等宽*/
+//    QHeaderView* headerView = ui->tableWidget->horizontalHeader();
+//    headerView->setSectionResizeMode(QHeaderView::Stretch);
+    /*或者下面的代码*/
+//    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+//    ui->tableView->resizeColumnsToContents();
+
     ui->tableView->show();
 }
 
