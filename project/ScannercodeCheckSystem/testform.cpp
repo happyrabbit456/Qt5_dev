@@ -286,7 +286,7 @@ bool TestForm::UpdateTestStatus(int errorCode, TestStatus status)
         //插入数据库
         MainWindow* pMainWindow=MainWindow::getMainWindow();
         if(pMainWindow!=nullptr){
-            if(pMainWindow->m_bSQLiteConnection){
+            if(pMainWindow->m_bDBConnection){
                 /**/
                 QString strQuery;
 //                strQuery="insert into record values(NULL,"

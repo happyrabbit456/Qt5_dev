@@ -8,7 +8,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    m_bSQLiteConnection=createSQLiteConnection();
+
+
+
+
+#ifdef DB_SQLite
+    m_bDBConnection=createSQLiteConnection();
 
 
     //"SN VARCHAR(50) UNIQUE,"
@@ -23,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     //    return false;
     //    }
 
-    if(m_bSQLiteConnection){
+    if(m_bDBConnection){
         m_query=QSqlQuery(m_db);
         bool bCreateTable=m_query.exec(
                     "CREATE TABLE  IF NOT EXISTS record("
@@ -74,7 +79,72 @@ MainWindow::MainWindow(QWidget *parent)
            'P',
            0);
     */
+#else
+    //mssqlservice2008
+    m_db=QSqlDatabase::addDatabase("QODBC");
+    qDebug()<<m_db.isValid();//检测驱动是否可用
+    m_db.setDatabaseName(QString("DRIVER={SQL SERVER};"
+                               "SERVER=%1;" //服务器名称
+                               "DATABASE=%2;"//数据库名
+                               "UID=%3;"           //登录名
+                               "PWD=%4;"        //密码
+                               )
+                       .arg("192.168.0.246")
+                       .arg("BaiduCodeTest")
+                       .arg("sa")
+                       .arg("Aa111111")
+                       );
+    if (!m_db.open())
+    {
+        m_bDBConnection=false;
+        qDebug()<<"connect sql server failed!";
+    }
+    else
+    {
+        m_bDBConnection=true;
+        qDebug()<<"connect sql server successfully!";
+    }
 
+    if(m_bDBConnection){
+        m_query=QSqlQuery(m_db);
+        bool bCreateTable=m_query.exec(
+                    "CREATE TABLE  IF NOT EXISTS record("
+                    "ID	INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "TIME TEXT,"
+                    "WorkOrder	VARCHAR(30),"
+                    "Model VARCHAR(30),"
+                    "TestStation  VARCHAR(30),"
+                    "Line VARCHAR(20),"
+                    "OPID VARCHAR(20),"
+                    "LineLeader VARCHAR(20),"
+                    "SN VARCHAR(50),"
+                    "Vendor VARCHAR(30),"
+                    "PF VARCHAR(10),"
+                    "ErrorCode INTEGER)"
+                    );
+        if(!bCreateTable){
+            qDebug() << m_query.lastError();
+        }
+    }
+
+    /*
+    CREATE TABLE record(
+            ID	INTEGER PRIMARY KEY,
+            TIME TEXT,
+            WorkOrder	VARCHAR(30),
+            Model VARCHAR(30),
+            TestStation  VARCHAR(30),
+            Line VARCHAR(20),
+            OPID VARCHAR(20),
+            LineLeader VARCHAR(20),
+            SN VARCHAR(50),
+            Vendor VARCHAR(30),
+            PF VARCHAR(10),
+            ErrorCode INTEGER
+        );
+        */
+
+#endif
 
 
 
@@ -102,7 +172,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     //    调用QSqlDatabase::removeDatabase()前需要先清除掉数据库对象，不然会有警告
-    if(m_bSQLiteConnection){
+    if(m_bDBConnection){
         m_db.close();
         QSqlDatabase::removeDatabase("user");
     }

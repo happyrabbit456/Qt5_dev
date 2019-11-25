@@ -37,7 +37,7 @@ public:
 
     QSqlDatabase m_db;
     QSqlQuery m_query;
-    bool m_bSQLiteConnection;
+    bool m_bDBConnection;
 
 public:
 //    MainWindow* getMainWindow();

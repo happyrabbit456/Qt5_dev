@@ -70,7 +70,7 @@ void ShowDataBaseForm::initializeModel(QSqlQueryModel *model)
     //数据库数据
     MainWindow* pMainWindow=MainWindow::getMainWindow();
     if(pMainWindow!=nullptr){
-        if(pMainWindow->m_bSQLiteConnection){
+        if(pMainWindow->m_bDBConnection){
             model->setQuery("select * from record",pMainWindow->m_db);
             if (model->lastError().isValid()){
                 qDebug() << model->lastError();
