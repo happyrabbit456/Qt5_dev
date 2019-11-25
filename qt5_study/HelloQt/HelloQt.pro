@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql  axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,3 +29,56 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+
+win32 {
+    ## Windows common build here
+    !contains(QMAKE_HOST.arch, x86_64) {
+        message("x86 build")
+        ## Windows x86 (32bit) specific build here
+    } else {
+        message("x86_64 build")
+        ## Windows x64 (64bit) specific build here
+    }
+}
+
+contains(QT_ARCH, i386) {
+    message("32-bit")
+} else {
+    message("64-bit")
+}
+
+win32 {
+    ## Windows common build here
+    !contains(QMAKE_HOST.arch, x86_64) {
+        message("x86 build")
+        ## Windows x86 (32bit) specific build here
+
+        win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib/ -lQt5AxBase
+        else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib/ -lQt5AxBased
+
+        INCLUDEPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib
+        DEPENDPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib
+
+        win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib/ -lQt5AxContainer
+        else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib/ -lQt5AxContainerd
+
+        INCLUDEPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib
+        DEPENDPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_32/lib
+    } else {
+        message("x86_64 build")
+        ## Windows x64 (64bit) specific build here
+
+        win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxBase
+        else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxBased
+
+        INCLUDEPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_64/include
+        DEPENDPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_64/include
+
+        win32:CONFIG(release, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxContainer
+        else:win32:CONFIG(debug, debug|release): LIBS += -LD:/Qt/Qt5.12.5/5.12.5/mingw73_64/lib/ -lQt5AxContainerd
+
+        INCLUDEPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_64/lib
+        DEPENDPATH += D:/Qt/Qt5.12.5/5.12.5/mingw73_64/lib
+    }
+}
