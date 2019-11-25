@@ -54,7 +54,7 @@ TestForm::TestForm(QWidget *parent) :
 
     InitTestStatusMap();
 
-    UpdateTestStatus("0",Status_Ready,m_mapTestStatus["0"]);
+    UpdateTestStatus(0,Status_Ready);
 
     m_settings = new QSettings("settings.ini", QSettings::IniFormat);
     ReadAppSettings();
@@ -71,20 +71,20 @@ TestForm::~TestForm()
 
 void TestForm::InitTestStatusMap()
 {
-    m_mapTestStatus.insert("1","测试完成，测试结果Pass");
-    m_mapTestStatus.insert("0","测试准备中......");
+    m_mapTestStatus.insert(1,"测试完成，测试结果Pass");
+    m_mapTestStatus.insert(0,"测试准备中......");
 
-    m_mapTestStatus.insert("-1","测试失败，条码串不能为空串");
-    m_mapTestStatus.insert("-2","测试失败，条码串长度不为20");
-    m_mapTestStatus.insert("-3","测试失败，条码串中Baidu固定编码不是BD");
-    m_mapTestStatus.insert("-4","测试失败，条码串中组装厂字符和所选组装厂字符不匹配");
-    m_mapTestStatus.insert("-5","测试失败，条码串中喇叭单体颜色字符编码错误");
-    m_mapTestStatus.insert("-6","测试失败，条码串中物料字符编码错误");
-    m_mapTestStatus.insert("-7","测试失败，条码串中年份编码错误");
-    m_mapTestStatus.insert("-8","测试失败，条码串中月份编码错误");
-    m_mapTestStatus.insert("-9","测试失败，条码串中供应商编码错误");
-    m_mapTestStatus.insert("-10","测试失败，条码串中流水码编码错误");
-    m_mapTestStatus.insert("-11","测试失败，条码串重复，测试站已经有测试数据了");
+    m_mapTestStatus.insert(-1,"测试失败，条码串不能为空串");
+    m_mapTestStatus.insert(-2,"测试失败，条码串长度不为20");
+    m_mapTestStatus.insert(-3,"测试失败，条码串中Baidu固定编码不是BD");
+    m_mapTestStatus.insert(-4,"测试失败，条码串中组装厂字符和所选组装厂字符不匹配");
+    m_mapTestStatus.insert(-5,"测试失败，条码串中喇叭单体颜色字符编码错误");
+    m_mapTestStatus.insert(-6,"测试失败，条码串中物料字符编码错误");
+    m_mapTestStatus.insert(-7,"测试失败，条码串中年份编码错误");
+    m_mapTestStatus.insert(-8,"测试失败，条码串中月份编码错误");
+    m_mapTestStatus.insert(-9,"测试失败，条码串中供应商编码错误");
+    m_mapTestStatus.insert(-10,"测试失败，条码串中流水码编码错误");
+    m_mapTestStatus.insert(-11,"测试失败，条码串重复，测试站已经有测试数据了");
 }
 
 void TestForm::ReadAppSettings()
@@ -145,19 +145,19 @@ bool TestForm::ScanningCodeHandle(QString strCode)
     //2.
     if(strCode.isNull() || strCode.isEmpty())
     {
-        UpdateTestStatus("-1",Status_Fail,m_mapTestStatus["-1"]);
+        UpdateTestStatus(-1,Status_Fail);
         return false;
     }
 
     //3.
     if(strCode.length()!=20){
-        UpdateTestStatus("-2",Status_Fail,m_mapTestStatus["-2"]);
+        UpdateTestStatus(-2,Status_Fail);
         return false;
     }
 
     //4.
     if(!strCode.startsWith("BD")){
-        UpdateTestStatus("-3",Status_Fail,m_mapTestStatus["-3"]);
+        UpdateTestStatus(-3,Status_Fail);
         return false;
     }
 
@@ -180,18 +180,18 @@ bool TestForm::ScanningCodeHandle(QString strCode)
         break;
     }
     if(!bManufacturer){
-        UpdateTestStatus("-4",Status_Fail,m_mapTestStatus["-4"]);
+        UpdateTestStatus(-4,Status_Fail);
         return false;
     }
 
     //6.
     if(!(strCode.at(6)==QChar('B') || strCode.at(6)==QChar('R'))){
-        UpdateTestStatus("-5",Status_Fail,m_mapTestStatus["-5"]);
+        UpdateTestStatus(-5,Status_Fail);
     }
 
     //7.
     if(strCode.at(7)!=QChar('S')){
-        UpdateTestStatus("-6",Status_Fail,m_mapTestStatus["-6"]);
+        UpdateTestStatus(-6,Status_Fail);
     }
 
     //8.
@@ -207,7 +207,7 @@ bool TestForm::ScanningCodeHandle(QString strCode)
     {
     }
     if(!bYear){
-        UpdateTestStatus("-7",Status_Fail,m_mapTestStatus["-7"]);
+        UpdateTestStatus(-7,Status_Fail);
     }
 
     //9.
@@ -218,7 +218,7 @@ bool TestForm::ScanningCodeHandle(QString strCode)
         bMonth=true;
     }
     if(!bMonth){
-        UpdateTestStatus("-8",Status_Fail,m_mapTestStatus["-8"]);
+        UpdateTestStatus(-8,Status_Fail);
     }
 
     //10.
@@ -239,7 +239,7 @@ bool TestForm::ScanningCodeHandle(QString strCode)
         break;
     }
     if(!bSupplier){
-        UpdateTestStatus("-9",Status_Fail,m_mapTestStatus["-9"]);
+        UpdateTestStatus(-9,Status_Fail);
         return false;
     }
 
@@ -265,80 +265,86 @@ bool TestForm::ScanningCodeHandle(QString strCode)
         }
     }
     if(!bFlowCode){
-        UpdateTestStatus("-10",Status_Fail,m_mapTestStatus["-10"]);
+        UpdateTestStatus(-10,Status_Fail);
         return false;
     }
 
     //12. 其他条件检测通过，插入数据库SN重复
 
     //OK.
-    UpdateTestStatus("1",Status_Pass,m_mapTestStatus["1"]);
+    UpdateTestStatus(1,Status_Pass);
 
 
     return true;
 }
 
-bool TestForm::UpdateTestStatus(QString errorCode, TestStatus status, QString info)
+bool TestForm::UpdateTestStatus(int errorCode, TestStatus status)
 {
-    //插入数据库
-    MainWindow* pMainWindow=MainWindow::getMainWindow();
-    if(pMainWindow!=nullptr){
-        if(pMainWindow->m_bSQLiteConnection){
-            /**/
-            QString strQuery="insert into record values(NULL,"
-                    "(select strftime('%Y/%m/%d %H:%M','now','localtime')),"
-                    "'TJHS700315',"
-                    "'Bardu',"
-                    "'BarcodeCheck',"
-                    "'A1',"
-                    "'065165',"
-                    "'065166',"
-                    "'BD0329BS9K001A195906',"
-                    "'',"
-                    "'P',"
-                    "'0')";
+    //准备状态，不插入数据到数据库
+    if(errorCode!=0)
+    {
+        //插入数据库
+        MainWindow* pMainWindow=MainWindow::getMainWindow();
+        if(pMainWindow!=nullptr){
+            if(pMainWindow->m_bSQLiteConnection){
+                /**/
+                QString strQuery="insert into record values(NULL,"
+                        "(select strftime('%Y/%m/%d %H:%M','now','localtime')),"
+                        "'TJHS700315',"
+                        "'Bardu',"
+                        "'BarcodeCheck',"
+                        "'A1',"
+                        "'065165',"
+                        "'065166',"
+                        "'BD0329BS9K001A195906',"
+                        "'',"
+                        "'P',"
+                        "0)";
 
 
-//            QString strQuery;
+    //            QString strQuery;
 
-//            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime')),";
-//            QString strWorkOrder=ui->lineEditWorkOrder->text();
-//            QString strLine=ui->lineEditLine->text();
-//            QString strModel=ui->lineEditModel->text();
-//            QString strOPID=ui->lineEditOPID->text();
-//            QString strTestStation=ui->lineEditTestStation->text();
-//            QString strLineLeader=ui->lineEditLineLeader->text();
-//            QString strSN=ui->lineEditSN->text();
-//            QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
-//            QString strPF;
-////
+    //            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime')),";
+    //            QString strWorkOrder=ui->lineEditWorkOrder->text();
+    //            QString strLine=ui->lineEditLine->text();
+    //            QString strModel=ui->lineEditModel->text();
+    //            QString strOPID=ui->lineEditOPID->text();
+    //            QString strTestStation=ui->lineEditTestStation->text();
+    //            QString strLineLeader=ui->lineEditLineLeader->text();
+    //            QString strSN=ui->lineEditSN->text();
+    //            QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
+    //            QString strPF;
+    ////
 
-//            strQuery.sprintf("insert into record values(NULL, %s %s %s %s  %5 %s %s %s %s  %5  %5",
-//                             strTIME,
-//                             strWorkOrder,
-//                             strModel,
-//                             strTestStation,
-//                             strLine,
-//                             strOPID,
-//                             strLineLeader,
-//                             strSN,
-//                             strVendor,
-//                             );
-
-
+    //            strQuery.sprintf("insert into record values(NULL, %s %s %s %s  %5 %s %s %s %s  %5  %5",
+    //                             strTIME,
+    //                             strWorkOrder,
+    //                             strModel,
+    //                             strTestStation,
+    //                             strLine,
+    //                             strOPID,
+    //                             strLineLeader,
+    //                             strSN,
+    //                             strVendor,
+    //                             );
 
 
-            bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
-            if(!bInsertRecord){
-                qDebug() << pMainWindow->m_query.lastError();
+
+
+                bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
+                if(!bInsertRecord){
+                    qDebug() << pMainWindow->m_query.lastError();
+                }
+
             }
-
         }
+
     }
+
 
     m_pPlainTextEditMsg->appendPlainText(m_mapTestStatus[errorCode]);
 
-    ui->lineEditErrorCode->setText(errorCode);
+    ui->lineEditErrorCode->setText(QString::number(errorCode,10));
 
     QLabel *label=ui->labelStatus;
     if(status==Status_Ready){
@@ -370,6 +376,7 @@ bool TestForm::UpdateTestStatus(QString errorCode, TestStatus status, QString in
         UpdateTestStatusImage(":/res/images/Testing.jpg");
     }
 
+    QString info=m_mapTestStatus[errorCode];
     ui->labelResult->setText(info);
 
     return true;

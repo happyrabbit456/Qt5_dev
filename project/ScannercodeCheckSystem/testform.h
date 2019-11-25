@@ -36,7 +36,7 @@ public:
 
 private:
     bool ScanningCodeHandle(QString strCode);
-    bool UpdateTestStatus(QString errorCode,TestStatus status,QString info);
+    bool UpdateTestStatus(int errorCode,TestStatus status);
     void UpdateTestStatusImage(QString imagePath);
     void InitTestStatusMap();
     void ReadAppSettings();
@@ -59,7 +59,7 @@ private:
     Ui::TestForm *ui;
 
     QPlainTextEdit *m_pPlainTextEditMsg;
-    QMap<QString,QString> m_mapTestStatus;
+    QMap<int,QString> m_mapTestStatus;
     QMap<int,QString> m_mapManufacturer;
     int m_currManufacturerIndex;
 

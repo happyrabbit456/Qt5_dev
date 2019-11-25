@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
            'BD0329BS9K001A195906',
            '',
            'P',
-           '0');
+           0);
     */
 
 
