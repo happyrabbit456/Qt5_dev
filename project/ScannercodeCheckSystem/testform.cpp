@@ -118,8 +118,6 @@ void TestForm::WriteAppSettings()
 
     QString strLine=ui->lineEditLine->text();
     m_settings->setValue("Line",strLine);
-    ui->lineEditLine->setText(strLine);
-
 
     QString strModel=ui->lineEditModel->text();
     m_settings->setValue("Model",strModel);
@@ -286,6 +284,7 @@ bool TestForm::UpdateTestStatus(QString errorCode, TestStatus status, QString in
     MainWindow* pMainWindow=MainWindow::getMainWindow();
     if(pMainWindow!=nullptr){
         if(pMainWindow->m_bSQLiteConnection){
+            /**/
             QString strQuery="insert into record values(NULL,"
                     "(select strftime('%Y/%m/%d %H:%M','now','localtime')),"
                     "'TJHS700315',"
@@ -298,6 +297,37 @@ bool TestForm::UpdateTestStatus(QString errorCode, TestStatus status, QString in
                     "'',"
                     "'P',"
                     "'0')";
+
+
+//            QString strQuery;
+
+//            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime')),";
+//            QString strWorkOrder=ui->lineEditWorkOrder->text();
+//            QString strLine=ui->lineEditLine->text();
+//            QString strModel=ui->lineEditModel->text();
+//            QString strOPID=ui->lineEditOPID->text();
+//            QString strTestStation=ui->lineEditTestStation->text();
+//            QString strLineLeader=ui->lineEditLineLeader->text();
+//            QString strSN=ui->lineEditSN->text();
+//            QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
+//            QString strPF;
+////
+
+//            strQuery.sprintf("insert into record values(NULL, %s %s %s %s  %5 %s %s %s %s  %5  %5",
+//                             strTIME,
+//                             strWorkOrder,
+//                             strModel,
+//                             strTestStation,
+//                             strLine,
+//                             strOPID,
+//                             strLineLeader,
+//                             strSN,
+//                             strVendor,
+//                             );
+
+
+
+
             bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
             if(!bInsertRecord){
                 qDebug() << pMainWindow->m_query.lastError();
