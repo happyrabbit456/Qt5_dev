@@ -103,32 +103,25 @@ MainWindow::MainWindow(QWidget *parent)
     {
         m_bDBConnection=true;
         qDebug()<<"connect sql server successfully!";
-    }
 
-    if(m_bDBConnection){
         m_query=QSqlQuery(m_db);
-        bool bCreateTable=m_query.exec(
-                    "CREATE TABLE  IF NOT EXISTS record("
-                    "ID	INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    "TIME TEXT,"
-                    "WorkOrder	VARCHAR(30),"
-                    "Model VARCHAR(30),"
-                    "TestStation  VARCHAR(30),"
-                    "Line VARCHAR(20),"
-                    "OPID VARCHAR(20),"
-                    "LineLeader VARCHAR(20),"
-                    "SN VARCHAR(50),"
-                    "Vendor VARCHAR(30),"
-                    "PF VARCHAR(10),"
-                    "ErrorCode INTEGER)"
-                    );
-        if(!bCreateTable){
-            qDebug() << m_query.lastError();
-        }
     }
 
     /*
-    CREATE TABLE record(
+     * 判断表存在
+    if object_id(N'record',N'U') is not null
+    print '存在'
+    else
+    print '不存在'
+
+    IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[record]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+    PRINT '存在'
+    else
+    PRINT'不存在'
+    */
+
+    /*
+        CREATE TABLE record(
             ID	INTEGER PRIMARY KEY,
             TIME TEXT,
             WorkOrder	VARCHAR(30),
@@ -142,7 +135,36 @@ MainWindow::MainWindow(QWidget *parent)
             PF VARCHAR(10),
             ErrorCode INTEGER
         );
-        */
+
+
+    一.
+    SQL数据库中，建立表时没有将id列标识规范设置为“是”。所以大家在创建表的时候一定将id设为自动增加id，标识之类的。
+
+    二.
+    我们尝试去修改字段值时，sql server 会提示 您对无法重新创建的表进行了更改或者启用了“阻止保存要求重新创建表的更改”选项
+    可以做以下修改：
+    打开 SQL SERVER连接工具
+
+    工具 ——》选项——》设计器（designer）
+    1
+    去掉勾选 “阻止保存要求重新创建表的更改”
+    ————————————————
+    版权声明：本文为CSDN博主「Wei_Yw」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+    原文链接：https://blog.csdn.net/Wei_Yw/article/details/88992236
+
+    insert into dbo.record values(
+       (select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate())),
+       'TJHS700315',
+       'Bardu',
+       'BarcodeCheck',
+       'A1',
+       '065165',
+       '065166',
+       'BD0329BS9K001A195906',
+       '台德',
+       'P',
+       0);
+    */
 
 #endif
 

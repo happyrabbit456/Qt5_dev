@@ -287,8 +287,11 @@ bool TestForm::UpdateTestStatus(int errorCode, TestStatus status)
         MainWindow* pMainWindow=MainWindow::getMainWindow();
         if(pMainWindow!=nullptr){
             if(pMainWindow->m_bDBConnection){
-                /**/
+
                 QString strQuery;
+#ifdef DB_SQLite
+                /**/
+
 //                strQuery="insert into record values(NULL,"
 //                        "(select strftime('%Y/%m/%d %H:%M','now','localtime')),"
 //                        "'TJHS700315',"
@@ -333,6 +336,61 @@ bool TestForm::UpdateTestStatus(int errorCode, TestStatus status)
                         .arg(strVendor)
                         .arg(strPF)
                         .arg(errorCode);
+
+#else
+            /*
+            IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[record]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
+            PRINT '存在'
+            else
+            PRINT'不存在'
+
+
+            insert into dbo.record values(
+               (select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate())),
+               'TJHS700315',
+               'Bardu',
+               'BarcodeCheck',
+               'A1',
+               '065165',
+               '065166',
+               'BD0329BS9K001A195906',
+               '台德',
+               'P',
+               0);
+            */
+
+                QString strTIME="(select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate()))";
+                QString strWorkOrder=ui->lineEditWorkOrder->text();
+                QString strLine=ui->lineEditLine->text();
+                QString strModel=ui->lineEditModel->text();
+                QString strOPID=ui->lineEditOPID->text();
+                QString strTestStation=ui->lineEditTestStation->text();
+                QString strLineLeader=ui->lineEditLineLeader->text();
+                QString strSN=ui->lineEditSN->text();
+                if(strSN.isNull() || strSN.isEmpty()){
+                    strSN="";
+                }
+                QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
+                QString strPF;
+                if(errorCode==1)
+                    strPF="P";
+                else
+                    strPF="F";
+
+                strQuery = QString("%1 %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
+                        .arg("insert into dbo.record values(")
+                        .arg(strTIME)
+                        .arg(strWorkOrder)
+                        .arg(strModel)
+                        .arg(strTestStation)
+                        .arg(strLine)
+                        .arg(strOPID)
+                        .arg(strLineLeader)
+                        .arg(strSN)
+                        .arg(strVendor)
+                        .arg(strPF)
+                        .arg(errorCode);
+#endif
 
 
                 qDebug()<<strQuery;
