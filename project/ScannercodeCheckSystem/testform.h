@@ -41,6 +41,7 @@ private:
     void InitTestStatusMap();
     void ReadAppSettings();
     void WriteAppSettings();
+    bool CheckSNExistInDB(int &nErrorCode);
 
 private slots:
     void on_btnTest_clicked();
