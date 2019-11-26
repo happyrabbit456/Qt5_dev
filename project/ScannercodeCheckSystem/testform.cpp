@@ -337,8 +337,33 @@ bool TestForm::UpdateTestStatus(int errorCode, TestStatus status)
                         .arg(strPF)
                         .arg(errorCode);
 
+                qDebug()<<strQuery;
+
+                bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
+                if(!bInsertRecord){
+                    qDebug() << pMainWindow->m_query.lastError();
+                }
+
 #else
             /*
+
+            1.
+            最简洁简单性能最优的的sql语句，用来判断表中的记录是否存在：
+
+            select isnull((select top(1) 1 from tableName where conditions), 0)
+
+            结果为 1，则说明记录存在；结果为 0，则说明记录不存在。
+
+
+            2.
+            if exists (select * from tableName where conditions) select '1' else select '0'
+
+            这种方法稍微有点灵性，但是却很不简洁。
+
+            同时由于 select * 前面有 exists ，所以该语句并没有性能问题，只是语法不够简洁
+
+
+
             IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[record]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
             PRINT '存在'
             else
@@ -377,28 +402,53 @@ bool TestForm::UpdateTestStatus(int errorCode, TestStatus status)
                 else
                     strPF="F";
 
-                strQuery = QString("%1 %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
-                        .arg("insert into dbo.record values(")
-                        .arg(strTIME)
-                        .arg(strWorkOrder)
-                        .arg(strModel)
-                        .arg(strTestStation)
-                        .arg(strLine)
-                        .arg(strOPID)
-                        .arg(strLineLeader)
-                        .arg(strSN)
-                        .arg(strVendor)
-                        .arg(strPF)
-                        .arg(errorCode);
+
+                //判断数据库中是否存在SN
+                bool bSNExist=false;
+                QString strCheckSN=QString("select isnull((select top(1) 1 from dbo.record where SN='%1'), 0)").arg(strSN);
+                bool bCheckRecord=pMainWindow->m_query.exec(strCheckSN);
+                if(!bCheckRecord){
+                    qDebug() << pMainWindow->m_query.lastError();
+                }
+                else{
+                    if(pMainWindow->m_query.next())
+                    {
+                        int ret = pMainWindow->m_query.value(0).toInt();
+                        if(ret==1){
+                            bSNExist=true;
+                            qDebug()<<"ret:"<<ret<<" "<<strSN<<"is existing record";
+                        }
+                    }
+                }
+
+
+                if(!bSNExist){
+                    strQuery = QString("%1 %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
+                            .arg("insert into dbo.record values(")
+                            .arg(strTIME)
+                            .arg(strWorkOrder)
+                            .arg(strModel)
+                            .arg(strTestStation)
+                            .arg(strLine)
+                            .arg(strOPID)
+                            .arg(strLineLeader)
+                            .arg(strSN)
+                            .arg(strVendor)
+                            .arg(strPF)
+                            .arg(errorCode);
+
+                    qDebug()<<strQuery;
+
+                    bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
+                    if(!bInsertRecord){
+                        qDebug() << pMainWindow->m_query.lastError();
+                    }
+
+                }
 #endif
 
 
-                qDebug()<<strQuery;
 
-                bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
-                if(!bInsertRecord){
-                    qDebug() << pMainWindow->m_query.lastError();
-                }
 
             }
         }
