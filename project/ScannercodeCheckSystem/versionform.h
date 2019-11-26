@@ -3,6 +3,10 @@
 
 #include <QWidget>
 
+#include <QTextStream>
+#include <QFile>
+
+
 namespace Ui {
 class VersionForm;
 }
