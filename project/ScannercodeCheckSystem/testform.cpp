@@ -28,6 +28,7 @@ TestForm::TestForm(QWidget *parent) :
     }
 
     ui->lineEditSN->setText("");
+    ui->lineEditSN->setFocus();
 
     QImage image;
     image.load(":/res/images/None.jpg");
