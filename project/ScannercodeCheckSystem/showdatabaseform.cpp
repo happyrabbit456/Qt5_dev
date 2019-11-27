@@ -70,11 +70,32 @@ void ShowDataBaseForm::initializeModel(QSqlQueryModel *model)
     //数据库数据
     MainWindow* pMainWindow=MainWindow::getMainWindow();
     if(pMainWindow!=nullptr){
+        /*
         if(pMainWindow->m_bDBConnection){
             model->setQuery("select * from record",pMainWindow->m_db);
             if (model->lastError().isValid()){
                 qDebug() << model->lastError();
                 QMessageBox::warning(this,"warning",model->lastError().text());
+            }
+        }
+        */
+        int nSupportDatabase =pMainWindow->getSupportDatabase();
+        if(nSupportDatabase==enum_SQLite){
+            if(pMainWindow->m_bSQLLiteConnection){
+                model->setQuery("select * from record",pMainWindow->m_dbSQLite);
+                if (model->lastError().isValid()){
+                    qDebug() << model->lastError();
+                    QMessageBox::warning(this,"warning",model->lastError().text());
+                }
+            }
+        }
+        else{
+            if(pMainWindow->m_bMSSQLConnection){
+                model->setQuery("select * from record",pMainWindow->m_dbMSSQL);
+                if (model->lastError().isValid()){
+                    qDebug() << model->lastError();
+                    QMessageBox::warning(this,"warning",model->lastError().text());
+                }
             }
         }
     }

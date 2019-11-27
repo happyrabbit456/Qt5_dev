@@ -15,8 +15,16 @@ TestForm::TestForm(QWidget *parent) :
     ui->setupUi(this);
 
     if(parent!=nullptr){
-        QSqlQuery query=((qobject_cast<MainWindow*>(parent)))->m_query;
-        qDebug()<<"((qobject_cast<MainWindow*>(parent)))->m_query done.";
+        //通过父类传递数据到子类的方法
+#ifdef DB_SQLite
+        QSqlQuery querySQLite=((qobject_cast<MainWindow*>(parent)))->m_querySQLite;
+//        qDebug()<<"Get DB_SQLite query done.";
+#endif
+#ifdef DB_MSSQL
+        QSqlQuery queryMSSQL=((qobject_cast<MainWindow*>(parent)))->m_queryMSSQL;
+//        qDebug()<<"Get DB_MSSQL query done.";
+#endif
+
     }
 
     ui->lineEditSN->setText("");
@@ -134,56 +142,47 @@ void TestForm::WriteAppSettings()
     m_settings->setValue("ManufacturerIndex",m_currManufacturerIndex);
 }
 
-bool TestForm::CheckSNExistInDB(int &errorCode)
+void TestForm::passStatusDelayHandle()
 {
-    //插入数据库
+    resetTestStatus();
+}
+
+void TestForm::CheckSNExistInDB(int &errorCode)
+{
+    QString strWorkOrder=ui->lineEditWorkOrder->text();
+    QString strLine=ui->lineEditLine->text();
+    QString strModel=ui->lineEditModel->text();
+    QString strOPID=ui->lineEditOPID->text();
+    QString strTestStation=ui->lineEditTestStation->text();
+    QString strLineLeader=ui->lineEditLineLeader->text();
+    QString strSN=ui->lineEditSN->text();
+    if(strSN.isNull() || strSN.isEmpty()){
+        strSN="";
+    }
+    QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
+
+    QString strQuery;
+
+    //判断数据库中是否存在SN
+    bool bSNExist=false;
+
     MainWindow* pMainWindow=MainWindow::getMainWindow();
-    if(pMainWindow!=nullptr){
-        if(pMainWindow->m_bDBConnection){
-
-            QString strQuery;
-#ifdef DB_SQLite
-            /**/
-
-            //                strQuery="insert into record values(NULL,"
-            //                        "(select strftime('%Y/%m/%d %H:%M','now','localtime')),"
-            //                        "'TJHS700315',"
-            //                        "'Bardu',"
-            //                        "'BarcodeCheck',"
-            //                        "'A1',"
-            //                        "'065165',"
-            //                        "'065166',"
-            //                        "'BD0329BS9K001A195906',"
-            //                        "'台德',"
-            //                        "'P',"
-            //                        "0)";
-
+    int nSupportDatabase =pMainWindow->getSupportDatabase();
+    if(pMainWindow!=nullptr && (nSupportDatabase==enum_SQLite||nSupportDatabase==enum_SQLite_MSSQL)){
+        if(pMainWindow->m_bSQLLiteConnection){
             QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime'))";
-            QString strWorkOrder=ui->lineEditWorkOrder->text();
-            QString strLine=ui->lineEditLine->text();
-            QString strModel=ui->lineEditModel->text();
-            QString strOPID=ui->lineEditOPID->text();
-            QString strTestStation=ui->lineEditTestStation->text();
-            QString strLineLeader=ui->lineEditLineLeader->text();
-            QString strSN=ui->lineEditSN->text();
-            if(strSN.isNull() || strSN.isEmpty()){
-                strSN="";
-            }
-            QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
 
-
-            //判断数据库中是否存在SN
-            bool bSNExist=false;
+            bSNExist=false;
             QString strCheckSN=QString("select count(1) from record  where SN='%1'").arg(strSN);
-            bool bCheckRecord=pMainWindow->m_query.exec(strCheckSN);
+            bool bCheckRecord=pMainWindow->m_querySQLite.exec(strCheckSN);
             if(!bCheckRecord){
-                qDebug() << pMainWindow->m_query.lastError();
-                QMessageBox::warning(this,"warning",pMainWindow->m_query.lastError().text());
+                qDebug() << pMainWindow->m_querySQLite.lastError();
+                QMessageBox::warning(this,"warning",pMainWindow->m_querySQLite.lastError().text());
             }
             else{
-                if(pMainWindow->m_query.next())
+                if(pMainWindow->m_querySQLite.next())
                 {
-                    int ret = pMainWindow->m_query.value(0).toInt();
+                    int ret = pMainWindow->m_querySQLite.value(0).toInt();
                     if(ret>0){
                         bSNExist=true;
                         qDebug()<<"ret:"<<ret<<" "<<strSN<<"is existing record";
@@ -195,108 +194,55 @@ bool TestForm::CheckSNExistInDB(int &errorCode)
             if(bSNExist){
                 strPF="F";
                 errorCode=-11;
-                return false;
             }
             else{
                 strPF="P";
                 errorCode=1;
             }
 
-            strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
-                    .arg("insert into record values(NULL,")
-                    .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
-                    .arg(strWorkOrder)
-                    .arg(strModel)
-                    .arg(strTestStation)
-                    .arg(strLine)
-                    .arg(strOPID)
-                    .arg(strLineLeader)
-                    .arg(strSN)
-                    .arg(strVendor)
-                    .arg(strPF)
-                    .arg(errorCode);
+            if(!bSNExist){
+                strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
+                        .arg("insert into record values(NULL,")
+                        .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
+                        .arg(strWorkOrder)
+                        .arg(strModel)
+                        .arg(strTestStation)
+                        .arg(strLine)
+                        .arg(strOPID)
+                        .arg(strLineLeader)
+                        .arg(strSN)
+                        .arg(strVendor)
+                        .arg(strPF)
+                        .arg(errorCode);
 
-            qDebug()<<strQuery;
+                qDebug()<<strQuery;
 
-            bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
-            if(!bInsertRecord){
-                qDebug() << pMainWindow->m_query.lastError();
-                QMessageBox::warning(this,"warning",pMainWindow->m_query.lastError().text());
-            }
-            else{
-                return true;
+                bool bInsertRecord=pMainWindow->m_querySQLite.exec(strQuery);
+                if(!bInsertRecord){
+                    qDebug() << pMainWindow->m_querySQLite.lastError();
+                    QMessageBox::warning(this,"warning",pMainWindow->m_querySQLite.lastError().text());
+                }
+                else{
+                }
             }
         }
     }
-
-    return false;
-
-#else
-            /*
-
-        1.
-        最简洁简单性能最优的的sql语句，用来判断表中的记录是否存在：
-
-        select isnull((select top(1) 1 from tableName where conditions), 0)
-
-        结果为 1，则说明记录存在；结果为 0，则说明记录不存在。
-
-
-        2.
-        if exists (select * from tableName where conditions) select '1' else select '0'
-
-        这种方法稍微有点灵性，但是却很不简洁。
-
-        同时由于 select * 前面有 exists ，所以该语句并没有性能问题，只是语法不够简洁
-
-
-
-        IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[record]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
-        PRINT '存在'
-        else
-        PRINT'不存在'
-
-
-        insert into dbo.record values(
-           (select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate())),
-           'TJHS700315',
-           'Bardu',
-           'BarcodeCheck',
-           'A1',
-           '065165',
-           '065166',
-           'BD0329BS9K001A195906',
-           '台德',
-           'P',
-           0);
-        */
-
+    if(pMainWindow!=nullptr && (nSupportDatabase==enum_MSSQL||nSupportDatabase==enum_SQLite_MSSQL)){
+        if(pMainWindow->m_bMSSQLConnection){
             QString strTIME="(select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate()))";
-            QString strWorkOrder=ui->lineEditWorkOrder->text();
-            QString strLine=ui->lineEditLine->text();
-            QString strModel=ui->lineEditModel->text();
-            QString strOPID=ui->lineEditOPID->text();
-            QString strTestStation=ui->lineEditTestStation->text();
-            QString strLineLeader=ui->lineEditLineLeader->text();
-            QString strSN=ui->lineEditSN->text();
-            if(strSN.isNull() || strSN.isEmpty()){
-                strSN="";
-            }
-            QString strVendor=m_mapManufacturer[m_currManufacturerIndex];
-
 
             //判断数据库中是否存在SN
-            bool bSNExist=false;
+            bSNExist=false;
             QString strCheckSN=QString("select isnull((select top(1) 1 from dbo.record where SN='%1'), 0)").arg(strSN);
-            bool bCheckRecord=pMainWindow->m_query.exec(strCheckSN);
+            bool bCheckRecord=pMainWindow->m_queryMSSQL.exec(strCheckSN);
             if(!bCheckRecord){
-                qDebug() << pMainWindow->m_query.lastError();
-                QMessageBox::warning(this,"warning",pMainWindow->m_query.lastError().text());
+                qDebug() << pMainWindow->m_queryMSSQL.lastError();
+                QMessageBox::warning(this,"warning",pMainWindow->m_queryMSSQL.lastError().text());
             }
             else{
-                if(pMainWindow->m_query.next())
+                if(pMainWindow->m_queryMSSQL.next())
                 {
-                    int ret = pMainWindow->m_query.value(0).toInt();
+                    int ret = pMainWindow->m_queryMSSQL.value(0).toInt();
                     if(ret==1){
                         bSNExist=true;
                         qDebug()<<"ret:"<<ret<<" "<<strSN<<"is existing record";
@@ -308,42 +254,63 @@ bool TestForm::CheckSNExistInDB(int &errorCode)
             if(bSNExist){
                 strPF="F";
                 errorCode=-11;
-                return false;
             }
             else{
                 strPF="P";
                 errorCode=1;
             }
 
-            strQuery = QString("%1 %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
-                    .arg("insert into dbo.record values(")
-                    .arg(strTIME)
-                    .arg(strWorkOrder)
-                    .arg(strModel)
-                    .arg(strTestStation)
-                    .arg(strLine)
-                    .arg(strOPID)
-                    .arg(strLineLeader)
-                    .arg(strSN)
-                    .arg(strVendor)
-                    .arg(strPF)
-                    .arg(errorCode);
+            if(!bSNExist){
+                strQuery = QString("%1 %2, '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', %12)")
+                        .arg("insert into dbo.record values(")
+                        .arg(strTIME)
+                        .arg(strWorkOrder)
+                        .arg(strModel)
+                        .arg(strTestStation)
+                        .arg(strLine)
+                        .arg(strOPID)
+                        .arg(strLineLeader)
+                        .arg(strSN)
+                        .arg(strVendor)
+                        .arg(strPF)
+                        .arg(errorCode);
 
-            qDebug()<<strQuery;
+                qDebug()<<strQuery;
 
-            bool bInsertRecord=pMainWindow->m_query.exec(strQuery);
-            if(!bInsertRecord){
-                qDebug() << pMainWindow->m_query.lastError();
-                QMessageBox::warning(this,"warning",pMainWindow->m_query.lastError().text());
-            }
-            else{
-                return true;
+                bool bInsertRecord=pMainWindow->m_queryMSSQL.exec(strQuery);
+                if(!bInsertRecord){
+                    qDebug() << pMainWindow->m_queryMSSQL.lastError();
+                    QMessageBox::warning(this,"warning",pMainWindow->m_queryMSSQL.lastError().text());
+                }
+                else{
+                }
             }
         }
     }
+}
 
-    return false;
-#endif
+void TestForm::resetTestStatus()
+{
+    //0:清空消息框
+    m_pPlainTextEditMsg->clear();
+
+    //1.开始检查条码
+    m_pPlainTextEditMsg->appendPlainText(tr("开始检查Baidu speaker条码......"));
+
+    ui->lineEditSN->setText("");
+
+    UpdateTestStatus(0,Status_Ready);
+}
+
+void TestForm::resetAutoScannerTimer()
+{
+    if(m_checkAutoScannerTimer!=nullptr){
+        if(m_checkAutoScannerTimer->isActive()){
+            m_checkAutoScannerTimer->stop();
+            delete m_checkAutoScannerTimer;
+            m_checkAutoScannerTimer=nullptr;
+        }
+    }
 }
 
 bool TestForm::ScanningCodeHandle(QString strCode)
@@ -492,6 +459,7 @@ bool TestForm::ScanningCodeHandle(QString strCode)
     //OK.
     UpdateTestStatus(1,Status_Pass);
 
+    QTimer::singleShot(2000, this, SLOT(passStatusDelayHandle()));
 
     return true;
 }
@@ -574,7 +542,8 @@ void TestForm::on_lineEditSN_textChanged(const QString &arg1)
         m_strCurrChangedCode=arg1;
         m_strLastChangedCode=m_strCurrChangedCode;
 
-        m_bAutoScan=true;
+        m_bAutoScan=false;
+        resetAutoScannerTimer();
         m_checkAutoScannerTimer=new QTimer(this);
         connect(m_checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
         m_checkAutoScannerTimer->start();
@@ -593,9 +562,13 @@ void TestForm::on_lineEditSN_textChanged(const QString &arg1)
         }
         else{
             m_bAutoScan=false;
+
+            if(!m_bAutoScan){
+                resetAutoScannerTimer();
+            }
         }
 
-        qDebug()<<"elapsed ="<<elapsed<<"ms"<<" pos:"<<pos<<" m_bAutoScan:"<<m_bAutoScan;
+//        qDebug()<<"elapsed ="<<elapsed<<"ms"<<" pos:"<<pos<<" m_bAutoScan:"<<m_bAutoScan;
     }
 }
 
@@ -604,24 +577,16 @@ void TestForm::CheckAutoScannerHandle()
     QTime checkTime=QTime::currentTime();
     int elapsed = m_lastTime.msecsTo(checkTime);
 
-    if(!m_bAutoScan){
-        if(m_checkAutoScannerTimer!=nullptr){
-            m_checkAutoScannerTimer->stop();
-            delete m_checkAutoScannerTimer;
-            m_checkAutoScannerTimer=nullptr;
-        }
-    }
-
     if(elapsed>50 && m_bAutoScan) //扫描完成
     {
         qDebug()<<"m_strLastChangedCode:"<<m_strLastChangedCode;
-        if(m_checkAutoScannerTimer!=nullptr){
-            m_checkAutoScannerTimer->stop();
-            delete m_checkAutoScannerTimer;
-            m_checkAutoScannerTimer=nullptr;
-        }
 
-        ScanningCodeHandle(m_strLastChangedCode);
+        QString strCode=ui->lineEditSN->text();
+        ScanningCodeHandle(strCode);
+
+        resetAutoScannerTimer();
+
+        m_bAutoScan=false;
     }
 }
 
@@ -647,4 +612,9 @@ void TestForm::on_btnUnlock_clicked()
     ui->lineEditTestStation->setEnabled(true);
     ui->lineEditLineLeader->setEnabled(true);
     ui->comboManufacturer->setEnabled(true);
+}
+
+void TestForm::on_btnReset_clicked()
+{
+    resetTestStatus();
 }

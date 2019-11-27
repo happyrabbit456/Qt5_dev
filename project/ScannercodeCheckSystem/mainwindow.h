@@ -6,6 +6,7 @@
 #include <QBasicTimer>
 #include <QDateTime>
 #include <QDebug>
+#include <QMessageBox>
 
 #include "testform.h"
 #include "showdatabaseform.h"
@@ -14,6 +15,12 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+typedef enum enumDataBase{
+    enum_SQLite=0,
+    enum_MSSQL,
+    enum_SQLite_MSSQL,
+}DataBaseEnum;
 
 class MainWindow : public QMainWindow
 {
@@ -36,14 +43,24 @@ public:
     ShowDataBaseForm *m_pShowDataForm;
     VersionForm *m_pVersionForm;
 
-    QSqlDatabase m_db;
-    QSqlQuery m_query;
-    bool m_bDBConnection;
+    DataBaseEnum m_databaseEnum;
+
+    QSqlDatabase m_dbSQLite;
+    QSqlQuery m_querySQLite;
+    bool m_bSQLLiteConnection;
+
+    QSqlDatabase m_dbMSSQL;
+    QSqlQuery m_queryMSSQL;
+    bool m_bMSSQLConnection;
+
 
 public:
 //    MainWindow* getMainWindow();
     static MainWindow* getMainWindow();
 
+    void closeEvent(QCloseEvent *event) override;
+
+    int getSupportDatabase();
 private:
     Ui::MainWindow *ui;    
 

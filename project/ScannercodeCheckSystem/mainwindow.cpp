@@ -7,86 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
-
-
-
-
 #ifdef DB_SQLite
-    m_bDBConnection=createSQLiteConnection();
-
-
-    //"SN VARCHAR(50) UNIQUE,"
-
-    //    select strftime('%Y/%m/%d %H:%M','now','localtime');
-    //    2019/11/23 11:17
-    //    select datetime('now');
-    //    2019-11-23 03:13:55
-
-    //    if(!sql_query.exec()) {
-    //    qDebug() << sql_query.lastError();
-    //    return false;
-    //    }
-
-    if(m_bDBConnection){
-        m_query=QSqlQuery(m_db);
-        bool bCreateTable=m_query.exec(
-                    "CREATE TABLE  IF NOT EXISTS record("
-                    "ID	INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    "TIME TEXT,"
-                    "WorkOrder	VARCHAR(30),"
-                    "Model VARCHAR(30),"
-                    "TestStation  VARCHAR(30),"
-                    "Line VARCHAR(20),"
-                    "OPID VARCHAR(20),"
-                    "LineLeader VARCHAR(20),"
-                    "SN VARCHAR(50),"
-                    "Vendor VARCHAR(30),"
-                    "PF VARCHAR(10),"
-                    "ErrorCode INTEGER)"
-                    );
-        if(!bCreateTable){
-            QSqlError errorText=m_query.lastError();
-            qDebug() << errorText;
-            QMessageBox::warning(this,"warning",errorText.text());
-        }
-    }
-
-    /*
-    CREATE TABLE  IF NOT EXISTS record(
-        ID	INTEGER PRIMARY KEY AUTOINCREMENT,
-        TIME TEXT,
-        WorkOrder	VARCHAR(30),
-        Model VARCHAR(30),
-        TestStation  VARCHAR(30),
-        Line VARCHAR(20),
-        OPID VARCHAR(20),
-        LineLeader VARCHAR(20),
-        SN VARCHAR(50),
-        Vendor VARCHAR(30),
-        PF VARCHAR(10),
-        ErrorCode INTEGER
-    );
-
-    insert into record values(NULL,
-           (select strftime('%Y/%m/%d %H:%M','now','localtime')),
-           'TJHS700315',
-           'Bardu',
-           'BarcodeCheck',
-           'A1',
-           '065165',
-           '065166',
-           'BD0329BS9K001A195906',
-           '',
-           'P',
-           0);
-    */
-#else
-    //mssqlservice2008
-    createMSSQLConnection();
+    createSQLiteConnection();
 #endif
 
-
+#ifdef DB_MSSQL
+    //MS SQL Server 2008
+    createMSSQLConnection();
+#endif
 
     //Logo图片显示
 //    ui->labelLogo->clear();
@@ -112,30 +40,47 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     //    调用QSqlDatabase::removeDatabase()前需要先清除掉数据库对象，不然会有警告
-    if(m_bDBConnection){
-        m_db.close();
-        QSqlDatabase::removeDatabase("user");
+    if(m_bSQLLiteConnection){
+        if(m_dbSQLite.isValid()){
+            m_dbSQLite.close();
+            QSqlDatabase::removeDatabase("user");
+            m_bSQLLiteConnection=false;
+        }
+    }
+    if(m_bMSSQLConnection){
+        if(m_dbMSSQL.isValid()){
+            m_dbMSSQL.close();
+            QSqlDatabase::removeDatabase("Lotus");
+            m_bMSSQLConnection=false;
+        }
     }
 
     m_timer.stop();
 
     delete m_pTestForm;
+    m_pTestForm=nullptr;
     delete m_pShowDataForm;
+    m_pShowDataForm=nullptr;
     delete m_pVersionForm;
+    m_pVersionForm=nullptr;
 
     delete ui;
 }
 
 bool MainWindow::createSQLiteConnection()
 {
-    //    m_db=QSqlDatabase::contains("qt_sql_default_connection")?QSqlDatabase::database("qt_sql_default_connection"):QSqlDatabase::addDatabase("QSQLITE");
+    m_bSQLLiteConnection=false;
 
-    if(QSqlDatabase::contains("qt_sql_default_connection"))
-        m_db = QSqlDatabase::database("qt_sql_default_connection");
-    else
-        m_db = QSqlDatabase::addDatabase("QSQLITE","user");
+    //    m_dbSQLite=QSqlDatabase::contains("qt_sql_default_connection")?QSqlDatabase::database("qt_sql_default_connection"):QSqlDatabase::addDatabase("QSQLITE");
 
-    m_db.setDatabaseName("mydb.db");
+//    if(QSqlDatabase::contains("qt_sql_default_connection"))
+//        m_dbSQLite = QSqlDatabase::database("qt_sql_default_connection");
+//    else
+//        m_dbSQLite = QSqlDatabase::addDatabase("QSQLITE","user");
+
+    m_dbSQLite = QSqlDatabase::addDatabase("QSQLITE","user");
+
+    m_dbSQLite.setDatabaseName("mydb.db");
 
     //    QString name="root";
     //    QString password="123456";
@@ -144,7 +89,46 @@ bool MainWindow::createSQLiteConnection()
     //    bool bOpen=m_db.open(name,password);
     //    qDebug()<<"bOpen:"<<bOpen;
 
-    if (!m_db.open()) {
+    if(m_dbSQLite.open())
+    {
+        //"SN VARCHAR(50) UNIQUE,"
+
+        //    select strftime('%Y/%m/%d %H:%M','now','localtime');
+        //    2019/11/23 11:17
+        //    select datetime('now');
+        //    2019-11-23 03:13:55
+
+        //    if(!sql_query.exec()) {
+        //    qDebug() << sql_query.lastError();
+        //    return false;
+        //    }
+
+        m_querySQLite=QSqlQuery(m_dbSQLite);
+        bool bCreateTable=m_querySQLite.exec(
+                    "CREATE TABLE  IF NOT EXISTS record("
+                    "ID	INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "TIME TEXT,"
+                    "WorkOrder	VARCHAR(30),"
+                    "Model VARCHAR(30),"
+                    "TestStation  VARCHAR(30),"
+                    "Line VARCHAR(20),"
+                    "OPID VARCHAR(20),"
+                    "LineLeader VARCHAR(20),"
+                    "SN VARCHAR(50),"
+                    "Vendor VARCHAR(30),"
+                    "PF VARCHAR(10),"
+                    "ErrorCode INTEGER)"
+                    );
+        if(!bCreateTable){
+            QSqlError errorText=m_querySQLite.lastError();
+            qDebug() << errorText;
+            QMessageBox::warning(this,"warning",errorText.text());
+        }
+    }
+    else
+    {
+        m_dbSQLite.close();
+
         QMessageBox::critical(nullptr, QObject::tr("Cannot open database"),
                               QObject::tr("Unable to establish a database connection.\n"
                                           "This example needs SQLite support. Please read "
@@ -154,19 +138,22 @@ bool MainWindow::createSQLiteConnection()
         return false;
     }
 
+    m_bSQLLiteConnection=true;
     return true;
 }
 
 bool MainWindow::createMSSQLConnection()
 {
-    m_db=QSqlDatabase::addDatabase("QODBC");
-    qDebug()<<m_db.isValid();//检测驱动是否可用
-    if(!m_db.isValid()){
+    m_bMSSQLConnection=false;
+
+    m_dbMSSQL=QSqlDatabase::addDatabase("QODBC","Lotus");
+    qDebug()<<m_dbMSSQL.isValid();//检测驱动是否可用
+    if(!m_dbMSSQL.isValid()){
         QMessageBox::warning(this,"warning","driver not loaded.");
         return false;
     }
 
-    m_db.setDatabaseName(QString("DRIVER={SQL SERVER};"
+    m_dbMSSQL.setDatabaseName(QString("DRIVER={SQL SERVER};"
                                "SERVER=%1;" //服务器名称
                                "DATABASE=%2;"//数据库名
                                "UID=%3;"           //登录名
@@ -177,9 +164,10 @@ bool MainWindow::createMSSQLConnection()
                        .arg("sa")
                        .arg("Aa111111")
                        );
-    if (!m_db.open())
+    if (!m_dbMSSQL.open())
     {
-        m_bDBConnection=false;
+        m_dbSQLite.close();
+
         qDebug()<<"connect sql server failed!";
 
         QMessageBox::critical(nullptr, QObject::tr("Cannot open database"),
@@ -189,72 +177,40 @@ bool MainWindow::createMSSQLConnection()
     }
     else
     {
-        m_bDBConnection=true;
+        m_bMSSQLConnection=true;
         qDebug()<<"connect sql server successfully!";
 
-        m_query=QSqlQuery(m_db);
-
-        return true;
+        m_queryMSSQL=QSqlQuery(m_dbMSSQL);
     }
 
-    /*
-     * 判断表存在
-    if object_id(N'record',N'U') is not null
-    print '存在'
-    else
-    print '不存在'
+    m_bMSSQLConnection=true;
 
-    IF EXISTS  (SELECT  * FROM dbo.SysObjects WHERE ID = object_id(N'[record]') AND OBJECTPROPERTY(ID, 'IsTable') = 1)
-    PRINT '存在'
-    else
-    PRINT'不存在'
-    */
+    return true;
+}
 
-    /*
-        CREATE TABLE record(
-            ID	INTEGER PRIMARY KEY,
-            TIME TEXT,
-            WorkOrder	VARCHAR(30),
-            Model VARCHAR(30),
-            TestStation  VARCHAR(30),
-            Line VARCHAR(20),
-            OPID VARCHAR(20),
-            LineLeader VARCHAR(20),
-            SN VARCHAR(50),
-            Vendor VARCHAR(30),
-            PF VARCHAR(10),
-            ErrorCode INTEGER
-        );
+int MainWindow::getSupportDatabase()
+{
+    bool bSupportSQLite=false;
+    bool bSupportMSSQL=false;
+#if defined(DB_SQLite)
+//    qDebug()<<"DB_SQLite";
+    bSupportSQLite=true;
+#endif
 
-
-    一.
-    SQL数据库中，建立表时没有将id列标识规范设置为“是”。所以大家在创建表的时候一定将id设为自动增加id，标识之类的。
-
-    二.
-    我们尝试去修改字段值时，sql server 会提示 您对无法重新创建的表进行了更改或者启用了“阻止保存要求重新创建表的更改”选项
-    可以做以下修改：
-    打开 SQL SERVER连接工具
-
-    工具 ——》选项——》设计器（designer）
-    1
-    去掉勾选 “阻止保存要求重新创建表的更改”
-    ————————————————
-    版权声明：本文为CSDN博主「Wei_Yw」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
-    原文链接：https://blog.csdn.net/Wei_Yw/article/details/88992236
-
-    insert into dbo.record values(
-       (select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate())),
-       'TJHS700315',
-       'Bardu',
-       'BarcodeCheck',
-       'A1',
-       '065165',
-       '065166',
-       'BD0329BS9K001A195906',
-       '台德',
-       'P',
-       0);
-    */
+#if defined(DB_MSSQL)
+//    qDebug()<<"DB_MSSQL";
+    bSupportMSSQL=true;
+#endif
+    if(bSupportSQLite && bSupportMSSQL){
+        m_databaseEnum=enum_SQLite_MSSQL;
+    }
+    else if(bSupportSQLite && !bSupportMSSQL){
+        m_databaseEnum=enum_SQLite;
+    }
+    else if(!bSupportSQLite && bSupportMSSQL){
+        m_databaseEnum=enum_MSSQL;
+    }
+    return  m_databaseEnum;
 }
 
 void MainWindow::timerEvent(QTimerEvent *event)
@@ -286,5 +242,37 @@ MainWindow *MainWindow::getMainWindow()
         if (MainWindow* mainWin = qobject_cast<MainWindow*>(w))
             return mainWin;
     return nullptr;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    int r=QMessageBox::question(this,tr("Last Hint"),tr("Are you sure you want to quit?"),QMessageBox::Yes|QMessageBox::Default,QMessageBox::No|QMessageBox::Escape);
+    if (r==QMessageBox::Yes){
+        if(m_pTestForm!=nullptr){
+            m_pTestForm->WriteAppSettings();
+        }
+        if(m_bSQLLiteConnection){
+            if(m_dbSQLite.isValid()){
+                {
+                    m_dbSQLite.close();
+                }
+                QSqlDatabase::removeDatabase("user");
+                m_bSQLLiteConnection=false;
+            }
+
+        }
+        if(m_bMSSQLConnection){
+            if(m_dbMSSQL.isValid()){
+                {
+                    m_dbMSSQL.close();
+                }
+                QSqlDatabase::removeDatabase("Lotus");
+                m_bMSSQLConnection=false;
+            }
+        }
+        event->accept();
+    }
+    else
+        event->ignore();
 }
 

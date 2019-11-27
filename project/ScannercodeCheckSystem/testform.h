@@ -9,6 +9,7 @@
 #include <QMap>
 #include <QSettings>
 #include <QMainWindow>
+#include <QMutex>
 
 namespace Ui {
 class TestForm;
@@ -39,22 +40,30 @@ private:
     bool UpdateTestStatus(int errorCode,TestStatus status);
     void UpdateTestStatusImage(QString imagePath);
     void InitTestStatusMap();
+    void CheckSNExistInDB(int &nErrorCode);
+    void resetTestStatus();
+    void resetAutoScannerTimer();
+
+public:
     void ReadAppSettings();
     void WriteAppSettings();
-    bool CheckSNExistInDB(int &nErrorCode);
+
+protected slots:
+    void passStatusDelayHandle();
+    void CheckAutoScannerHandle();
 
 private slots:
     void on_btnTest_clicked();
 
     void on_comboManufacturer_currentIndexChanged(int index);
 
-    void on_lineEditSN_textChanged(const QString &arg1);
-
-    void  CheckAutoScannerHandle();
+    void on_lineEditSN_textChanged(const QString &arg1);    
 
     void on_btnLock_clicked();
 
     void on_btnUnlock_clicked();
+
+    void on_btnReset_clicked();
 
 private:
     Ui::TestForm *ui;
@@ -73,6 +82,8 @@ private:
     bool m_bAutoScan;
 
     QSettings *m_settings;
+
+    QMutex m_mutex;
 };
 
 #endif // TESTFORM_H
