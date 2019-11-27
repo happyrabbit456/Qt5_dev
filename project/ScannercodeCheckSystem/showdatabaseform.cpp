@@ -74,6 +74,7 @@ void ShowDataBaseForm::initializeModel(QSqlQueryModel *model)
             model->setQuery("select * from record",pMainWindow->m_db);
             if (model->lastError().isValid()){
                 qDebug() << model->lastError();
+                QMessageBox::warning(this,"warning",model->lastError().text());
             }
         }
     }

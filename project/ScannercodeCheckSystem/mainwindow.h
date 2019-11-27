@@ -29,6 +29,7 @@ protected:
 private:
     void SetCurrDateTime();
     bool createSQLiteConnection();
+    bool createMSSQLConnection();
 
 public:
     TestForm *m_pTestForm;
