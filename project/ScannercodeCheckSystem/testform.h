@@ -78,12 +78,12 @@ private:
     QString m_strCurrChangedCode;
     QString m_strLastChangedCode;
 
-    QTimer *m_checkAutoScannerTimer;
+    QTimer m_checkAutoScannerTimer;
     bool m_bAutoScan;
 
     QSettings *m_settings;
 
-    QMutex m_mutex;
+    QMutex m_mutexCheckTimer;
 };
 
 #endif // TESTFORM_H

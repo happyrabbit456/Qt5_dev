@@ -298,18 +298,17 @@ void TestForm::resetTestStatus()
     m_pPlainTextEditMsg->appendPlainText(tr("开始检查Baidu speaker条码......"));
 
     ui->lineEditSN->setText("");
+    ui->lineEditSN->setFocus();
 
     UpdateTestStatus(0,Status_Ready);
 }
 
 void TestForm::resetAutoScannerTimer()
 {
-    if(m_checkAutoScannerTimer!=nullptr){
-        if(m_checkAutoScannerTimer->isActive()){
-            m_checkAutoScannerTimer->stop();
-            delete m_checkAutoScannerTimer;
-            m_checkAutoScannerTimer=nullptr;
-        }
+    QMutexLocker locker(&m_mutexCheckTimer);
+    if(m_checkAutoScannerTimer.isActive()){
+        disconnect(&m_checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
+        m_checkAutoScannerTimer.stop();
     }
 }
 
@@ -533,7 +532,8 @@ void TestForm::on_comboManufacturer_currentIndexChanged(int index)
 
 void TestForm::on_lineEditSN_textChanged(const QString &arg1)
 {
-    //    qDebug()<<arg1;
+    qDebug()<<arg1;
+
 
     if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()==1){
         m_currTime=QTime::currentTime();
@@ -544,9 +544,12 @@ void TestForm::on_lineEditSN_textChanged(const QString &arg1)
 
         m_bAutoScan=false;
         resetAutoScannerTimer();
-        m_checkAutoScannerTimer=new QTimer(this);
-        connect(m_checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
-        m_checkAutoScannerTimer->start();
+
+        {
+            QMutexLocker locker(&m_mutexCheckTimer);
+            connect(&m_checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
+            m_checkAutoScannerTimer.start(50);
+        }
     }
 
     if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()>1){
