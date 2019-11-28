@@ -68,6 +68,13 @@ win32 {
         message("x86 build")
         ## Windows x86 (32bit) specific build here
 
+        win32:CONFIG(release, debug|release): LIBS += -L'C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib32/msvc/' -lgpib-32
+        else:win32:CONFIG(debug, debug|release): LIBS += -L'C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib32/msvc/' -lgpib-32
+
+        INCLUDEPATH += 'C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib32/msvc'
+        DEPENDPATH += 'C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib32/msvc'
+
+
         win32:CONFIG(release, debug|release): LIBS += -L'C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib32/msvc/' -lni4882
         else:win32:CONFIG(debug, debug|release): LIBS += -L'C:/Program Files (x86)/National Instruments/Shared/ExternalCompilerSupport/C/lib32/msvc/' -lni4882
 
@@ -98,6 +105,7 @@ win32 {
 
     }
 }
+
 
 
 
