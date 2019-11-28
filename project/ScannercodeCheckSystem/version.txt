@@ -1,0 +1,5 @@
+version: 1.0.0.0
+1. First Release
+2. Based On Baidu MTP
+3. Test Item including
+4. Save test location data and data upload Database Server
