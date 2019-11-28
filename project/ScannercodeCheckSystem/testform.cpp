@@ -27,8 +27,9 @@ TestForm::TestForm(QWidget *parent) :
 
     }
 
-    ui->lineEditSN->setText("");
-    ui->lineEditSN->setFocus();
+//    ui->lineEditSN->setText("");
+//    ui->lineEditSN->setFocus();
+
 
     QImage image;
     image.load(":/res/images/None.jpg");
@@ -63,10 +64,15 @@ TestForm::TestForm(QWidget *parent) :
 
     InitTestStatusMap();
 
-    UpdateTestStatus(0,Status_Ready);
+//    UpdateTestStatus(0,Status_Ready);
+
 
     m_settings = new QSettings("settings.ini", QSettings::IniFormat);
     ReadAppSettings();
+
+    resetTestStatus();
+
+
 }
 
 TestForm::~TestForm()
@@ -298,10 +304,20 @@ void TestForm::resetTestStatus()
     //1.开始检查条码
     m_pPlainTextEditMsg->appendPlainText(tr("开始检查Baidu speaker条码......"));
 
-    ui->lineEditSN->setText("");
+    ui->lineEditSN->setFocusPolicy(Qt::StrongFocus);
     ui->lineEditSN->setFocus();
+    ui->lineEditSN->setText("");
+
 
     UpdateTestStatus(0,Status_Ready);
+
+    m_currTime=QTime::currentTime();
+    m_lastTime=m_currTime;
+
+    m_strCurrChangedCode=ui->lineEditSN->text();//arg1;
+    m_strLastChangedCode=m_strCurrChangedCode;
+
+    m_bAutoScan=false;
 }
 
 void TestForm::resetAutoScannerTimer()
@@ -535,7 +551,46 @@ void TestForm::on_lineEditSN_textChanged(const QString &arg1)
 {
     qDebug()<<arg1;
 
+    /*
+    1.判断是扫描枪扫描
+    字符变动+1，并且和上次字符间隔时间小于50ms，考虑原有字符串中间插入的情况不能处理，所以比较字串的方法不可取
+    2.判断扫描完成
+    第一步成立，启动定时器判断扫描完成
+    */
 
+
+    m_currTime=QTime::currentTime();
+    int elapsed = m_lastTime.msecsTo(m_currTime);
+
+//    m_lastTime=m_currTFime;
+//    int pos=arg1.indexOf(m_strLastChangedCode);
+//    m_strLastChangedCode=arg1;
+
+//    if(elapsed<50 && pos==0){
+    if(elapsed<50){
+        if(!m_bAutoScan){
+            m_bAutoScan=true;
+
+            {
+                QMutexLocker locker(&m_mutexCheckTimer);
+                connect(&m_checkAutoScannerTimer, SIGNAL(timeout()), this, SLOT(CheckAutoScannerHandle()));
+                m_checkAutoScannerTimer.start(50);
+            }
+        }
+    }
+    else{
+        m_bAutoScan=false;
+    }
+    m_lastTime=m_currTime;
+
+
+
+
+//ddd
+
+
+
+    /*
     if(!arg1.isNull()&&!arg1.isEmpty()&&arg1.length()==1){
         m_currTime=QTime::currentTime();
         m_lastTime=m_currTime;
@@ -574,6 +629,7 @@ void TestForm::on_lineEditSN_textChanged(const QString &arg1)
 
 //        qDebug()<<"elapsed ="<<elapsed<<"ms"<<" pos:"<<pos<<" m_bAutoScan:"<<m_bAutoScan;
     }
+    */
 }
 
 void TestForm::CheckAutoScannerHandle()
