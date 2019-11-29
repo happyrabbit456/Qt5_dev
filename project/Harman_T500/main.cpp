@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 
 #include <QApplication>
 
@@ -9,9 +9,13 @@
 #include "ni4882.h"
 #include <stdio.h>
 
+#include <QDebug>
+
 #include <iostream>
 #include <string>
 #include <sstream>
+
+#include <exception>
 
 using namespace std;
 
@@ -64,12 +68,60 @@ double convertFromString(string str) {
 //}
 
 
+//可以自己定义Exception
+class myexception: public exception
+{
+    virtual const char* what() const throw()
+    {
+        return "My exception happened";
+    }
+}myex;
+
 int main(int argc, char *argv[])
 {
     double value = 0.0;
-    DMM_ReadCurrent(value);
+//    DMM_ReadCurrent(value);
 
-#if 0
+
+    try
+        {
+            if(true)    //如果，则抛出异常；
+                throw myex;
+        }
+        catch (exception& e)
+        {
+            cout << e.what() << endl;
+        }
+
+    try
+    {
+    cout << "在 try block 中, 准备抛出一个异常." << endl;
+    //这里抛出一个异常（其中异常对象的数据类型是int，值为1）
+    throw 1;
+
+//    int* myarray= new int[100000];
+    }
+    catch (exception& e)
+    {
+        cout << "Standard exception: " << e.what() << endl;
+    }
+    catch( int )
+    {
+        cout<<"int exception"<<endl;
+    }
+
+    //注意这里catch语句
+    catch(...)
+    {
+    cout << "在 catch(…) block 中111" << endl;
+    }
+
+
+    try {
+
+
+
+#if 1
     //caijx
     int   PrimaryAddress = 22;// 2;      /* Primary address of the device           */
     int   SecondaryAddress = 0;    /* Secondary address of the device         */
@@ -124,6 +176,11 @@ int main(int argc, char *argv[])
     }
 
 #endif
+
+    } catch (...) {
+        qDebug()<<"exception .......";
+
+    }
 
 
     QApplication a(argc, argv);
@@ -197,7 +254,7 @@ void GpibError(const char *msg) {
     /* Call ibonl to take the device and interface offline */
     ibonl(Device, 0);
 
-    exit(1);
+//    exit(1);
 }
 
 
