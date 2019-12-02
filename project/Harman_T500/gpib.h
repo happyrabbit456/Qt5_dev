@@ -169,16 +169,18 @@ public:
     bool PRS1_SetResistance(ulong resSet);
     //======================== 程控变阻箱操作集合 =================
 
+public:
+    void sample();
+
 private:
     int   Device;
     int   BoardIndex;
 
-//    int   PrimaryAddress = 22;// 2;       /* Primary address of the device           */
     int   SecondaryAddress = 0;           /* Secondary address of the device         */
     char  Buffer[101];                    /* Read buffer  */
 
 //    short DMMaddr = 22, PWRaddr = 8, PRS0addr = 16, PRS1addr = 17;
-    short DMMaddr;
+    short DMMaddr; /* Primary address of the device           */
     short PWRaddr;
     short PRS0addr;
     short PRS1addr;

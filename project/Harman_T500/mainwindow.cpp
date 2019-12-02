@@ -8,7 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    GPIB gpib;
+    gpib.sample();
 
+    double value = 0.0;
+    gpib.DMM_ReadCurrent(value);
 }
 
 MainWindow::~MainWindow()

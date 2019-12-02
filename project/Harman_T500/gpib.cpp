@@ -2,6 +2,9 @@
 
 GPIB::GPIB(QObject *parent) : QObject(parent)
 {
+    BoardIndex = 0;               /* Interface Index (GPIB0=0,GPIB1=1,etc.)  */
+    SecondaryAddress = 0;    /* Secondary address of the device         */
+
     DMMaddr = 22;
     PWRaddr = 8;
     PRS0addr = 16;
@@ -526,4 +529,56 @@ bool GPIB::PRS1_SetResistance(ulong resSet)
         QMessageBox::warning(nullptr, "warning", "PRS1 Resistance Setting Fail");
         return false;
     }
+}
+
+void GPIB::sample()
+{
+    /*****************************************************************************
+      * Initialization - Done only once at the beginning of your application.
+      *****************************************************************************/
+
+    Device = ibdev(                /* Create a unit descriptor handle         */
+                                   BoardIndex,              /* Board Index (GPIB0 = 0, GPIB1 = 1, ...) */
+                                   DMMaddr,          /* Device primary address                  */
+                                   SecondaryAddress,        /* Device secondary address                */
+                                   T10s,                    /* Timeout setting (T10s = 10 seconds)     */
+                                   1,                       /* Assert EOI line at end of write         */
+                                   0);                      /* EOS termination mode                    */
+    if (Ibsta() & ERR) {           /* Check for GPIB Error                    */
+        GpibError("ibdev Error");
+    }
+
+    ibclr(Device);                 /* Clear the device                        */
+    if (Ibsta() & ERR) {
+        GpibError("ibclr Error");
+    }
+
+    /*****************************************************************************
+         * Main Application Body - Write the majority of your GPIB code here.
+         *****************************************************************************/
+
+    ibwrt(Device, "*IDN?", 5);     /* Send the identification query command   */
+    if (Ibsta() & ERR) {
+        GpibError("ibwrt Error");
+    }
+
+    ibrd(Device, Buffer, 100);     /* Read up to 100 bytes from the device    */
+    if (Ibsta() & ERR) {
+        GpibError("ibrd Error");
+    }
+
+    Buffer[Ibcnt()] = '\0';        /* Null terminate the ASCII string         */
+
+    printf("%s\n", Buffer);        /* Print the device identification         */
+
+
+    /*****************************************************************************
+      * Uninitialization - Done only once at the end of your application.
+      *****************************************************************************/
+
+    ibonl(Device, 0);              /* Take the device offline                 */
+    if (Ibsta() & ERR) {
+        GpibError("ibonl Error");
+    }
+
 }
