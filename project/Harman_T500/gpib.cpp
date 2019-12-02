@@ -1,5 +1,8 @@
 ﻿#include "gpib.h"
 
+#include <QDebug>
+#include <QtGlobal>
+
 GPIB::GPIB(QObject *parent) : QObject(parent)
 {
     BoardIndex = 0;               /* Interface Index (GPIB0=0,GPIB1=1,etc.)  */
@@ -30,50 +33,50 @@ double GPIB::convertFromString(string str)
 
 void GPIB::GpibError(const char *msg)
 {
-    printf("%s\n", msg);
+    qDebug("%s", msg);
 
-    printf("Ibsta() = 0x%x  <", Ibsta());
-    if (Ibsta() & ERR)  printf(" ERR");
-    if (Ibsta() & TIMO)  printf(" TIMO");
-    if (Ibsta() & END)  printf(" END");
-    if (Ibsta() & SRQI)  printf(" SRQI");
-    if (Ibsta() & RQS)  printf(" RQS");
-    if (Ibsta() & CMPL)  printf(" CMPL");
-    if (Ibsta() & LOK)  printf(" LOK");
-    if (Ibsta() & REM)  printf(" REM");
-    if (Ibsta() & CIC)  printf(" CIC");
-    if (Ibsta() & ATN)  printf(" ATN");
-    if (Ibsta() & TACS)  printf(" TACS");
-    if (Ibsta() & LACS)  printf(" LACS");
-    if (Ibsta() & DTAS)  printf(" DTAS");
-    if (Ibsta() & DCAS)  printf(" DCAS");
-    printf(" >\n");
+    qDebug("Ibsta() = 0x%x  <", Ibsta());
+    if (Ibsta() & ERR)  qDebug(" ERR");
+    if (Ibsta() & TIMO)  qDebug(" TIMO");
+    if (Ibsta() & END)  qDebug(" END");
+    if (Ibsta() & SRQI)  qDebug(" SRQI");
+    if (Ibsta() & RQS)  qDebug(" RQS");
+    if (Ibsta() & CMPL)  qDebug(" CMPL");
+    if (Ibsta() & LOK)  qDebug(" LOK");
+    if (Ibsta() & REM)  qDebug(" REM");
+    if (Ibsta() & CIC)  qDebug(" CIC");
+    if (Ibsta() & ATN)  qDebug(" ATN");
+    if (Ibsta() & TACS)  qDebug(" TACS");
+    if (Ibsta() & LACS)  qDebug(" LACS");
+    if (Ibsta() & DTAS)  qDebug(" DTAS");
+    if (Ibsta() & DCAS)  qDebug(" DCAS");
+    qDebug(" >");
 
-    printf("Iberr() = %d", Iberr());
-    if (Iberr() == EDVR) printf(" EDVR <Driver error>\n");
-    if (Iberr() == ECIC) printf(" ECIC <Not Controller-In-Charge>\n");
-    if (Iberr() == ENOL) printf(" ENOL <No Listener>\n");
-    if (Iberr() == EADR) printf(" EADR <Address error>\n");
-    if (Iberr() == EARG) printf(" EARG <Invalid argument>\n");
-    if (Iberr() == ESAC) printf(" ESAC <Not System Controller>\n");
-    if (Iberr() == EABO) printf(" EABO <Operation aborted>\n");
-    if (Iberr() == ENEB) printf(" ENEB <No GPIB board>\n");
-    if (Iberr() == EOIP) printf(" EOIP <Async I/O in progress>\n");
-    if (Iberr() == ECAP) printf(" ECAP <No capability>\n");
-    if (Iberr() == EFSO) printf(" EFSO <File system error>\n");
-    if (Iberr() == EBUS) printf(" EBUS <Command error>\n");
-    if (Iberr() == ESTB) printf(" ESTB <Status byte lost>\n");
-    if (Iberr() == ESRQ) printf(" ESRQ <SRQ stuck on>\n");
-    if (Iberr() == ETAB) printf(" ETAB <Table Overflow>\n");
-    if (Iberr() == ELCK) printf(" ELCK <Lock error>\n");
-    if (Iberr() == EARM) printf(" EARM <Ibnotify rearm error>\n");
-    if (Iberr() == EHDL) printf(" EHDL <Invalid Handle>\n");
-    if (Iberr() == EWIP) printf(" EWIP <Wait already in progress>\n");
-    if (Iberr() == ERST) printf(" ERST <Notification cancelled due to reset>\n");
-    if (Iberr() == EPWR) printf(" EPWR <Power error>\n");
+    qDebug("Iberr() = %d", Iberr());
+    if (Iberr() == EDVR) qDebug(" EDVR <Driver error>");
+    if (Iberr() == ECIC) qDebug(" ECIC <Not Controller-In-Charge>");
+    if (Iberr() == ENOL) qDebug(" ENOL <No Listener>");
+    if (Iberr() == EADR) qDebug(" EADR <Address error>");
+    if (Iberr() == EARG) qDebug(" EARG <Invalid argument>");
+    if (Iberr() == ESAC) qDebug(" ESAC <Not System Controller>");
+    if (Iberr() == EABO) qDebug(" EABO <Operation aborted>");
+    if (Iberr() == ENEB) qDebug(" ENEB <No GPIB board>");
+    if (Iberr() == EOIP) qDebug(" EOIP <Async I/O in progress>");
+    if (Iberr() == ECAP) qDebug(" ECAP <No capability>");
+    if (Iberr() == EFSO) qDebug(" EFSO <File system error>");
+    if (Iberr() == EBUS) qDebug(" EBUS <Command error>");
+    if (Iberr() == ESTB) qDebug(" ESTB <Status byte lost>");
+    if (Iberr() == ESRQ) qDebug(" ESRQ <SRQ stuck on>");
+    if (Iberr() == ETAB) qDebug(" ETAB <Table Overflow>");
+    if (Iberr() == ELCK) qDebug(" ELCK <Lock error>");
+    if (Iberr() == EARM) qDebug(" EARM <Ibnotify rearm error>");
+    if (Iberr() == EHDL) qDebug(" EHDL <Invalid Handle>");
+    if (Iberr() == EWIP) qDebug(" EWIP <Wait already in progress>");
+    if (Iberr() == ERST) qDebug(" ERST <Notification cancelled due to reset>");
+    if (Iberr() == EPWR) qDebug(" EPWR <Power error>");
 
-    printf("Ibcnt() = %u\n", Ibcnt());
-    printf("\n");
+    qDebug("Ibcnt() = %u", Ibcnt());
+//    qDebug("\n");
 
     /* Call ibonl to take the device and interface offline */
     ibonl(Device, 0);
@@ -173,7 +176,7 @@ bool GPIB::read(int addr,string strWrite, string &strRead)
 
     Buffer[Ibcnt()] = '\0';        /* Null terminate the ASCII string         */
 
-    //printf("%s\n", Buffer);        /* Print the device identification         */
+//    qDebug("%s\n", Buffer);        /* Print the device identification         */
 
     strRead = Buffer;
 
@@ -195,7 +198,7 @@ bool GPIB::DMM_ReadVoltage(double &value)
         string strRead = "";
         if (!write(DMMaddr, "CONF:VOLT:DC DEF")) return false;
         if (!read(DMMaddr, "READ?", strRead)) return false;
-        printf("%s\n", strRead.c_str());
+        qDebug("%s", strRead.c_str());
         value = convertFromString(strRead);
 
         return true;
@@ -214,7 +217,7 @@ bool GPIB::DMM_ReadCurrent(double &value)
         string strRead = "";
         if (!write(DMMaddr, "CONF:CURR:DC DEF")) return false;
         if (!read(DMMaddr, "READ?", strRead)) return false;
-        printf("%s\n", strRead.c_str());
+        qDebug("%s", strRead.c_str());
         value = convertFromString(strRead);
 
         return true;
@@ -233,7 +236,7 @@ bool GPIB::DMM_ReadRes(double &value)
         string strRead = "";
         if(!write(DMMaddr, "CONF:RES DEF")) return false;
         if(!read(DMMaddr, "READ?", strRead)) return false;
-        printf("%s\n", strRead.c_str());
+        qDebug("%s", strRead.c_str());
         value = convertFromString(strRead);
         return true;
     }
@@ -251,7 +254,7 @@ bool GPIB::DMM_ReadFreq(double &value)
         string strRead = "";
         if (!write(DMMaddr, "CONF:FRES:DC DEF")) return false;
         if (!read(DMMaddr, "READ?", strRead)) return false;
-        printf("%s\n", strRead.c_str());
+        qDebug("%s", strRead.c_str());
         value = convertFromString(strRead);
         return true;
     }
@@ -429,7 +432,7 @@ bool GPIB::PWR_GetVoltage(double &value)
     try
     {
         if(!read(PWRaddr, ":CHAN1:MEAS:VOLT?/n", strRead)) return false;
-        printf("%s\n", strRead.c_str());
+        qDebug("%s", strRead.c_str());
         value = convertFromString(strRead);
         return true;
     }
@@ -446,7 +449,7 @@ bool GPIB::PWR_GetCurrent(double &value)
     try
     {
         if (!read(PWRaddr, ":CHAN1:MEAS:CURR?/n", strRead)) return false;
-        printf("%s\n", strRead.c_str());
+        qDebug("%s", strRead.c_str());
         value = convertFromString(strRead);
         return true;
     }
@@ -569,7 +572,7 @@ void GPIB::sample()
 
     Buffer[Ibcnt()] = '\0';        /* Null terminate the ASCII string         */
 
-    printf("%s\n", Buffer);        /* Print the device identification         */
+    qDebug("%s", Buffer);        /* Print the device identification         */
 
 
     /*****************************************************************************

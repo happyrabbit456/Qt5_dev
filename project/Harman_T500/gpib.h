@@ -180,10 +180,10 @@ private:
     char  Buffer[101];                    /* Read buffer  */
 
 //    short DMMaddr = 22, PWRaddr = 8, PRS0addr = 16, PRS1addr = 17;
-    short DMMaddr; /* Primary address of the device           */
-    short PWRaddr;
-    short PRS0addr;
-    short PRS1addr;
+    int DMMaddr; /* Primary address of the device           */
+    int PWRaddr;
+    int PRS0addr;
+    int PRS1addr;
 };
 
 #endif // GPIB_H

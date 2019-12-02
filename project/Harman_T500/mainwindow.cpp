@@ -8,11 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    GPIB gpib;
-    gpib.sample();
+//    GPIB gpib;
+//    gpib.sample();
 
-    double value = 0.0;
-    gpib.DMM_ReadCurrent(value);
+//    double value = 0.0;
+//    gpib.DMM_ReadCurrent(value);
 }
 
 MainWindow::~MainWindow()
@@ -20,3 +20,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    GPIB gpib;
+    gpib.sample();
+
+    double value = 0.0;
+    gpib.DMM_ReadCurrent(value);
+}
