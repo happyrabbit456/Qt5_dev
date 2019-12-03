@@ -137,6 +137,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+//              ViChar buffer[255];
+//              ViRsrc mathes=buffer;
+//              ViUInt32 nmatched;
+//              status = viFindNext(find_list,instrDesc);
+//              if (status != VI_SUCCESS){
+//                  qDebug("viFindNext fail!\n");
+////                  viClose(vi);
+////                  viClose (defaultRM);
+////                  return;
+//              }
+//              else{
+//                  qDebug("viFindNext ok!\n");
+//                  qDebug("viFindNext instrDesc  : %s\n",instrDesc);
+//              }
 
 
               status = viOpen(defaultRM,instrDesc,
@@ -151,9 +165,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 //              GPIB仪器控制属性：
 //              VI_ATTR_GPIB_PRIMARY_ADDR   GPIB主地址
-//              VI_ATTR_GPIB_SECONDARY       GPIB副地址
-//              _ADDR
+//              VI_ATTR_GPIB_SECONDARY_ADDR       GPIB副地址
+
 //              VI_ATTR_INTF_PAERNT_NUM GPIB板号
+
+//              VI_ATTR_INTF_NUM 板号
 
 //              ViUInt32 moduleID;
 //              viGetAttribute (vi, VI_ATTR_MODEL_CODE, &moduleID);
@@ -183,10 +199,44 @@ MainWindow::MainWindow(QWidget *parent)
               qDebug()<<"second:"<<second;
 
 
-              qDebug("GPIB device : %s\n",instrDesc);
-              viPrintf(vi,ViString("*idn?\n"));
-              viScanf (vi, ViString("%t"), &buf);
-              qDebug("%s\n",buf);
+//              qDebug("GPIB device : %s\n",instrDesc);
+//              viPrintf(vi,ViString("*idn?\n"));
+//              viScanf (vi, ViString("%t"), &buf);
+//              qDebug("%s\n",buf);
+
+
+//              char receiveBufferArrary[256] = {0};
+////              if(!write(DMMaddr, "CONF:CURR:DC DEF")) return false;
+////              if(!read(DMMaddr, "READ?", strRead)) return false;
+//              status = viPrintf(vi,ViString("CONF:CURR:DC DEF"));
+//              if (status != VI_SUCCESS){
+//                  qDebug("CONF:CURR:DC DEF fail");
+//              }
+////              viPrintf(vi,ViString("READ?"));
+
+              double resultDC;
+//              status = viQueryf(vi, ViString("FETCH:CURR?\n"), ViString("%lf"), &resultDC);
+//              status = viQueryf(vi,ViString("READ ?"),ViString("%t"),receiveBufferArrary);
+              viQueryf(vi, ViString("MEAS:CURR?\n"), ViString("%lf"), &resultDC);
+//              viScanf(vi,ViString("%t"), receiveBufferArrary);
+//              status = viQueryf(vi, ViString("MEAS:CURR?\n"),ViString("%lf"), &resultDC);
+              if (status != VI_SUCCESS){
+                  qDebug("READ? fail");
+              }
+              else{
+
+              }
+
+
+
+
+              qDebug()<<resultDC;
+                         //              viScanf (vi, ViString("%t"), &receiveBufferArrary);
+//              qDebug("%s\n",receiveBufferArrary);
+
+
+
+
               viClose (vi);
               viClose (defaultRM);
 
