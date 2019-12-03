@@ -6,6 +6,9 @@
 #include <time.h>             /* For clock(). */
 #include <visa.h>             /* Keysight VISA routines. */
 
+#include <QtGlobal>
+#include <QDebug>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -111,21 +114,79 @@ MainWindow::MainWindow(QWidget *parent)
               ViSession defaultRM,vi;
               ViStatus status;
               ViFindList  find_list;
-              viOpenDefaultRM (&defaultRM);
+              status=viOpenDefaultRM (&defaultRM);
+              if (status != VI_SUCCESS){
+                  qDebug()<<"viOpenDefaultRM() fail";
+                  return;
+              }
               status = viFindRsrc(defaultRM,ViString("GPIB?*INSTR"),
                                   &find_list, &retCnt, instrDesc);
+
+              if (status != VI_SUCCESS){
+                  qDebug()<<"viFindRsrc() fail";
+                  return;
+              }
+              else{
+                  qDebug()<<"retCnt:"<<retCnt;
+              }
+
+              //          viFindNext(list,matches);
+              //          viFindNext(list,matches);
+              //          ...
+              //          viClose(list);
+
+
+
+
+
               status = viOpen(defaultRM,instrDesc,
                               VI_NULL,VI_NULL, &vi);
               if (status != VI_SUCCESS){
-                  printf("Can not find GPIB device!\n");
+                  qDebug("Can not find GPIB device!\n");
                   viClose(vi);
                   viClose (defaultRM);
                   return;
               }
-              printf("GPIB device : %s\n",instrDesc);
+
+
+//              GPIB仪器控制属性：
+//              VI_ATTR_GPIB_PRIMARY_ADDR   GPIB主地址
+//              VI_ATTR_GPIB_SECONDARY       GPIB副地址
+//              _ADDR
+//              VI_ATTR_INTF_PAERNT_NUM GPIB板号
+
+//              ViUInt32 moduleID;
+//              viGetAttribute (vi, VI_ATTR_MODEL_CODE, &moduleID);
+//              qDebug()<<"moduleID:"<<moduleID;
+
+
+              ViUInt16 intf_num;
+              status = viGetAttribute (vi, VI_ATTR_INTF_NUM, &intf_num);
+              if (status != VI_SUCCESS){
+                  qDebug("VI_ATTR_INTF_NUM fail!\n");
+                  viClose(vi);
+                  viClose (defaultRM);
+                  return;
+              }
+              qDebug()<<"intf_num:"<<intf_num;
+              ViUInt16 primary;
+              viGetAttribute (vi, VI_ATTR_GPIB_PRIMARY_ADDR, &primary);
+              qDebug()<<"primary:"<<primary;
+              ViUInt16 second;
+              status = viGetAttribute (vi, VI_ATTR_GPIB_SECONDARY_ADDR, &second);
+              if (status != VI_SUCCESS){
+                  qDebug("VI_ATTR_GPIB_SECONDARY_ADDR fail!\n");
+                  viClose(vi);
+                  viClose (defaultRM);
+                  return;
+              }
+              qDebug()<<"second:"<<second;
+
+
+              qDebug("GPIB device : %s\n",instrDesc);
               viPrintf(vi,ViString("*idn?\n"));
               viScanf (vi, ViString("%t"), &buf);
-              printf("%s\n",buf);
+              qDebug("%s\n",buf);
               viClose (vi);
               viClose (defaultRM);
 
