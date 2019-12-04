@@ -242,6 +242,39 @@ MainWindow::MainWindow(QWidget *parent)
               }
 
 
+              //方法三
+              static unsigned char buffer[100];
+              static char stringinput[512];
+              static ViUInt32 retCount;
+              static ViUInt32 writeCount;
+
+
+              status = viPrintf(vi,ViString("CONF:CURR:DC"));
+              if (status != VI_SUCCESS){
+                  qDebug()<<"viPrintf(vi,ViString(CONF:CURR:DC)) fail";
+              }
+
+              strcpy(stringinput,"READ?\n");
+              status = viWrite (vi, (ViBuf)stringinput, (ViUInt32)strlen(stringinput), &writeCount);
+              if (status < VI_SUCCESS)
+              {
+                  qDebug("Error writing to the device\n");
+              }
+
+              status = viRead (vi, buffer, 100, &retCount);
+              if (status < VI_SUCCESS)
+              {
+                  qDebug("Error reading a response from the device\n");
+              }
+              else
+              {
+                  qDebug("Data read: %*s\n",retCount,buffer);
+              }
+
+
+//              5.291e-07
+//              4.673e-07
+//              Data read: +5.29100000E-07
 
 
               viClose (vi);
