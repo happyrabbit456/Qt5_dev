@@ -23,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
 //    double value = 0.0;
 //    gpib.DMM_ReadCurrent(value);
 
+    NIVisaGPIB visaGPIB;
+    visaGPIB.sample_getCurrent();
+
     m_pCurrentForm=new CurrentForm(this);
     ui->stackedWidget->addWidget(m_pCurrentForm);
     ui->stackedWidget->setCurrentIndex(0);

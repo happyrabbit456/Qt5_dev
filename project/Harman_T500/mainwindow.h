@@ -10,6 +10,7 @@
 
 #include "gpib.h"
 #include "currentform.h"
+#include "nivisagpib.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

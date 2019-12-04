@@ -19,12 +19,14 @@ SOURCES += \
     currentform.cpp \
     gpib.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    nivisagpib.cpp
 
 HEADERS += \
     currentform.h \
     gpib.h \
-    mainwindow.h
+    mainwindow.h \
+    nivisagpib.h
 
 FORMS += \
     currentform.ui \

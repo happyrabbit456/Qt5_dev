@@ -25,7 +25,7 @@
    <property name="title">
     <string>参数设置</string>
    </property>
-   <widget class="QLabel" name="labelGPIB">
+   <widget class="QLabel" name="labelGPIBSelector">
     <property name="geometry">
      <rect>
       <x>360</x>
@@ -48,7 +48,7 @@
      <string>GPIB设备选择</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboManufacturer">
+   <widget class="QComboBox" name="comboGPIBSelector">
     <property name="geometry">
      <rect>
       <x>360</x>
@@ -239,7 +239,7 @@
      <string>充电电流</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="labelMinCurrent">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -252,7 +252,7 @@
      <string>Min:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="labelMaxCurrent">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -265,7 +265,7 @@
      <string>Max:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="editMinIdleCurrent">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -275,7 +275,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="editMinWorkCurrent">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -285,7 +285,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="editMaxIdleCurrent">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -295,7 +295,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_4">
+   <widget class="QLineEdit" name="editMaxWorkCurrent">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -305,7 +305,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_5">
+   <widget class="QLineEdit" name="editMinChargeCurrent">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -315,7 +315,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_6">
+   <widget class="QLineEdit" name="editMaxChargeCurrent">
     <property name="geometry">
      <rect>
       <x>210</x>
@@ -325,7 +325,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QLabel" name="labelIdleCurrentUnit">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -338,7 +338,7 @@
      <string>mA</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_7">
+   <widget class="QLabel" name="labelWorkCurrentUnit">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -351,7 +351,7 @@
      <string>mA</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_8">
+   <widget class="QLabel" name="labelChargeCurrentUnit">
     <property name="geometry">
      <rect>
       <x>330</x>
