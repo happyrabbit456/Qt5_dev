@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent)
 ///
 ///
           ViUInt32 retCnt=0;
-              char buf [256] = {0};
+              char buf[256] = {0};
               char instrDesc[100]={0};
               ViSession defaultRM,vi;
               ViStatus status;
@@ -205,34 +205,41 @@ MainWindow::MainWindow(QWidget *parent)
 //              qDebug("%s\n",buf);
 
 
-//              char receiveBufferArrary[256] = {0};
 ////              if(!write(DMMaddr, "CONF:CURR:DC DEF")) return false;
 ////              if(!read(DMMaddr, "READ?", strRead)) return false;
-//              status = viPrintf(vi,ViString("CONF:CURR:DC DEF"));
-//              if (status != VI_SUCCESS){
-//                  qDebug("CONF:CURR:DC DEF fail");
-//              }
-////              viPrintf(vi,ViString("READ?"));
+
 
               double resultDC;
-//              status = viQueryf(vi, ViString("FETCH:CURR?\n"), ViString("%lf"), &resultDC);
-//              status = viQueryf(vi,ViString("READ ?"),ViString("%t"),receiveBufferArrary);
-              viQueryf(vi, ViString("MEAS:CURR?\n"), ViString("%lf"), &resultDC);
-//              viScanf(vi,ViString("%t"), receiveBufferArrary);
-//              status = viQueryf(vi, ViString("MEAS:CURR?\n"),ViString("%lf"), &resultDC);
+
+              //方法二
+              status = viQueryf(vi, ViString("MEAS:CURR:DC?\n"), ViString("%lf"), &resultDC); //OK
+
               if (status != VI_SUCCESS){
-                  qDebug("READ? fail");
+                  qDebug()<<"333";
               }
               else{
-
+                  qDebug()<<resultDC;
               }
 
 
+              //方法一
+              status = viPrintf(vi,ViString("CONF:CURR:DC"));
+              if (status != VI_SUCCESS){
+                  qDebug()<<"viPrintf(vi,ViString(CONF:CURR:DC)) fail";
+              }
 
 
-              qDebug()<<resultDC;
-                         //              viScanf (vi, ViString("%t"), &receiveBufferArrary);
-//              qDebug("%s\n",receiveBufferArrary);
+              status = viPrintf(vi,ViString("READ?\n"));
+              if (status != VI_SUCCESS){
+                  qDebug()<<"111";
+              }
+              status = viQueryf(vi,ViString("READ?\n"), ViString("%lf"), &resultDC);
+              if (status != VI_SUCCESS){
+                  qDebug()<<"222";
+              }
+              else{
+                  qDebug()<<resultDC;
+              }
 
 
 
