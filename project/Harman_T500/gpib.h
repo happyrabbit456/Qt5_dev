@@ -176,7 +176,7 @@ private:
     int   Device;
     int   BoardIndex;
 
-    int   SecondaryAddress = 0;           /* Secondary address of the device         */
+    int   SecondaryAddress;           /* Secondary address of the device         */
     char  Buffer[101];                    /* Read buffer  */
 
 //    short DMMaddr = 22, PWRaddr = 8, PRS0addr = 16, PRS1addr = 17;

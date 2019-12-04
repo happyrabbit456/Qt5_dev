@@ -16,15 +16,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    currentform.cpp \
     gpib.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    currentform.h \
     gpib.h \
     mainwindow.h
 
 FORMS += \
+    currentform.ui \
     mainwindow.ui
 
 # Default rules for deployment.
@@ -105,10 +108,15 @@ win32 {
     QMAKE_CXXFLAGS_EXCEPTIONS_ON = /EHa
     QMAKE_CXXFLAGS_STL_ON = /EHa
 
+    INCLUDEPATH += "C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Include"
+
     ## Windows common build here
     !contains(QMAKE_HOST.arch, x86_64) {
         #message("x86 build")
         ## Windows x86 (32bit) specific build here
+
+        QMAKE_LIBDIR += "C:\Program Files (x86)\IVI Foundation\VISA\WinNT\lib\msc"
+        LIBS += visa32.lib
 
         QMAKE_LIBDIR += "C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib32\msvc"
         LIBS += ni4882.obj
@@ -116,7 +124,13 @@ win32 {
         #message("x86_64 build")
         ## Windows x64 (64bit) specific build here
 
+        QMAKE_LIBDIR += "C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Lib_x64\msc"
+        LIBS += visa64.lib nivisa64.lib
+
         QMAKE_LIBDIR += "C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\C\lib64\msvc"
         LIBS += ni4882.obj
     }
 }
+
+RESOURCES += \
+    res.qrc

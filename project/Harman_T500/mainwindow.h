@@ -3,11 +3,22 @@
 
 #include <QMainWindow>
 
+#include <QBasicTimer>
+#include <QDateTime>
+#include <QDebug>
+#include <QMessageBox>
+
 #include "gpib.h"
+#include "currentform.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+typedef enum enumSelector{
+    Selector_Current=0,
+    Selector_Voltage,
+}SelectorType;
 
 class MainWindow : public QMainWindow
 {
@@ -15,12 +26,23 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    virtual ~MainWindow() override;
+
+protected:
+    void timerEvent(QTimerEvent *event) override;
 
 private slots:
-    void on_pushButton_clicked();
+    void on_listViewSelector_clicked(const QModelIndex &index);
+
+private:
+    void SetCurrDateTime();
+
+public:
+    CurrentForm *m_pCurrentForm;
 
 private:
     Ui::MainWindow *ui;
+
+    QBasicTimer m_timer;
 };
 #endif // MAINWINDOW_H

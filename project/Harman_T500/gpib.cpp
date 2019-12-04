@@ -5,10 +5,10 @@
 
 GPIB::GPIB(QObject *parent) : QObject(parent)
 {
-    BoardIndex = 0;               /* Interface Index (GPIB0=0,GPIB1=1,etc.)  */
+    BoardIndex = 0;          /* Interface Index (GPIB0=0,GPIB1=1,etc.)  */
     SecondaryAddress = 0;    /* Secondary address of the device         */
 
-    DMMaddr = 22;
+    DMMaddr = 22; /* Primary address of the device           */
     PWRaddr = 8;
     PRS0addr = 16;
     PRS1addr = 17;
@@ -98,6 +98,9 @@ bool GPIB::write(int addr,string strWrite)
         QMessageBox::warning(nullptr, "warning", "Error in initializing the GPIB instrument.");
 
         return false;
+    }
+    else{
+        qDebug()<<"Device:"<<Device;
     }
 
     ibclr(Device);                 /* Clear the device                        */
@@ -583,5 +586,4 @@ void GPIB::sample()
     if (Ibsta() & ERR) {
         GpibError("ibonl Error");
     }
-
 }
