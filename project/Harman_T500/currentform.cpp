@@ -8,11 +8,25 @@ CurrentForm::CurrentForm(QWidget *parent) :
     ui->setupUi(this);
 
     initComboGPIB();
+
+    resetTestHandle();
 }
 
 CurrentForm::~CurrentForm()
 {
     delete ui;
+}
+
+void CurrentForm::resetTestHandle()
+{
+    ui->labelIdleCurrentStatus->setVisible(false);
+    ui->labelWorkCurrentStatus->setVisible(false);
+    ui->labelChargeCurrentStatus->setVisible(false);
+    ui->editIdleCurrent->setText("0.000");
+    ui->editWorkCurrent->setText("0.000");
+    ui->editChargeCurrent->setText("0.000");
+    ui->lineEditSN->setText("");
+    ui->lineEditSN->setFocus();
 }
 
 bool CurrentForm::initComboGPIB()
@@ -52,4 +66,14 @@ void CurrentForm::on_comboGPIBSelector_currentIndexChanged(int index)
 {
 //    qDebug()<<"Current GPIB index changed:"<<index;
     m_niVisaGPIB.m_nCurrGPIBIndex=index;
+}
+
+void CurrentForm::on_btnReset_clicked()
+{
+    resetTestHandle();
+}
+
+void CurrentForm::on_btnTest_clicked()
+{
+
 }

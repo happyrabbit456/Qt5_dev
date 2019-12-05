@@ -18,6 +18,9 @@ public:
     explicit CurrentForm(QWidget *parent = nullptr);
     ~CurrentForm();
 
+protected:
+    void resetTestHandle();
+
 public:
     bool initComboGPIB();
 
@@ -26,6 +29,10 @@ public:
 
 private slots:
     void on_comboGPIBSelector_currentIndexChanged(int index);
+
+    void on_btnReset_clicked();
+
+    void on_btnTest_clicked();
 
 private:
     Ui::CurrentForm *ui;
