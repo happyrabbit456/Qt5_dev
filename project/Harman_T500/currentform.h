@@ -42,6 +42,9 @@ public:
     void updateWorkCurrent(QString qstr);
     void updateChargeCurrent(QString qstr);
 
+    void ReadAppSettings();
+    void WriteAppSettings();
+
 public:
     NIVisaGPIB m_niVisaGPIB;
 
@@ -52,10 +55,15 @@ private slots:
 
     void on_btnTest_clicked();
 
+    void on_btnLock_clicked();
+
+    void on_btnUnlock_clicked();
+
 private:
     Ui::CurrentForm *ui;
 
     QWizard wizard;
+    QSettings *m_settings;
 };
 
 #endif // CURRENTFORM_H

@@ -11,6 +11,9 @@ CurrentForm::CurrentForm(QWidget *parent) :
 
     resetTestHandle();
 
+    m_settings = new QSettings("settings.ini", QSettings::IniFormat);
+    ReadAppSettings();
+
     QXlsx::Document xlsx;
     xlsx.write("A1", "Hello Qt!");
     xlsx.saveAs("Test.xlsx");
@@ -18,7 +21,71 @@ CurrentForm::CurrentForm(QWidget *parent) :
 
 CurrentForm::~CurrentForm()
 {
+    if(m_settings!=nullptr){
+        delete m_settings;
+        m_settings=nullptr;
+    }
+
     delete ui;
+}
+
+void CurrentForm::ReadAppSettings()
+{
+    QString qstr;
+    double d;
+
+    d=m_settings->value("MinIdleCurrent",1.000).toDouble();
+    qstr=QString().sprintf("%5.3f",d);
+//    qstr=QString::number(d);
+    ui->editMinIdleCurrent->setText(qstr);
+
+    d=m_settings->value("MaxIdleCurrent",10.000).toDouble();
+    qstr=QString().sprintf("%5.3f",d);
+//    qstr=QString::number(d);
+    ui->editMaxIdleCurrent->setText(qstr);
+
+    d=m_settings->value("MinWorkCurrent",1.000).toDouble();
+    qstr=QString().sprintf("%5.3f",d);
+//    qstr=QString::number(d);
+    ui->editMinWorkCurrent->setText(qstr);
+
+    d=m_settings->value("MaxWorkCurrent",10.000).toDouble();
+    qstr=QString().sprintf("%5.3f",d);
+//    qstr=QString::number(d);
+    ui->editMaxWorkCurrent->setText(qstr);
+
+    d=m_settings->value("MinChargeCurrent",1.000).toDouble();
+    qstr=QString().sprintf("%5.3f",d);
+//    qstr=QString::number(d);
+    ui->editMinChargeCurrent->setText(qstr);
+
+    d=m_settings->value("MaxChargeCurrent",10.000).toDouble();
+    qstr=QString().sprintf("%5.3f",d);
+//    qstr=QString::number(d);
+    ui->editMaxChargeCurrent->setText(qstr);
+}
+
+void CurrentForm::WriteAppSettings()
+{
+    QString qstr;
+
+    qstr=ui->editMinIdleCurrent->text();
+    m_settings->setValue("MinIdleCurrent",qstr.toDouble());
+
+    qstr=ui->editMaxIdleCurrent->text();
+    m_settings->setValue("MaxIdleCurrent",qstr.toDouble());
+
+    qstr=ui->editMinWorkCurrent->text();
+    m_settings->setValue("MinWorkCurrent",qstr.toDouble());
+
+    qstr=ui->editMaxWorkCurrent->text();
+    m_settings->setValue("MaxWorkCurrent",qstr.toDouble());
+
+    qstr=ui->editMinChargeCurrent->text();
+    m_settings->setValue("MinChargeCurrent",qstr.toDouble());
+
+    qstr=ui->editMaxChargeCurrent->text();
+    m_settings->setValue("MaxChargeCurrent",qstr.toDouble());
 }
 
 void CurrentForm::resetTestHandle()
@@ -102,4 +169,26 @@ void CurrentForm::on_btnTest_clicked()
 
     wizard.setWindowTitle("Trivial Wizard");
     wizard.show();
+}
+
+void CurrentForm::on_btnLock_clicked()
+{
+    WriteAppSettings();
+
+    ui->editMinIdleCurrent->setEnabled(false);
+    ui->editMaxIdleCurrent->setEnabled(false);
+    ui->editMinWorkCurrent->setEnabled(false);
+    ui->editMaxWorkCurrent->setEnabled(false);
+    ui->editMinChargeCurrent->setEnabled(false);
+    ui->editMaxChargeCurrent->setEnabled(false);
+}
+
+void CurrentForm::on_btnUnlock_clicked()
+{
+    ui->editMinIdleCurrent->setEnabled(true);
+    ui->editMaxIdleCurrent->setEnabled(true);
+    ui->editMinWorkCurrent->setEnabled(true);
+    ui->editMaxWorkCurrent->setEnabled(true);
+    ui->editMinChargeCurrent->setEnabled(true);
+    ui->editMaxChargeCurrent->setEnabled(true);
 }
