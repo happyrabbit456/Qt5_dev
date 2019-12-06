@@ -1,10 +1,13 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QDebug>
 #include <QStandardItemModel>
 
 #include <QMessageBox>
+
+#include <QFileInfo>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -48,6 +51,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
+
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+
+
+    qDebug()<<"deconstructor done.";
+}
+
+void MainWindow::toExcel()
+{
     QStandardItemModel *model = new QStandardItemModel(0,4);
     ui->tableView->setModel(model);
 
@@ -83,18 +100,90 @@ MainWindow::MainWindow(QWidget *parent)
 //            版权声明：本文为CSDN博主「xjcwzp」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
 //            原文链接：https://blog.csdn.net/xjcwzp/article/details/96836314
 
-}
 
-MainWindow::~MainWindow()
-{
-    delete ui;
+    QXlsx::Document z_xlsx;
+       QStringList z_titleList;
+       QString z_filePathName;
+       QString z_defaultFileName = "刻录任务汇总.xls";
+
+       // 设置保存的默认文件名称 文件名_当前时间.xls
+       QFileInfo z_fileinfo(z_defaultFileName);
+       QDateTime z_curDateTime = QDateTime::currentDateTime();
+       QString z_strCurTime = z_curDateTime.toString("yyyyMMddhhmmss");
+       z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + ".xls";
+
+       // 获取保存文件路径
+       QFileDialog *z_fileDlg = new QFileDialog(this);
+       z_fileDlg->setWindowTitle("保存文件");
+       z_fileDlg->setAcceptMode(QFileDialog::AcceptSave);
+       z_fileDlg->selectFile(z_defaultFileName);
+       z_fileDlg->setNameFilter("Excel Files(*.xls *.xlsx)");
+       z_fileDlg->setDefaultSuffix("xls");
+
+       if (z_fileDlg->exec() == QDialog::Accepted)
+       {
+           z_filePathName = z_fileDlg->selectedFiles().at(0);
+       }
+
+       // 保存文件添加后缀名
+       z_fileinfo =  QFileInfo(z_filePathName);
+       if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != "xlsx")
+       {
+           z_filePathName += ".xls";
+       }
+
+       // 设置excel任务标题
+       z_titleList << "test0" << "test1" << "test2" << "test3";
+       for (int i = 0; i < z_titleList.size(); i++)
+       {
+           z_xlsx.write(1, i+1, z_titleList.at(i));
+       }
+
+       // 设置烈宽
+       z_xlsx.setColumnWidth(1, 20);
+       z_xlsx.setColumnWidth(2, 20);
+       z_xlsx.setColumnWidth(3, 30);
+       z_xlsx.setColumnWidth(4, 35);
+
+       int i,j;
+
+       //QTableView 获取列数
+       int colcount=ui->tableView->model()->columnCount();// tableView->model->columnCount();
+       //QTableView 获取行数
+       int rowcount=ui->tableView->model()->rowCount();// tableView->model->rowCount();
+
+       //数据区 QTableView 获取表格数据部分
+       for(i=0;i<rowcount;i++) //行数
+       {
+           for (j=0;j<colcount;j++)   //列数
+           {
+               QModelIndex index = ui->tableView->model()->index(i, j);
+               QString strdata=ui->tableView->model()->data(index).toString();
+               z_xlsx.write(i+2,j+1,strdata);
+           }
+       }
 
 
-    qDebug()<<"deconstructor done.";
+//       // 获取表格内容设置excel
+//       int z_row = modelBurnTask->rowCount();
+//       int z_col = modelBurnTask->columnCount() - 1;// 最后一列为图标，不保存
+//       for (int i = 0; i < z_row; i++)
+//       {
+//           for (int j = 0; j < z_col; j++)
+//           {
+//               z_xlsx.write(i+2, j+1 ,modelBurnTask->index(i, j).data().toString());
+//           }
+//       }
+
+       // 保存文件
+       z_xlsx.saveAs(z_filePathName);
 }
 
 void MainWindow::on_pushButton_clicked()
 {
+
+    toExcel();
+
 //    QMessageBox::information(this, tr("No database driver selected"),
 //                             tr("Please select a database driver"));
 
@@ -155,16 +244,16 @@ void MainWindow::on_pushButton_clicked()
 //    }
 
 
-    QMessageBox::StandardButton button;
-    button = QMessageBox::question(this, tr("Delete Album"),
-                                   tr("Are you sure you want to "
-                                      "delete '%1' by '%2'?")
-                                   .arg("title", "artist"),
-                                   QMessageBox::Yes | QMessageBox::No);
+//    QMessageBox::StandardButton button;
+//    button = QMessageBox::question(this, tr("Delete Album"),
+//                                   tr("Are you sure you want to "
+//                                      "delete '%1' by '%2'?")
+//                                   .arg("title", "artist"),
+//                                   QMessageBox::Yes | QMessageBox::No);
 
-    if (button == QMessageBox::Yes) {
+//    if (button == QMessageBox::Yes) {
 
-    }
+//    }
 
 
 //    QMessageBox::about(this, tr("About"), tr("The SQL Browser demonstration "

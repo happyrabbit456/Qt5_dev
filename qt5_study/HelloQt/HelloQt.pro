@@ -1,4 +1,4 @@
-QT       += core gui sql  axcontainer
+QT       += core gui sql  axcontainer  xlsx
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
