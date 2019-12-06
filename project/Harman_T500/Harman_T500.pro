@@ -16,17 +16,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    chargecurrentpage.cpp \
+    conclusionpage.cpp \
     currentform.cpp \
     gpib.cpp \
+    idlecurrentpage.cpp \
     main.cpp \
     mainwindow.cpp \
-    nivisagpib.cpp
+    nivisagpib.cpp \
+    snpage.cpp \
+    workcurrentpage.cpp
 
 HEADERS += \
+    chargecurrentpage.h \
+    conclusionpage.h \
     currentform.h \
     gpib.h \
+    idlecurrentpage.h \
     mainwindow.h \
-    nivisagpib.h
+    nivisagpib.h \
+    snpage.h \
+    workcurrentpage.h
 
 FORMS += \
     currentform.ui \

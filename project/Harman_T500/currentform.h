@@ -15,6 +15,12 @@
 #include <QtXlsx>
 #include "xlsxdocument.h"
 
+#include "snpage.h"
+#include "idlecurrentpage.h"
+#include "workcurrentpage.h"
+#include "chargecurrentpage.h"
+#include "conclusionpage.h"
+
 namespace Ui {
 class CurrentForm;
 }
@@ -30,12 +36,11 @@ public:
 protected:
     void resetTestHandle();
 
-    QWizardPage *createIntroPage();
-    QWizardPage *createRegistrationPage();
-    QWizardPage *createConclusionPage();
-
 public:
     bool initComboGPIB();
+    void updateIdleCurrent(QString qstr);
+    void updateWorkCurrent(QString qstr);
+    void updateChargeCurrent(QString qstr);
 
 public:
     NIVisaGPIB m_niVisaGPIB;

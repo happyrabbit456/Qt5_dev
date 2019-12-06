@@ -350,3 +350,67 @@ ViStatus NIVisaGPIB::initGPIB()
 
     return status;
 }
+
+bool NIVisaGPIB::getCurrent(double &value)
+{
+    ViStatus status;
+    unsigned char buffer[100];
+    char stringinput[512];
+    ViUInt32 retCount=0;
+    ViUInt32 writeCount;
+
+    if(m_nCurrGPIBIndex >=0){
+
+        int j=0;
+        //用key()和data()分别获取“键”和“值”
+        QMap<string,ViSession>::iterator it; //遍历map
+        for ( it = m_mapGPIB.begin(); it != m_mapGPIB.end(); ++it ) {
+    //        qDebug()<<"key:"<<it.key().data()<<" "<<"value:"<<it.value();
+            if(j==m_nCurrGPIBIndex){
+                ViSession instr;
+
+                instr=it.value();
+
+                status = viPrintf(instr,ViString("CONF:CURR:DC"));
+                if (status != VI_SUCCESS){
+                    qDebug("CONF:CURR:DC setting fail");
+                }
+
+                strcpy_s(stringinput,"READ?");
+                status = viWrite (instr, (ViBuf)stringinput, (ViUInt32)strlen(stringinput), &writeCount);
+                if (status < VI_SUCCESS)
+                {
+                    qDebug("Error writing to the device\n");
+                }
+
+                status = viRead (instr, buffer, 100, &retCount);
+                if (status < VI_SUCCESS)
+                {
+                    qDebug("Error reading a response from the device\n");
+                }
+                else
+                {
+                    //
+
+                    if(retCount>0){
+                        //                        qDebug("Data read: %s\n",buffer);
+
+                        //                    value=atof((char*)buffer);
+
+                        string str(buffer,buffer+sizeof(buffer)/sizeof(*buffer));//还可以利用string来转换
+                        value=atof(str.c_str());
+                        qDebug()<<"value:"<<value;
+
+                        return true;
+                    }
+
+
+                }
+
+                break;
+            }
+        }
+    }
+
+    return false;
+}

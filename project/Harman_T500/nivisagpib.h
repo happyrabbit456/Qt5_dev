@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -24,6 +25,7 @@ public:
     ViStatus sample_getCurrent();
 
     ViStatus initGPIB();
+    bool getCurrent(double &value);
 
 signals:
 
