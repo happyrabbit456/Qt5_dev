@@ -45,6 +45,10 @@ public:
     void ReadAppSettings();
     void WriteAppSettings();
 
+    bool createSQLiteConnection();
+    bool createMSSQLConnection();
+
+
 public:
     NIVisaGPIB m_niVisaGPIB;
 

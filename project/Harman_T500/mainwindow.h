@@ -8,6 +8,12 @@
 #include <QDebug>
 #include <QMessageBox>
 
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlTableModel>
+#include <QtSql/QSqlError>
+#include <QSqlQueryModel>
+
 #include "gpib.h"
 #include "currentform.h"
 #include "nivisagpib.h"
@@ -20,6 +26,12 @@ typedef enum enumSelector{
     Selector_Current=0,
     Selector_Voltage,
 }SelectorType;
+
+typedef enum enumDataBase{
+    enum_SQLite=0,
+    enum_MSSQL,
+    enum_SQLite_MSSQL,
+}DataBaseEnum;
 
 class MainWindow : public QMainWindow
 {
@@ -38,8 +50,21 @@ private slots:
 private:
     void SetCurrDateTime();
 
+    bool createSQLiteConnection();
+    bool createMSSQLConnection();
+
 public:
     CurrentForm *m_pCurrentForm;
+
+    DataBaseEnum m_databaseEnum;
+
+    QSqlDatabase m_dbSQLite;
+    QSqlQuery m_querySQLite;
+    bool m_bSQLLiteConnection;
+
+    QSqlDatabase m_dbMSSQL;
+    QSqlQuery m_queryMSSQL;
+    bool m_bMSSQLConnection;
 
 private:
     Ui::MainWindow *ui;
