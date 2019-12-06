@@ -132,18 +132,27 @@ void MainWindow::toExcel()
            z_filePathName += ".xls";
        }
 
+       QXlsx::Format format1;/*设置该单元的样式*/
+           format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
+//           format1.setPatternBackgroundColor(QColor(152,251,152));/*北京颜色*/
+           format1.setFontSize(15);/*设置字体大小*/
+           format1.setHorizontalAlignment(QXlsx::Format::AlignHCenter);/*横向居中*/
+//           format1.setBorderStyle(QXlsx::Format::BorderDashDotDot);/*边框样式*/
+
        // 设置excel任务标题
        z_titleList << "test0" << "test1" << "test2" << "test3";
        for (int i = 0; i < z_titleList.size(); i++)
        {
-           z_xlsx.write(1, i+1, z_titleList.at(i));
+//           z_xlsx.write(1, i+1, z_titleList.at(i));
+
+           z_xlsx.write(1, i+1, z_titleList.at(i),format1);
        }
 
        // 设置烈宽
-       z_xlsx.setColumnWidth(1, 20);
-       z_xlsx.setColumnWidth(2, 20);
-       z_xlsx.setColumnWidth(3, 30);
-       z_xlsx.setColumnWidth(4, 35);
+       z_xlsx.setColumnWidth(1, 10);
+       z_xlsx.setColumnWidth(2, 10);
+       z_xlsx.setColumnWidth(3, 10);
+       z_xlsx.setColumnWidth(4, 15);
 
        int i,j;
 
