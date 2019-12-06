@@ -10,6 +10,10 @@ CurrentForm::CurrentForm(QWidget *parent) :
     initComboGPIB();
 
     resetTestHandle();
+
+    QXlsx::Document xlsx;
+    xlsx.write("A1", "Hello Qt!");
+    xlsx.saveAs("Test.xlsx");
 }
 
 CurrentForm::~CurrentForm()
@@ -76,4 +80,75 @@ void CurrentForm::on_btnReset_clicked()
 void CurrentForm::on_btnTest_clicked()
 {
 
+    wizard.addPage(createIntroPage());
+    wizard.addPage(createRegistrationPage());
+    wizard.addPage(createConclusionPage());
+
+    wizard.setWindowTitle("Trivial Wizard");
+    wizard.show();
+}
+
+//! [0] //! [1]
+QWizardPage* CurrentForm::createIntroPage()
+{
+    QWizardPage *page = new QWizardPage;
+    page->setTitle("Introduction");
+
+    QLabel *label = new QLabel("This wizard will help you register your copy "
+                               "of Super Product Two.");
+    label->setWordWrap(true);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(label);
+    page->setLayout(layout);
+
+    return page;
+}
+//! [0]
+
+//! [2]
+QWizardPage* CurrentForm::createRegistrationPage()
+//! [1] //! [3]
+{
+//! [3]
+    QWizardPage *page = new QWizardPage;
+    page->setTitle("Registration");
+    page->setSubTitle("Please fill both fields.");
+
+    QLabel *nameLabel = new QLabel("Name:");
+    QLineEdit *nameLineEdit = new QLineEdit;
+
+    QLabel *emailLabel = new QLabel("Email address:");
+    QLineEdit *emailLineEdit = new QLineEdit;
+
+    QGridLayout *layout = new QGridLayout;
+    layout->addWidget(nameLabel, 0, 0);
+    layout->addWidget(nameLineEdit, 0, 1);
+    layout->addWidget(emailLabel, 1, 0);
+    layout->addWidget(emailLineEdit, 1, 1);
+    page->setLayout(layout);
+
+    return page;
+//! [4]
+}
+//! [2] //! [4]
+
+//! [5] //! [6]
+QWizardPage* CurrentForm::createConclusionPage()
+//! [5] //! [7]
+{
+//! [7]
+    QWizardPage *page = new QWizardPage;
+    page->setTitle("Conclusion");
+
+    QLabel *label = new QLabel("You are now successfully registered. Have a "
+                               "nice day!");
+    label->setWordWrap(true);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(label);
+    page->setLayout(layout);
+
+    return page;
+//! [8]
 }

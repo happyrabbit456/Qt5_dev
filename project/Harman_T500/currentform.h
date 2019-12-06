@@ -4,7 +4,16 @@
 #include <QWidget>
 #include <QDebug>
 
+
+#include <QtWidgets>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
+
 #include "nivisagpib.h"
+
+#include <QtXlsx>
+#include "xlsxdocument.h"
 
 namespace Ui {
 class CurrentForm;
@@ -21,6 +30,10 @@ public:
 protected:
     void resetTestHandle();
 
+    QWizardPage *createIntroPage();
+    QWizardPage *createRegistrationPage();
+    QWizardPage *createConclusionPage();
+
 public:
     bool initComboGPIB();
 
@@ -36,6 +49,8 @@ private slots:
 
 private:
     Ui::CurrentForm *ui;
+
+    QWizard wizard;
 };
 
 #endif // CURRENTFORM_H

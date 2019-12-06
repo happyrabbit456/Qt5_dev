@@ -69,6 +69,8 @@ void exceptionSample()
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     QApplication a(argc, argv);
 
     //异常处理实例，pro文件中需要设置
@@ -76,6 +78,14 @@ int main(int argc, char *argv[])
     //QMAKE_CXXFLAGS_STL_ON = /EHa
 
     //exceptionSample();
+
+#ifndef QT_NO_TRANSLATION
+    QString translatorFileName = QLatin1String("qt_");
+    translatorFileName += QLocale::system().name();
+    QTranslator *translator = new QTranslator(&a);
+    if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+        a.installTranslator(translator);
+#endif
 
     MainWindow w;
     w.show();
