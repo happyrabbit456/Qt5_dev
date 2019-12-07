@@ -611,8 +611,34 @@
       <x>10</x>
       <y>20</y>
       <width>811</width>
-      <height>221</height>
+      <height>191</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnQuery">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>220</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>查询</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnExport">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>220</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>导出</string>
     </property>
    </widget>
   </widget>

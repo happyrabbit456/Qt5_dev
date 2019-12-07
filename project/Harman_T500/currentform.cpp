@@ -86,10 +86,10 @@ void CurrentForm::initializeModel(QSqlQueryModel *model)
     model->setHeaderData(9, Qt::Horizontal, QObject::tr("idlemincurrent"));
     model->setHeaderData(10, Qt::Horizontal, QObject::tr("idlemaxcurrent"));
     model->setHeaderData(11, Qt::Horizontal, QObject::tr("workmincurrent"));
-    model->setHeaderData(11, Qt::Horizontal, QObject::tr("workmaxcurrent"));
-    model->setHeaderData(11, Qt::Horizontal, QObject::tr("chargemincurrent"));
-    model->setHeaderData(11, Qt::Horizontal, QObject::tr("chargemaxcurrent"));
-    model->setHeaderData(11, Qt::Horizontal, QObject::tr("pf"));
+    model->setHeaderData(12, Qt::Horizontal, QObject::tr("workmaxcurrent"));
+    model->setHeaderData(13, Qt::Horizontal, QObject::tr("chargemincurrent"));
+    model->setHeaderData(14, Qt::Horizontal, QObject::tr("chargemaxcurrent"));
+    model->setHeaderData(15, Qt::Horizontal, QObject::tr("pf"));
 }
 
 void CurrentForm::updateTableView()
@@ -112,19 +112,23 @@ void CurrentForm::updateTableView()
      tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignHCenter);//表头居中
      tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);//设置固定宽度
 
-//     // column width
-//     tableView->setColumnWidth(0, 60);
-//     tableView->setColumnWidth(1, 120);
-//     tableView->setColumnWidth(2, 100);
-//     tableView->setColumnWidth(3, 80);
-//     tableView->setColumnWidth(4, 120);
-//     tableView->setColumnWidth(5, 60);
-//     tableView->setColumnWidth(6, 60);
-//     tableView->setColumnWidth(7, 100);
-//     tableView->setColumnWidth(8, 180);
-//     tableView->setColumnWidth(9, 60);
-//     tableView->setColumnWidth(10, 60);
-//     tableView->setColumnWidth(11, 80);
+     // column width
+     tableView->setColumnWidth(0, 100);
+     tableView->setColumnWidth(1, 120);
+     tableView->setColumnWidth(2, 120);
+     tableView->setColumnWidth(3, 100);
+     tableView->setColumnWidth(4, 100);
+     tableView->setColumnWidth(5, 100);
+     tableView->setColumnWidth(6, 100);
+     tableView->setColumnWidth(7, 100);
+     tableView->setColumnWidth(8, 120);
+     tableView->setColumnWidth(9, 120);
+     tableView->setColumnWidth(10, 120);
+     tableView->setColumnWidth(11, 120);
+     tableView->setColumnWidth(12, 120);
+     tableView->setColumnWidth(13, 120);
+     tableView->setColumnWidth(14, 120);
+     tableView->setColumnWidth(15, 120);
 
     /*设置tableview等宽*/
 //    QHeaderView* headerView = ui->tableWidget->horizontalHeader();
@@ -132,7 +136,7 @@ void CurrentForm::updateTableView()
     /*或者下面的代码*/
 //    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    ui->tableView->resizeColumnsToContents();
+//    ui->tableView->resizeColumnsToContents();
 
     ui->tableView->show();
 }
@@ -461,4 +465,93 @@ void CurrentForm::on_btnUnlock_clicked()
     ui->editMaxWorkCurrent->setEnabled(true);
     ui->editMinChargeCurrent->setEnabled(true);
     ui->editMaxChargeCurrent->setEnabled(true);
+}
+
+void CurrentForm::on_btnQuery_clicked()
+{
+    updateTableView();
+}
+
+void CurrentForm::on_btnExport_clicked()
+{
+    QXlsx::Document z_xlsx;
+    QStringList z_titleList;
+    QString z_filePathName;
+    QString z_defaultFileName = "电流测试.xls";
+
+    // 设置保存的默认文件名称 文件名_当前时间.xls
+    QFileInfo z_fileinfo(z_defaultFileName);
+    QDateTime z_curDateTime = QDateTime::currentDateTime();
+    QString z_strCurTime = z_curDateTime.toString("yyyyMMddhhmmss");
+    z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + ".xls";
+
+    // 获取保存文件路径
+    QFileDialog *z_fileDlg = new QFileDialog(this);
+    z_fileDlg->setWindowTitle("保存文件");
+    z_fileDlg->setAcceptMode(QFileDialog::AcceptSave);
+    z_fileDlg->selectFile(z_defaultFileName);
+    z_fileDlg->setNameFilter("Excel Files(*.xls *.xlsx)");
+    z_fileDlg->setDefaultSuffix("xls");
+
+    if (z_fileDlg->exec() == QDialog::Accepted)
+    {
+        z_filePathName = z_fileDlg->selectedFiles().at(0);
+    }
+
+    // 保存文件添加后缀名
+    z_fileinfo =  QFileInfo(z_filePathName);
+    if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != "xlsx")
+    {
+        z_filePathName += ".xls";
+    }
+
+    QXlsx::Format format1;/*设置该单元的样式*/
+    format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
+    //           format1.setPatternBackgroundColor(QColor(152,251,152));/*北京颜色*/
+    format1.setFontSize(15);/*设置字体大小*/
+    format1.setHorizontalAlignment(QXlsx::Format::AlignHCenter);/*横向居中*/
+    //           format1.setBorderStyle(QXlsx::Format::BorderDashDotDot);/*边框样式*/
+
+    // 设置excel任务标题
+    z_titleList << "id" << "time" << "sn" << "idlecurrent"<<"idlecurrentpf"
+                <<"workcurrent"<<"workcurrentpf"<<"chargecurrent"<< "chargecurrentpf"
+                << "idlemincurrent"<<"idlemaxcurrent"<<"workmincurrent"<<"workmaxcurrent"
+                <<"chargemincurrent"<<"chargemaxcurrent"<<"pf";
+    for (int i = 0; i < z_titleList.size(); i++)
+    {
+        //           z_xlsx.write(1, i+1, z_titleList.at(i));
+
+        z_xlsx.write(1, i+1, z_titleList.at(i),format1);
+    }
+
+    // 设置烈宽
+    for(int i=1;i<17;i++){
+        if(i==2 || i==3){
+            z_xlsx.setColumnWidth(i, 20);
+        }
+        else{
+            z_xlsx.setColumnWidth(i, 30);
+        }
+    }
+
+    int i,j;
+
+    //QTableView 获取列数
+    int colcount=ui->tableView->model()->columnCount();// tableView->model->columnCount();
+    //QTableView 获取行数
+    int rowcount=ui->tableView->model()->rowCount();// tableView->model->rowCount();
+
+    //数据区 QTableView 获取表格数据部分
+    for(i=0;i<rowcount;i++) //行数
+    {
+        for (j=0;j<colcount;j++)   //列数
+        {
+            QModelIndex index = ui->tableView->model()->index(i, j);
+            QString strdata=ui->tableView->model()->data(index).toString();
+            z_xlsx.write(i+2,j+1,strdata);
+        }
+    }
+
+    // 保存文件
+    z_xlsx.saveAs(z_filePathName);
 }

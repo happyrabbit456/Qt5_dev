@@ -96,6 +96,10 @@ private slots:
 
     void on_btnUnlock_clicked();
 
+    void on_btnQuery_clicked();
+
+    void on_btnExport_clicked();
+
 private:
     Ui::CurrentForm *ui;
 
