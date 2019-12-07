@@ -52,32 +52,19 @@ protected:
 public:
     bool initComboGPIB();
 
-    bool  updateSN(bool bOK,QString sn);
+    bool updateSN(bool bOK,QString sn);
     bool updateIdleCurrent(bool bOK, string str);
     bool updateWorkCurrent(bool bOK, string str);
     bool updateChargeCurrent(bool bOK, string str);
+
+    bool insertRecordHandle();
+    bool conclusionHandle();
 
     void ReadAppSettings();
     void WriteAppSettings();
 
     bool createSQLiteConnection();
     bool createMSSQLConnection();
-
-
-//    bool bCreateTable=m_querySQLite.exec(
-//                "CREATE TABLE  IF NOT EXISTS currentrecord("
-//                "id	INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                "time TEXT,"
-//                "sn VARCHAR(50),"
-//                "idlecurrent VARCHAR(30),"
-//                "idlecurrentpf  VARCHAR(10),"
-//                "workcurrent VARCHAR(30),"
-//                "workcurrentpf  VARCHAR(10),"
-//                "chargecurrent  VARCHAR(30),"
-//                "chargecurrentpf  VARCHAR(10),"
-
-//                "pf VARCHAR(10))"
-//                );
 
 public:
     NIVisaGPIB m_niVisaGPIB;
@@ -90,6 +77,13 @@ public:
     QString m_chargecurrent;
     QString m_chargecurrentpf;
     QString m_pf;
+
+    double m_dMinIdleCurrent;
+    double m_dMaxIdleCurrent;
+    double m_dMinWorkCurrent;
+    double m_dMaxWorkCurrent;
+    double m_dMinChargeCurrent;
+    double m_dMaxChargeCurrent;
 
 private slots:
     void on_comboGPIBSelector_currentIndexChanged(int index);

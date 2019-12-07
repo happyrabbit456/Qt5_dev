@@ -22,15 +22,11 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 bool ConclusionPage::validatePage()
 {
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
-//    double d=0.000;
-//    pCurrentForm->m_niVisaGPIB.getCurrent(d);
-//    qDebug()<<d;
-
-////    asprintf
-//    QString qstr=QString().sprintf("%5.3f",qAbs(d*1000));
-//    qDebug()<<"qstr:"<<qstr;
-
-//    pCurrentForm->updateChargeCurrent(qstr);
-
-    return true;
+    bool bHandle = pCurrentForm->conclusionHandle();
+    if(bHandle){
+        return true;
+    }
+    else{
+        return false;
+    }
 }

@@ -74,32 +74,6 @@ void CurrentForm::initializeModel(QSqlQueryModel *model)
         }
     }
 
-
-
-
-//    bool bCreateTable=m_querySQLite.exec(
-//                "CREATE TABLE  IF NOT EXISTS currentrecord("
-//                "id	INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                "time TEXT,"
-//                "sn VARCHAR(50),"
-//                "idlecurrent VARCHAR(30),"
-//                "idlecurrentpf  VARCHAR(10),"
-//                "workcurrent VARCHAR(30),"
-//                "workcurrentpf  VARCHAR(10),"
-//                "chargecurrent  VARCHAR(30),"
-//                "chargecurrentpf  VARCHAR(10),"
-//                "idlemincurrent VARCHAR(30),"
-//                "idlemaxcurrent  VARCHAR(30),"
-//                "workmincurrent VARCHAR(30),"
-//                "workmaxcurrent  VARCHAR(30),"
-//                "chargemincurrent  VARCHAR(30),"
-//                "chargemaxcurrent  VARCHAR(30),"
-//                "pf VARCHAR(10),"
-//                );
-
-
-
-
     model->setHeaderData(0, Qt::Horizontal, QObject::tr("id"));
     model->setHeaderData(1, Qt::Horizontal, QObject::tr("time"));
     model->setHeaderData(2, Qt::Horizontal, QObject::tr("sn"));
@@ -169,33 +143,33 @@ void CurrentForm::ReadAppSettings()
     double d;
 
     d=m_settings->value("MinIdleCurrent",1.000).toDouble();
+    m_dMinIdleCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
-//    qstr=QString::number(d);
     ui->editMinIdleCurrent->setText(qstr);
 
     d=m_settings->value("MaxIdleCurrent",10.000).toDouble();
+    m_dMaxIdleCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
-//    qstr=QString::number(d);
     ui->editMaxIdleCurrent->setText(qstr);
 
     d=m_settings->value("MinWorkCurrent",1.000).toDouble();
+    m_dMinWorkCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
-//    qstr=QString::number(d);
     ui->editMinWorkCurrent->setText(qstr);
 
     d=m_settings->value("MaxWorkCurrent",10.000).toDouble();
+    m_dMaxWorkCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
-//    qstr=QString::number(d);
     ui->editMaxWorkCurrent->setText(qstr);
 
     d=m_settings->value("MinChargeCurrent",1.000).toDouble();
+    m_dMinChargeCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
-//    qstr=QString::number(d);
     ui->editMinChargeCurrent->setText(qstr);
 
     d=m_settings->value("MaxChargeCurrent",10.000).toDouble();
+    m_dMaxChargeCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
-//    qstr=QString::number(d);
     ui->editMaxChargeCurrent->setText(qstr);
 }
 
@@ -205,21 +179,27 @@ void CurrentForm::WriteAppSettings()
 
     qstr=ui->editMinIdleCurrent->text();
     m_settings->setValue("MinIdleCurrent",qstr.toDouble());
+    m_dMinIdleCurrent=qAbs(qstr.toDouble());//qstr.toDouble();
 
     qstr=ui->editMaxIdleCurrent->text();
     m_settings->setValue("MaxIdleCurrent",qstr.toDouble());
+    m_dMaxIdleCurrent=qAbs(qstr.toDouble());//qstr.toDouble();
 
     qstr=ui->editMinWorkCurrent->text();
     m_settings->setValue("MinWorkCurrent",qstr.toDouble());
+    m_dMinWorkCurrent=qAbs(qstr.toDouble());//qstr.toDouble();
 
     qstr=ui->editMaxWorkCurrent->text();
     m_settings->setValue("MaxWorkCurrent",qstr.toDouble());
+    m_dMaxWorkCurrent=qAbs(qstr.toDouble());//qstr.toDouble();
 
     qstr=ui->editMinChargeCurrent->text();
     m_settings->setValue("MinChargeCurrent",qstr.toDouble());
+    m_dMinChargeCurrent=qAbs(qstr.toDouble());//qstr.toDouble();
 
     qstr=ui->editMaxChargeCurrent->text();
     m_settings->setValue("MaxChargeCurrent",qstr.toDouble());
+    m_dMaxChargeCurrent=qAbs(qstr.toDouble());//qstr.toDouble();
 }
 
 void CurrentForm::resetTestHandle()
@@ -232,6 +212,8 @@ void CurrentForm::resetTestHandle()
     ui->editChargeCurrent->setText("0.000");
     ui->lineEditSN->setText("");
     ui->lineEditSN->setFocus();
+
+    ui->labelResultStatus->setVisible(false);
 }
 
 bool CurrentForm::initComboGPIB()
@@ -283,10 +265,23 @@ bool CurrentForm::updateIdleCurrent(bool bOK, string str)
 {
     if(bOK){
         double d=atof(str.c_str());
-        QString qstr=QString().sprintf("%5.3f",qAbs(d*1000)); //mA
+        d=qAbs(d*1000); //mA
+        QString qstr=QString().sprintf("%5.3f",qAbs(d));
         ui->editIdleCurrent->setText(qstr);
 
         m_idlecurrent=qstr;
+        if(d<m_dMinIdleCurrent || d>m_dMaxIdleCurrent){
+            m_idlecurrentpf="F";
+            ui->labelIdleCurrentStatus->setVisible(true);
+            ui->labelIdleCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
+            ui->labelIdleCurrentStatus->setText("Fail");
+        }
+        else{
+            m_idlecurrentpf="P";
+            ui->labelIdleCurrentStatus->setVisible(true);
+            ui->labelIdleCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
+            ui->labelIdleCurrentStatus->setText("Pass");
+        }
 
         return true;
     }
@@ -298,10 +293,23 @@ bool CurrentForm::updateWorkCurrent(bool bOK, string str)
 {
     if(bOK){
         double d=atof(str.c_str());
-        QString qstr=QString().sprintf("%5.3f",qAbs(d*1000)); //mA
+        d=qAbs(d*1000); //mA
+        QString qstr=QString().sprintf("%5.3f",qAbs(d));
         ui->editWorkCurrent->setText(qstr);
 
         m_workcurrent=qstr;
+        if(d<m_dMinWorkCurrent || d>m_dMaxWorkCurrent){
+            m_workcurrentpf="F";
+            ui->labelWorkCurrentStatus->setVisible(true);
+            ui->labelWorkCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
+            ui->labelWorkCurrentStatus->setText("Fail");
+        }
+        else{
+            m_workcurrentpf="P";
+            ui->labelWorkCurrentStatus->setVisible(true);
+            ui->labelWorkCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
+            ui->labelWorkCurrentStatus->setText("Pass");
+        }
 
         return true;
     }
@@ -313,15 +321,101 @@ bool CurrentForm::updateChargeCurrent(bool bOK, string str)
 {
     if(bOK){
         double d=atof(str.c_str());
-        QString qstr=QString().sprintf("%5.3f",qAbs(d*1000)); //mA
+        d=qAbs(d*1000); //mA
+        QString qstr=QString().sprintf("%5.3f",qAbs(d));
         ui->editChargeCurrent->setText(qstr);
 
         m_chargecurrent=qstr;
+        if(d<m_dMinChargeCurrent || d>m_dMaxChargeCurrent){
+            m_chargecurrentpf="F";
+            ui->labelChargeCurrentStatus->setVisible(true);
+            ui->labelChargeCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
+            ui->labelChargeCurrentStatus->setText("Fail");
+        }
+        else{
+            m_chargecurrentpf="P";
+            ui->labelChargeCurrentStatus->setVisible(true);
+            ui->labelChargeCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
+            ui->labelChargeCurrentStatus->setText("Pass");
+        }
 
         return true;
     }
 
     return false;
+}
+
+bool CurrentForm::insertRecordHandle()
+{
+    QString strQuery;
+    bool ret=false;
+
+    MainWindow* pMainWindow=MainWindow::getMainWindow();
+    int nSupportDatabase =pMainWindow->getSupportDatabase();
+    if(pMainWindow!=nullptr && (nSupportDatabase==enum_SQLite||nSupportDatabase==enum_SQLite_MSSQL)){
+        if(pMainWindow->m_bSQLLiteConnection){
+            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime'))";
+
+            strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
+                    .arg("insert into currentrecord values(NULL,")
+                    .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
+                    .arg(m_sn)
+                    .arg(m_idlecurrent)
+                    .arg(m_idlecurrentpf)
+                    .arg(m_workcurrent)
+                    .arg(m_workcurrentpf)
+                    .arg(m_chargecurrent)
+                    .arg(m_chargecurrentpf)
+                    .arg(QString().sprintf("%5.3f",m_dMinIdleCurrent))
+                    .arg(QString().sprintf("%5.3f",m_dMaxIdleCurrent))
+                    .arg(QString().sprintf("%5.3f",m_dMinWorkCurrent))
+                    .arg(QString().sprintf("%5.3f",m_dMaxWorkCurrent))
+                    .arg(QString().sprintf("%5.3f",m_dMinChargeCurrent))
+                    .arg(QString().sprintf("%5.3f",m_dMaxChargeCurrent))
+                    .arg(m_pf);
+
+            qDebug()<<strQuery;
+
+            bool bInsertRecord=pMainWindow->m_querySQLite.exec(strQuery);
+            if(!bInsertRecord){
+                qDebug() << pMainWindow->m_querySQLite.lastError();
+                QMessageBox::warning(this,"warning",pMainWindow->m_querySQLite.lastError().text());
+            }
+            else{
+                return true;
+            }
+        }
+    }
+    if(pMainWindow!=nullptr && (nSupportDatabase==enum_MSSQL||nSupportDatabase==enum_SQLite_MSSQL)){
+        if(pMainWindow->m_bMSSQLConnection){
+            QString strTIME="(select CONVERT(varchar(100) , getdate(), 111 )+' '+ Datename(hour,GetDate())+ ':'+Datename(minute,GetDate()))";
+
+        }
+    }
+
+    return ret;
+}
+
+bool CurrentForm::conclusionHandle()
+{
+    if(m_idlecurrentpf.compare("P")==0
+            &&m_workcurrentpf.compare("P")==0
+            &&m_chargecurrentpf.compare("P")==0){
+        m_pf="P";
+        ui->labelResultStatus->setVisible(true);
+        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
+        ui->labelResultStatus->setText("Pass");
+    }
+    else{
+        m_pf="F";
+        ui->labelResultStatus->setVisible(true);
+        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
+        ui->labelResultStatus->setText("Fail");
+    }
+
+    bool bInsert=insertRecordHandle();
+
+    return bInsert;
 }
 
 void CurrentForm::on_comboGPIBSelector_currentIndexChanged(int index)
