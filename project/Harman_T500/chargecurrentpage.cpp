@@ -22,15 +22,15 @@ ChargeCurrentPage::ChargeCurrentPage(QWidget *parent)
 bool ChargeCurrentPage::validatePage()
 {
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
-    double d=0.000;
-    pCurrentForm->m_niVisaGPIB.getCurrent(d);
-    qDebug()<<d;
 
-//    asprintf
-    QString qstr=QString().sprintf("%5.3f",qAbs(d*1000));
-    qDebug()<<"qstr:"<<qstr;
+    string value;
+    bool bGetCurrent=pCurrentForm->m_niVisaGPIB.getCurrent(value);
+    if(bGetCurrent){
+        bool bUpdate=pCurrentForm->updateChargeCurrent(true,value);
+        if(bUpdate){
+            return true;
+        }
+    }
 
-    pCurrentForm->updateChargeCurrent(qstr);
-
-    return true;
+    return false;
 }

@@ -351,7 +351,7 @@ ViStatus NIVisaGPIB::initGPIB()
     return status;
 }
 
-bool NIVisaGPIB::getCurrent(double &value)
+bool NIVisaGPIB::getCurrent(string &value)
 {
     ViStatus status;
     unsigned char buffer[100];
@@ -390,16 +390,16 @@ bool NIVisaGPIB::getCurrent(double &value)
                 }
                 else
                 {
-                    //
-
                     if(retCount>0){
                         //                        qDebug("Data read: %s\n",buffer);
 
                         //                    value=atof((char*)buffer);
 
                         string str(buffer,buffer+sizeof(buffer)/sizeof(*buffer));//还可以利用string来转换
-                        value=atof(str.c_str());
-                        qDebug()<<"value:"<<value;
+                        value=str;
+
+//                        value=atof(str.c_str());
+//                        qDebug()<<"value:"<<value;
 
                         return true;
                     }

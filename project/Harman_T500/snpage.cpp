@@ -12,7 +12,7 @@ SNPage::SNPage(QWidget *parent)
     label->setWordWrap(true);
 
     QLabel *nameLabel = new QLabel("SN");
-    QLineEdit *snLineEdit = new QLineEdit;
+    snLineEdit = new QLineEdit;
 
     QGridLayout *layout_SN = new QGridLayout;
     layout_SN->addWidget(nameLabel, 0, 0);
@@ -32,16 +32,11 @@ bool SNPage::validatePage()
 //    qDebug()<<"validatePage() done.";
 
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
-
-//    double d=0.000;
-//    pCurrentForm->m_niVisaGPIB.getCurrent(d);
-//    qDebug()<<d;
-
-////    asprintf
-//    QString qstr=QString().sprintf("%5.3f",qAbs(d*1000));
-//    qDebug()<<"qstr:"<<qstr;
-
-//    pCurrentForm->updateIdleCurrent(qstr);
-
-    return true;
+    bool bUpdate = pCurrentForm->updateSN(true, snLineEdit->text());
+    if(bUpdate){
+        return true;
+    }
+    else{
+        return false;
+    }
 }

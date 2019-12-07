@@ -22,16 +22,16 @@ WorkCurrentPage::WorkCurrentPage(QWidget *parent)
 bool WorkCurrentPage::validatePage()
 {
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
-    double d=0.000;
-    pCurrentForm->m_niVisaGPIB.getCurrent(d);
-    qDebug()<<d;
 
-//    asprintf
-    QString qstr=QString().sprintf("%5.3f",qAbs(d*1000));
-    qDebug()<<"qstr:"<<qstr;
+    string value;
+    bool bGetCurrent=pCurrentForm->m_niVisaGPIB.getCurrent(value);
+    if(bGetCurrent){
+        bool bUpdate=pCurrentForm->updateWorkCurrent(true,value);
+        if(bUpdate){
+            return true;
+        }
+    }
 
-    pCurrentForm->updateWorkCurrent(qstr);
-
-    return true;
+    return false;
 }
 

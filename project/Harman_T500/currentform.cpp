@@ -160,7 +160,7 @@ void CurrentForm::updateTableView()
 
     ui->tableView->resizeColumnsToContents();
 
-     ui->tableView->show();
+    ui->tableView->show();
 }
 
 void CurrentForm::ReadAppSettings()
@@ -267,19 +267,61 @@ bool CurrentForm::initComboGPIB()
     }
 }
 
-void CurrentForm::updateIdleCurrent(QString qstr)
+bool CurrentForm::updateSN(bool bOK, QString sn)
 {
-    ui->editIdleCurrent->setText(qstr);
+    if(bOK){
+        ui->lineEditSN->setText(sn);
+
+        m_sn=sn;
+        return  true;
+    }
+
+    return false;
 }
 
-void CurrentForm::updateWorkCurrent(QString qstr)
+bool CurrentForm::updateIdleCurrent(bool bOK, string str)
 {
-    ui->editWorkCurrent->setText(qstr);
+    if(bOK){
+        double d=atof(str.c_str());
+        QString qstr=QString().sprintf("%5.3f",qAbs(d*1000)); //mA
+        ui->editIdleCurrent->setText(qstr);
+
+        m_idlecurrent=qstr;
+
+        return true;
+    }
+
+    return false;
 }
 
-void CurrentForm::updateChargeCurrent(QString qstr)
+bool CurrentForm::updateWorkCurrent(bool bOK, string str)
 {
-    ui->editChargeCurrent->setText(qstr);
+    if(bOK){
+        double d=atof(str.c_str());
+        QString qstr=QString().sprintf("%5.3f",qAbs(d*1000)); //mA
+        ui->editWorkCurrent->setText(qstr);
+
+        m_workcurrent=qstr;
+
+        return true;
+    }
+
+    return false;
+}
+
+bool CurrentForm::updateChargeCurrent(bool bOK, string str)
+{
+    if(bOK){
+        double d=atof(str.c_str());
+        QString qstr=QString().sprintf("%5.3f",qAbs(d*1000)); //mA
+        ui->editChargeCurrent->setText(qstr);
+
+        m_chargecurrent=qstr;
+
+        return true;
+    }
+
+    return false;
 }
 
 void CurrentForm::on_comboGPIBSelector_currentIndexChanged(int index)

@@ -51,9 +51,11 @@ protected:
 
 public:
     bool initComboGPIB();
-    void updateIdleCurrent(QString qstr);
-    void updateWorkCurrent(QString qstr);
-    void updateChargeCurrent(QString qstr);
+
+    bool  updateSN(bool bOK,QString sn);
+    bool updateIdleCurrent(bool bOK, string str);
+    bool updateWorkCurrent(bool bOK, string str);
+    bool updateChargeCurrent(bool bOK, string str);
 
     void ReadAppSettings();
     void WriteAppSettings();
@@ -81,13 +83,13 @@ public:
     NIVisaGPIB m_niVisaGPIB;
 
     QString m_sn;
-    double m_idlecurrent;
-    double m_idlecurrentpf;
-    double m_workcurrent;
-    double m_workcurrentpf;
-    double m_chargecurrent;
-    double m_chargecurrentpf;
-    double m_pf;
+    QString m_idlecurrent;
+    QString m_idlecurrentpf;
+    QString m_workcurrent;
+    QString m_workcurrentpf;
+    QString m_chargecurrent;
+    QString m_chargecurrentpf;
+    QString m_pf;
 
 private slots:
     void on_comboGPIBSelector_currentIndexChanged(int index);
