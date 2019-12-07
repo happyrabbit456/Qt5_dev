@@ -41,6 +41,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow() override;
 
+
+    static MainWindow* getMainWindow();
+    int getSupportDatabase();
+
 protected:
     void timerEvent(QTimerEvent *event) override;
 

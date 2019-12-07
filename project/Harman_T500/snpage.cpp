@@ -32,6 +32,7 @@ bool SNPage::validatePage()
 //    qDebug()<<"validatePage() done.";
 
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
+
 //    double d=0.000;
 //    pCurrentForm->m_niVisaGPIB.getCurrent(d);
 //    qDebug()<<d;

@@ -1,6 +1,8 @@
 ﻿#include "currentform.h"
 #include "ui_currentform.h"
 
+#include "mainwindow.h"
+
 CurrentForm::CurrentForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CurrentForm)
@@ -14,19 +16,151 @@ CurrentForm::CurrentForm(QWidget *parent) :
     m_settings = new QSettings("settings.ini", QSettings::IniFormat);
     ReadAppSettings();
 
-    QXlsx::Document xlsx;
-    xlsx.write("A1", "Hello Qt!");
-    xlsx.saveAs("Test.xlsx");
+//    QXlsx::Document xlsx;
+//    xlsx.write("A1", "Hello Qt!");
+//    xlsx.saveAs("Test.xlsx");
+
+    m_model = new QSqlQueryModel(ui->tableView);
+    updateTableView();
 }
 
 CurrentForm::~CurrentForm()
 {
+    if(m_model!=nullptr){
+        delete m_model;
+        m_model=nullptr;
+    }
+
     if(m_settings!=nullptr){
         delete m_settings;
         m_settings=nullptr;
     }
 
     delete ui;
+}
+
+void CurrentForm::initializeModel(QSqlQueryModel *model)
+{
+    //数据库数据
+    MainWindow* pMainWindow=MainWindow::getMainWindow();
+    if(pMainWindow!=nullptr){
+        /*
+        if(pMainWindow->m_bDBConnection){
+            model->setQuery("select * from currentrecord",pMainWindow->m_db);
+            if (model->lastError().isValid()){
+                qDebug() << model->lastError();
+                QMessageBox::warning(this,"warning",model->lastError().text());
+            }
+        }
+        */
+        int nSupportDatabase =pMainWindow->getSupportDatabase();
+        if(nSupportDatabase==enum_SQLite){
+            if(pMainWindow->m_bSQLLiteConnection){
+                model->setQuery("select * from currentrecord",pMainWindow->m_dbSQLite);
+                if (model->lastError().isValid()){
+                    qDebug() << model->lastError();
+                    QMessageBox::warning(this,"warning",model->lastError().text());
+                }
+            }
+        }
+        else{
+            if(pMainWindow->m_bMSSQLConnection){
+                model->setQuery("select * from currentrecord",pMainWindow->m_dbMSSQL);
+                if (model->lastError().isValid()){
+                    qDebug() << model->lastError();
+                    QMessageBox::warning(this,"warning",model->lastError().text());
+                }
+            }
+        }
+    }
+
+
+
+
+//    bool bCreateTable=m_querySQLite.exec(
+//                "CREATE TABLE  IF NOT EXISTS currentrecord("
+//                "id	INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                "time TEXT,"
+//                "sn VARCHAR(50),"
+//                "idlecurrent VARCHAR(30),"
+//                "idlecurrentpf  VARCHAR(10),"
+//                "workcurrent VARCHAR(30),"
+//                "workcurrentpf  VARCHAR(10),"
+//                "chargecurrent  VARCHAR(30),"
+//                "chargecurrentpf  VARCHAR(10),"
+//                "idlemincurrent VARCHAR(30),"
+//                "idlemaxcurrent  VARCHAR(30),"
+//                "workmincurrent VARCHAR(30),"
+//                "workmaxcurrent  VARCHAR(30),"
+//                "chargemincurrent  VARCHAR(30),"
+//                "chargemaxcurrent  VARCHAR(30),"
+//                "pf VARCHAR(10),"
+//                );
+
+
+
+
+    model->setHeaderData(0, Qt::Horizontal, QObject::tr("id"));
+    model->setHeaderData(1, Qt::Horizontal, QObject::tr("time"));
+    model->setHeaderData(2, Qt::Horizontal, QObject::tr("sn"));
+    model->setHeaderData(3, Qt::Horizontal, QObject::tr("idlecurrent"));
+    model->setHeaderData(4, Qt::Horizontal, QObject::tr("idlecurrentpf"));
+    model->setHeaderData(5, Qt::Horizontal, QObject::tr("workcurrent"));
+    model->setHeaderData(6, Qt::Horizontal, QObject::tr("workcurrentpf"));
+    model->setHeaderData(7, Qt::Horizontal, QObject::tr("chargecurrent"));
+    model->setHeaderData(8, Qt::Horizontal, QObject::tr("chargecurrentpf"));
+    model->setHeaderData(9, Qt::Horizontal, QObject::tr("idlemincurrent"));
+    model->setHeaderData(10, Qt::Horizontal, QObject::tr("idlemaxcurrent"));
+    model->setHeaderData(11, Qt::Horizontal, QObject::tr("workmincurrent"));
+    model->setHeaderData(11, Qt::Horizontal, QObject::tr("workmaxcurrent"));
+    model->setHeaderData(11, Qt::Horizontal, QObject::tr("chargemincurrent"));
+    model->setHeaderData(11, Qt::Horizontal, QObject::tr("chargemaxcurrent"));
+    model->setHeaderData(11, Qt::Horizontal, QObject::tr("pf"));
+}
+
+void CurrentForm::updateTableView()
+{
+    QTableView *tableView=ui->tableView;
+    initializeModel(m_model);
+    ui->tableView->setModel(m_model);
+
+    //只读
+    tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //设置选中模式为选中行
+    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    //设置选中单行
+    tableView->setSelectionMode( QAbstractItemView::SingleSelection);
+
+     tableView->setSortingEnabled(false);
+     tableView->verticalHeader()->hide();
+     tableView->setWordWrap(false);
+
+     tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignHCenter);//表头居中
+     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);//设置固定宽度
+
+//     // column width
+//     tableView->setColumnWidth(0, 60);
+//     tableView->setColumnWidth(1, 120);
+//     tableView->setColumnWidth(2, 100);
+//     tableView->setColumnWidth(3, 80);
+//     tableView->setColumnWidth(4, 120);
+//     tableView->setColumnWidth(5, 60);
+//     tableView->setColumnWidth(6, 60);
+//     tableView->setColumnWidth(7, 100);
+//     tableView->setColumnWidth(8, 180);
+//     tableView->setColumnWidth(9, 60);
+//     tableView->setColumnWidth(10, 60);
+//     tableView->setColumnWidth(11, 80);
+
+    /*设置tableview等宽*/
+//    QHeaderView* headerView = ui->tableWidget->horizontalHeader();
+//    headerView->setSectionResizeMode(QHeaderView::Stretch);
+    /*或者下面的代码*/
+//    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->tableView->resizeColumnsToContents();
+
+     ui->tableView->show();
 }
 
 void CurrentForm::ReadAppSettings()

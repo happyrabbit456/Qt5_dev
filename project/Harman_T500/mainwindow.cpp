@@ -81,6 +81,14 @@ MainWindow::~MainWindow()
     }
 }
 
+MainWindow *MainWindow::getMainWindow()
+{
+    foreach (QWidget *w, qApp->topLevelWidgets())
+        if (MainWindow* mainWin = qobject_cast<MainWindow*>(w))
+            return mainWin;
+    return nullptr;
+}
+
 void MainWindow::on_listViewSelector_clicked(const QModelIndex &index)
 {
     qDebug()<<"row:"<<index.row();
@@ -153,19 +161,23 @@ bool MainWindow::createSQLiteConnection()
 
         m_querySQLite=QSqlQuery(m_dbSQLite);
         bool bCreateTable=m_querySQLite.exec(
-                    "CREATE TABLE  IF NOT EXISTS record("
-                    "ID	INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    "TIME TEXT,"
-                    "WorkOrder	VARCHAR(30),"
-                    "Model VARCHAR(30),"
-                    "TestStation  VARCHAR(30),"
-                    "Line VARCHAR(20),"
-                    "OPID VARCHAR(20),"
-                    "LineLeader VARCHAR(20),"
-                    "SN VARCHAR(50),"
-                    "Vendor VARCHAR(30),"
-                    "PF VARCHAR(10),"
-                    "ErrorCode INTEGER)"
+                    "CREATE TABLE  IF NOT EXISTS currentrecord("
+                    "id	INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "time TEXT,"
+                    "sn VARCHAR(50),"
+                    "idlecurrent VARCHAR(30),"
+                    "idlecurrentpf  VARCHAR(10),"
+                    "workcurrent VARCHAR(30),"
+                    "workcurrentpf  VARCHAR(10),"
+                    "chargecurrent  VARCHAR(30),"
+                    "chargecurrentpf  VARCHAR(10),"
+                    "idlemincurrent VARCHAR(30),"
+                    "idlemaxcurrent  VARCHAR(30),"
+                    "workmincurrent VARCHAR(30),"
+                    "workmaxcurrent  VARCHAR(30),"
+                    "chargemincurrent  VARCHAR(30),"
+                    "chargemaxcurrent  VARCHAR(30),"
+                    "pf VARCHAR(10))"
                     );
         if(!bCreateTable){
             QSqlError errorText=m_querySQLite.lastError();
@@ -235,3 +247,29 @@ bool MainWindow::createMSSQLConnection()
 
     return true;
 }
+
+int MainWindow::getSupportDatabase()
+{
+    bool bSupportSQLite=false;
+    bool bSupportMSSQL=false;
+#if defined(DB_SQLite)
+//    qDebug()<<"DB_SQLite";
+    bSupportSQLite=true;
+#endif
+
+#if defined(DB_MSSQL)
+//    qDebug()<<"DB_MSSQL";
+    bSupportMSSQL=true;
+#endif
+    if(bSupportSQLite && bSupportMSSQL){
+        m_databaseEnum=enum_SQLite_MSSQL;
+    }
+    else if(bSupportSQLite && !bSupportMSSQL){
+        m_databaseEnum=enum_SQLite;
+    }
+    else if(!bSupportSQLite && bSupportMSSQL){
+        m_databaseEnum=enum_MSSQL;
+    }
+    return  m_databaseEnum;
+}
+
