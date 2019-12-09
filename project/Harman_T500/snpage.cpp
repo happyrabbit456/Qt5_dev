@@ -36,6 +36,7 @@ bool SNPage::validatePage()
     qDebug()<<"validatePage() done.";
 
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
+    pCurrentForm->m_sn=snLineEdit->text();
 
     return true;
 }
