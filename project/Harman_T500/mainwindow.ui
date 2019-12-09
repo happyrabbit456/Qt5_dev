@@ -175,6 +175,7 @@
      </property>
      <property name="font">
       <font>
+       <pointsize>12</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -197,6 +198,7 @@
      </property>
      <property name="font">
       <font>
+       <pointsize>12</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -214,7 +216,7 @@
      <rect>
       <x>10</x>
       <y>120</y>
-      <width>120</width>
+      <width>151</width>
       <height>651</height>
      </rect>
     </property>
@@ -226,19 +228,26 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>101</width>
+       <width>131</width>
        <height>291</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
      </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBoxStackView">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>170</x>
       <y>120</y>
-      <width>871</width>
-      <height>651</height>
+      <width>840</width>
+      <height>650</height>
      </rect>
     </property>
     <property name="title">
@@ -248,9 +257,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
-       <width>851</width>
-       <height>621</height>
+       <y>9</y>
+       <width>810</width>
+       <height>631</height>
       </rect>
      </property>
     </widget>

@@ -41,9 +41,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow() override;
 
-
     static MainWindow* getMainWindow();
-    int getSupportDatabase();
+    int getSupportDatabase();    
 
 protected:
     void timerEvent(QTimerEvent *event) override;
@@ -69,6 +68,9 @@ public:
     QSqlDatabase m_dbMSSQL;
     QSqlQuery m_queryMSSQL;
     bool m_bMSSQLConnection;
+
+public:
+    NIVisaGPIB m_niVisaGPIB;
 
 private:
     Ui::MainWindow *ui;

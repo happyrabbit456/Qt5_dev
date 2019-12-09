@@ -1,10 +1,13 @@
 ﻿#include "snpage.h"
 
-#include "currentform.h"
+#include <QGridLayout>
+#include <QVBoxLayout>
+
+#include "testform.h"
 
 SNPage::SNPage(QWidget *parent)
 {
-    currentForm=qobject_cast<CurrentForm*>(parent);
+    currentForm=qobject_cast<TestForm*>(parent);
 
     setTitle(QString::fromLocal8Bit("获取扫描码"));
 
@@ -32,7 +35,7 @@ bool SNPage::validatePage()
 {
     qDebug()<<"validatePage() done.";
 
-    CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
+    TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
 
     bool bUpdate = pCurrentForm->updateSN(true, snLineEdit->text());
     if(bUpdate){

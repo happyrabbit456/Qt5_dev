@@ -1,14 +1,19 @@
 ﻿#include "conclusionpage.h"
 
+#include <QGridLayout>
+#include <QVBoxLayout>
+
+#include "testform.h"
+
 #include "currentform.h"
 
 ConclusionPage::ConclusionPage(QWidget *parent)
 {
-    currentForm=qobject_cast<CurrentForm*>(parent);
+    currentForm=qobject_cast<TestForm*>(parent);
 
     setTitle(QString::fromLocal8Bit("电流测试结果"));
 
-    CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
+    TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     QString idleDCStatus;
     QString workDCStatus;
     QString chargeDCStatus;
@@ -66,7 +71,7 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 
 bool ConclusionPage::validatePage()
 {
-    CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
+    TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     bool bHandle = pCurrentForm->conclusionHandle();
     if(bHandle){
         return true;

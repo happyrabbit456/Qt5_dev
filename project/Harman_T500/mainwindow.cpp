@@ -32,8 +32,17 @@ MainWindow::MainWindow(QWidget *parent)
     createMSSQLConnection();
 #endif
 
-    NIVisaGPIB visaGPIB;
-    visaGPIB.sample_getCurrent();
+//    NIVisaGPIB visaGPIB;
+//    visaGPIB.sample_getCurrent();
+
+    ViStatus status;
+    status = m_niVisaGPIB.initGPIB();
+    if(status == VI_SUCCESS){
+        qDebug("initGPIB() OK");
+    }
+    else{
+        qDebug("initGPIB() Fail");
+    }
 
     m_pCurrentForm=new CurrentForm(this);
     ui->stackedWidget->addWidget(m_pCurrentForm);
@@ -45,8 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QStringListModel* slm = new QStringListModel(this);
     QStringList* sl = new QStringList();
-    sl->append("Current");
-    sl->append("Voltage");
+    sl->append("Current:DC");
+//    sl->append("Voltage:DC");
     slm->setStringList(*sl);
     ui->listViewSelector->setModel(slm);
     delete sl;

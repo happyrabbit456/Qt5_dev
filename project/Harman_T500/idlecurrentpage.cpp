@@ -1,10 +1,16 @@
 ﻿#include "idlecurrentpage.h"
 
+#include <QGridLayout>
+#include <QVBoxLayout>
+
+#include "testform.h"
+
 #include "currentform.h"
+#include "mainwindow.h"
 
 IdleCurrentPage::IdleCurrentPage(QWidget *parent)
 {
-    currentForm=qobject_cast<CurrentForm*>(parent);
+    currentForm=qobject_cast<TestForm*>(parent);
 
     setTitle(QString::fromLocal8Bit("关机电流测试"));
 
@@ -20,9 +26,10 @@ IdleCurrentPage::IdleCurrentPage(QWidget *parent)
 
 bool IdleCurrentPage::validatePage()
 {
-    CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
+    TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
+    MainWindow *pMainWindow=MainWindow::getMainWindow();
     string value;
-    bool bGetCurrent=pCurrentForm->m_niVisaGPIB.getCurrent(value);
+    bool bGetCurrent=pMainWindow->m_niVisaGPIB.getCurrent(value);
     if(bGetCurrent){
         bool bUpdate=pCurrentForm->updateIdleCurrent(true,value);
         if(bUpdate){

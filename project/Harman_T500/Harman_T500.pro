@@ -25,7 +25,9 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     nivisagpib.cpp \
+    parameterform.cpp \
     snpage.cpp \
+    testform.cpp \
     workcurrentpage.cpp
 
 HEADERS += \
@@ -36,12 +38,16 @@ HEADERS += \
     idlecurrentpage.h \
     mainwindow.h \
     nivisagpib.h \
+    parameterform.h \
     snpage.h \
+    testform.h \
     workcurrentpage.h
 
 FORMS += \
     currentform.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    parameterform.ui \
+    testform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
