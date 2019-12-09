@@ -6,9 +6,9 @@ SNPage::SNPage(QWidget *parent)
 {
     currentForm=qobject_cast<CurrentForm*>(parent);
 
-    setTitle("Introduction");
+    setTitle(QString::fromLocal8Bit("获取扫描码"));
 
-    QLabel *label = new QLabel(tr("scan code ......"));
+    QLabel *label = new QLabel(QString::fromLocal8Bit("请先扫描测试设备上的二维码，然后点击下一步。"));
     label->setWordWrap(true);
 
     QLabel *nameLabel = new QLabel("SN");
@@ -20,18 +20,20 @@ SNPage::SNPage(QWidget *parent)
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(label);
+//    layout->addStretch();
+    layout->addSpacing(20);
     layout->addLayout(layout_SN);
     setLayout(layout);
 
-//    registerField("sn*", snLineEdit);
-
+    registerField("sn*", snLineEdit);
 }
 
 bool SNPage::validatePage()
 {
-//    qDebug()<<"validatePage() done.";
+    qDebug()<<"validatePage() done.";
 
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
+
     bool bUpdate = pCurrentForm->updateSN(true, snLineEdit->text());
     if(bUpdate){
         return true;

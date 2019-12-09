@@ -22,6 +22,8 @@ CurrentForm::CurrentForm(QWidget *parent) :
 
     m_model = new QSqlQueryModel(ui->tableView);
     updateTableView();
+
+    ui->tableView->scrollToBottom();
 }
 
 CurrentForm::~CurrentForm()
@@ -417,9 +419,24 @@ bool CurrentForm::conclusionHandle()
         ui->labelResultStatus->setText("Fail");
     }
 
+//    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
     bool bInsert=insertRecordHandle();
 
+    updateTableView();
+
+    ui->tableView->scrollToBottom();
+    ui->tableView->update();
+
     return bInsert;
+}
+
+bool CurrentForm::getCurrentTestConclusion(QString &idleDCStatus, QString &workDCStatus, QString &chargeDCStatus)
+{
+    idleDCStatus=m_idlecurrentpf;
+    workDCStatus=m_workcurrentpf;
+    chargeDCStatus=m_chargecurrentpf;
+
+    return true;
 }
 
 void CurrentForm::on_comboGPIBSelector_currentIndexChanged(int index)
@@ -435,14 +452,36 @@ void CurrentForm::on_btnReset_clicked()
 
 void CurrentForm::on_btnTest_clicked()
 {
-    wizard.addPage(new SNPage(this));
-    wizard.addPage(new IdleCurrentPage(this));
-    wizard.addPage(new WorkCurrentPage(this));
-    wizard.addPage(new ChargeCurrentPage(this));
-    wizard.addPage(new ConclusionPage(this));
+    m_wizard=new QWizard(this);
+    m_wizard->addPage(new SNPage(this));
+    m_wizard->addPage(new IdleCurrentPage(this));
+    m_wizard->addPage(new WorkCurrentPage(this));
+    m_wizard->addPage(new ChargeCurrentPage(this));
+    m_wizard->addPage(new ConclusionPage(this));
 
-    wizard.setWindowTitle("Trivial Wizard");
-    wizard.show();
+//    //去掉帮助按钮
+//    this->setWindowFlags(windowFlags()&~Qt::WindowContextHelpButtonHint);
+    //设置导航样式
+//    m_wizard->setWizardStyle( QWizard::ModernStyle );
+
+    //去掉向导页面按钮
+//    m_wizard->setOption( QWizard::NoBackButtonOnStartPage );
+//    m_wizard->setOption( QWizard::NoBackButtonOnLastPage );
+//    m_wizard->setOption( QWizard::NoCancelButton );
+
+
+
+    m_wizard->setWindowTitle(QString::fromLocal8Bit("电流测试向导"));
+    m_wizard->show();
+
+//    wizard.addPage(new SNPage(this));
+//    wizard.addPage(new IdleCurrentPage(this));
+//    wizard.addPage(new WorkCurrentPage(this));
+//    wizard.addPage(new ChargeCurrentPage(this));
+//    wizard.addPage(new ConclusionPage(this));
+
+//    wizard.setWindowTitle(QString::fromLocal8Bit("电流测试向导"));
+//    wizard.show();
 }
 
 void CurrentForm::on_btnLock_clicked()
@@ -477,21 +516,23 @@ void CurrentForm::on_btnExport_clicked()
     QXlsx::Document z_xlsx;
     QStringList z_titleList;
     QString z_filePathName;
-    QString z_defaultFileName = "电流测试.xls";
+    QString z_defaultFileName = QString::fromLocal8Bit("电流测试.xls");//tr("电流测试.xls");
+
+    qDebug()<<z_defaultFileName;
 
     // 设置保存的默认文件名称 文件名_当前时间.xls
     QFileInfo z_fileinfo(z_defaultFileName);
     QDateTime z_curDateTime = QDateTime::currentDateTime();
-    QString z_strCurTime = z_curDateTime.toString("yyyyMMddhhmmss");
-    z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + ".xls";
+    QString z_strCurTime = z_curDateTime.toString(tr("yyyyMMddhhmmss"));
+    z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + tr(".xls");
 
     // 获取保存文件路径
     QFileDialog *z_fileDlg = new QFileDialog(this);
-    z_fileDlg->setWindowTitle("保存文件");
+    z_fileDlg->setWindowTitle(QString::fromLocal8Bit("保存文件"));
     z_fileDlg->setAcceptMode(QFileDialog::AcceptSave);
     z_fileDlg->selectFile(z_defaultFileName);
-    z_fileDlg->setNameFilter("Excel Files(*.xls *.xlsx)");
-    z_fileDlg->setDefaultSuffix("xls");
+    z_fileDlg->setNameFilter(tr("Excel Files(*.xls *.xlsx)"));
+    z_fileDlg->setDefaultSuffix(tr("xls"));
 
     if (z_fileDlg->exec() == QDialog::Accepted)
     {
@@ -500,9 +541,9 @@ void CurrentForm::on_btnExport_clicked()
 
     // 保存文件添加后缀名
     z_fileinfo =  QFileInfo(z_filePathName);
-    if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != "xlsx")
+    if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != tr("xlsx"))
     {
-        z_filePathName += ".xls";
+        z_filePathName += tr(".xls");
     }
 
     QXlsx::Format format1;/*设置该单元的样式*/

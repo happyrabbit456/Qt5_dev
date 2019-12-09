@@ -60,6 +60,8 @@ public:
     bool insertRecordHandle();
     bool conclusionHandle();
 
+    bool getCurrentTestConclusion(QString &idleDCStatus,QString &workDCStatus,QString &chargeDCStatus);
+
     void ReadAppSettings();
     void WriteAppSettings();
 
@@ -103,7 +105,8 @@ private slots:
 private:
     Ui::CurrentForm *ui;
 
-    QWizard wizard;
+//    QWizard wizard;
+    QWizard *m_wizard;
     QSettings *m_settings;
 
     QSqlQueryModel  *m_model;
