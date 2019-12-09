@@ -223,6 +223,12 @@ void TestForm::on_btnTest_clicked()
 {
     resetTestHandle();
 
+    MainWindow *pMainWindow=MainWindow::getMainWindow();
+    if(pMainWindow->m_niVisaGPIB.m_mapGPIB.count()<=0){
+        QMessageBox::warning(nullptr,"warning","Could not open a session to the VISA Resource Manager!\n");
+        return;
+    }
+
     m_wizard=new QWizard(this);
     m_wizard->addPage(new SNPage(this));
     m_wizard->addPage(new IdleCurrentPage(this));

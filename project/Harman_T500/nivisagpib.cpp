@@ -1,5 +1,7 @@
 ﻿#include "nivisagpib.h"
 
+#include <QMessageBox>
+
 NIVisaGPIB::NIVisaGPIB(QObject *parent) : QObject(parent)
 {
     m_nCurrGPIBIndex=-1;
@@ -252,11 +254,16 @@ ViStatus NIVisaGPIB::initGPIB()
     ViStatus status;
 
     /* First we will need to open the default resource manager. */
-    status = viOpenDefaultRM (&m_defaultRM);
+    status = viOpenDefaultRM (&m_defaultRM);    
     if (status < VI_SUCCESS)
     {
         qDebug("Could not open a session to the VISA Resource Manager!\n");
-        exit (EXIT_FAILURE);
+//        exit (EXIT_FAILURE);
+
+        QMessageBox::warning(nullptr,"warning","Could not open a session to the VISA Resource Manager!\n");
+
+        //VI_ERROR_SYSTEM_ERROR The VISA system failed to initialize.
+        return VI_ERROR_SYSTEM_ERROR;
     }
 
     /*
@@ -284,6 +291,9 @@ ViStatus NIVisaGPIB::initGPIB()
         //caijx fix
         //         fflush(stdin);
         //         getchar();
+
+        QMessageBox::warning(nullptr,"warning","An error occurred while finding the VISA resources.");
+
         viClose (m_defaultRM);
         return status;
     }
@@ -296,6 +306,7 @@ ViStatus NIVisaGPIB::initGPIB()
     if (status < VI_SUCCESS)
     {
         qDebug ("An error occurred opening a session to %s\n",instrDescriptor);
+        QMessageBox::warning(nullptr,"warning",QString().sprintf("An error occurred opening a session to %s\n",instrDescriptor));
     }
     else
     {
@@ -319,6 +330,9 @@ ViStatus NIVisaGPIB::initGPIB()
             //            fflush(stdin);
             //            getchar();
             viClose (m_defaultRM);
+
+            QMessageBox::warning(nullptr,"warning","An error occurred finding the next VISA resource.");
+
             return status;
         }
         qDebug("%s \n",instrDescriptor);
@@ -328,6 +342,7 @@ ViStatus NIVisaGPIB::initGPIB()
         if (status < VI_SUCCESS)
         {
             qDebug ("An error occurred opening a session to %s\n",instrDescriptor);
+            QMessageBox::warning(nullptr,"warning",QString().sprintf("An error occurred opening a session to %s\n",instrDescriptor));
         }
         else
         {
@@ -374,6 +389,7 @@ bool NIVisaGPIB::getCurrent(string &value)
                 status = viPrintf(instr,ViString("CONF:CURR:DC"));
                 if (status != VI_SUCCESS){
                     qDebug("CONF:CURR:DC setting fail");
+                    QMessageBox::warning(nullptr,"warning","An error occurred writing setting CONF:CURR:DC command.");
                 }
 
                 strcpy_s(stringinput,"READ?");
@@ -381,12 +397,14 @@ bool NIVisaGPIB::getCurrent(string &value)
                 if (status < VI_SUCCESS)
                 {
                     qDebug("Error writing to the device\n");
+                    QMessageBox::warning(nullptr,"warning","Error writing to the device\n");
                 }
 
                 status = viRead (instr, buffer, 100, &retCount);
                 if (status < VI_SUCCESS)
                 {
                     qDebug("Error reading a response from the device\n");
+                    QMessageBox::warning(nullptr,"warning","Error reading a response from the device\n");
                 }
                 else
                 {
@@ -403,8 +421,9 @@ bool NIVisaGPIB::getCurrent(string &value)
 
                         return true;
                     }
-
-
+                    else{
+                        QMessageBox::warning(nullptr,"warning","Error reading a response from the device\n");
+                    }
                 }
 
                 break;

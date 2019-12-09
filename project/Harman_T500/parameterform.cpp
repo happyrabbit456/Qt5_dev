@@ -1,6 +1,7 @@
 ﻿#include "parameterform.h"
 #include "ui_parameterform.h"
 #include "mainwindow.h"
+#include "currentform.h"
 
 ParameterForm::ParameterForm(QWidget *parent) :
     QWidget(parent),
