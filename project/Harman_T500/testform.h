@@ -50,7 +50,6 @@ protected:
 
 public:
 
-    bool updateSN(bool bOK,QString sn);
     bool updateIdleCurrent(bool bOK, string str);
     bool updateWorkCurrent(bool bOK, string str);
     bool updateChargeCurrent(bool bOK, string str);

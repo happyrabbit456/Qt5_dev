@@ -37,11 +37,5 @@ bool SNPage::validatePage()
 
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
 
-    bool bUpdate = pCurrentForm->updateSN(true, snLineEdit->text());
-    if(bUpdate){
-        return true;
-    }
-    else{
-        return false;
-    }
+    return true;
 }

@@ -31,18 +31,6 @@ TestForm::~TestForm()
     delete ui;
 }
 
-bool TestForm::updateSN(bool bOK, QString sn)
-{
-    if(bOK){
-        ui->lineEditSN->setText(sn);
-
-        m_sn=sn;
-        return  true;
-    }
-
-    return false;
-}
-
 bool TestForm::updateIdleCurrent(bool bOK, string str)
 {
     if(bOK){
@@ -223,9 +211,6 @@ void TestForm::resetTestHandle()
     ui->editIdleCurrent->setText("0.000");
     ui->editWorkCurrent->setText("0.000");
     ui->editChargeCurrent->setText("0.000");
-    ui->lineEditSN->setText("");
-    ui->lineEditSN->setFocus();
-
     ui->labelResultStatus->setVisible(false);
 }
 
@@ -236,6 +221,8 @@ void TestForm::on_btnReset_clicked()
 
 void TestForm::on_btnTest_clicked()
 {
+    resetTestHandle();
+
     m_wizard=new QWizard(this);
     m_wizard->addPage(new SNPage(this));
     m_wizard->addPage(new IdleCurrentPage(this));

@@ -18,9 +18,16 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>801</width>
-     <height>281</height>
+     <width>781</width>
+     <height>331</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
    <property name="title">
     <string>参数设置</string>
@@ -29,14 +36,14 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>200</y>
       <width>131</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <pointsize>12</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -52,15 +59,16 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>180</y>
-      <width>171</width>
-      <height>21</height>
+      <y>230</y>
+      <width>191</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <weight>50</weight>
-      <bold>false</bold>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -71,14 +79,14 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>240</y>
+      <y>290</y>
       <width>75</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <pointsize>12</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -93,14 +101,15 @@
    <widget class="QPushButton" name="btnUnlock">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>240</y>
+      <x>140</x>
+      <y>290</y>
       <width>75</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
+      <pointsize>12</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -117,8 +126,8 @@
      <rect>
       <x>20</x>
       <y>50</y>
-      <width>54</width>
-      <height>12</height>
+      <width>71</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
@@ -129,9 +138,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>80</y>
-      <width>54</width>
-      <height>12</height>
+      <y>100</y>
+      <width>71</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
@@ -142,9 +151,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>110</y>
-      <width>54</width>
-      <height>12</height>
+      <y>150</y>
+      <width>71</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
@@ -154,11 +163,18 @@
    <widget class="QLabel" name="labelMinCurrent">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>100</x>
       <y>30</y>
       <width>54</width>
       <height>12</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="text">
      <string>Min:</string>
@@ -167,11 +183,18 @@
    <widget class="QLabel" name="labelMaxCurrent">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>230</x>
       <y>30</y>
       <width>54</width>
       <height>12</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="text">
      <string>Max:</string>
@@ -180,7 +203,7 @@
    <widget class="QLineEdit" name="editMinIdleCurrent">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>100</x>
       <y>50</y>
       <width>111</width>
       <height>20</height>
@@ -190,8 +213,8 @@
    <widget class="QLineEdit" name="editMinWorkCurrent">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>80</y>
+      <x>100</x>
+      <y>100</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -200,7 +223,7 @@
    <widget class="QLineEdit" name="editMaxIdleCurrent">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>230</x>
       <y>50</y>
       <width>111</width>
       <height>20</height>
@@ -210,8 +233,8 @@
    <widget class="QLineEdit" name="editMaxWorkCurrent">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>80</y>
+      <x>230</x>
+      <y>100</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -220,8 +243,8 @@
    <widget class="QLineEdit" name="editMinChargeCurrent">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>110</y>
+      <x>100</x>
+      <y>150</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -230,8 +253,8 @@
    <widget class="QLineEdit" name="editMaxChargeCurrent">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>110</y>
+      <x>230</x>
+      <y>150</y>
       <width>111</width>
       <height>20</height>
      </rect>
@@ -240,11 +263,18 @@
    <widget class="QLabel" name="labelIdleCurrentUnit">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>350</x>
       <y>50</y>
       <width>31</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
     </property>
     <property name="text">
      <string>mA</string>
@@ -253,11 +283,18 @@
    <widget class="QLabel" name="labelWorkCurrentUnit">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>80</y>
+      <x>350</x>
+      <y>100</y>
       <width>31</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
     </property>
     <property name="text">
      <string>mA</string>
@@ -266,11 +303,18 @@
    <widget class="QLabel" name="labelChargeCurrentUnit">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>110</y>
+      <x>350</x>
+      <y>150</y>
       <width>31</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
     </property>
     <property name="text">
      <string>mA</string>
