@@ -11,7 +11,7 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 {
     currentForm=qobject_cast<TestForm*>(parent);
 
-    setTitle(QString::fromLocal8Bit("电流测试结果"));
+//    setTitle(QString::fromLocal8Bit("电流测试结果"));
 
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     QString idleDCStatus;

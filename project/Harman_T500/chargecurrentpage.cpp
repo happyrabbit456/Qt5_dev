@@ -12,7 +12,7 @@ ChargeCurrentPage::ChargeCurrentPage(QWidget *parent)
 {
     currentForm=qobject_cast<TestForm*>(parent);
 
-    setTitle(QString::fromLocal8Bit("充电电流测试"));
+//    setTitle(QString::fromLocal8Bit("充电电流测试"));
 
     QLabel *label = new QLabel(QString::fromLocal8Bit("请准备好充电电流可测状态，点击测试按钮，开始测试充电电流。"));
     label->setWordWrap(true);

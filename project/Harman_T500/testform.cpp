@@ -238,15 +238,16 @@ void TestForm::on_btnTest_clicked()
 
 //    //去掉帮助按钮
 //    this->setWindowFlags(windowFlags()&~Qt::WindowContextHelpButtonHint);
+
     //设置导航样式
-//    m_wizard->setWizardStyle( QWizard::ModernStyle );
+    m_wizard->setWizardStyle( QWizard::ModernStyle );
 
     //去掉向导页面按钮
 //    m_wizard->setOption( QWizard::NoBackButtonOnStartPage );
 //    m_wizard->setOption( QWizard::NoBackButtonOnLastPage );
 //    m_wizard->setOption( QWizard::NoCancelButton );
 
-
+    m_wizard->resize(320,160);
 
     m_wizard->setWindowTitle(QString::fromLocal8Bit("电流测试向导"));
     m_wizard->show();
