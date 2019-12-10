@@ -52,10 +52,13 @@
 
 #include "classwizard.h"
 
+#include "myform.h"
+
 //! [0] //! [1]
 ClassWizard::ClassWizard(QWidget *parent)
     : QWizard(parent)
 {
+    addPage(new MyForm);
     addPage(new IntroPage);
     addPage(new ClassInfoPage);
     addPage(new CodeStylePage);
