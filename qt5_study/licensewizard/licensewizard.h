@@ -1,4 +1,4 @@
-﻿/****************************************************************************
+/****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
@@ -48,35 +48,39 @@
 **
 ****************************************************************************/
 
-#ifndef CLASSWIZARD_H
-#define CLASSWIZARD_H
+#ifndef LICENSEWIZARD_H
+#define LICENSEWIZARD_H
 
 #include <QWizard>
 
-#include <QMessageBox>
-#include <QPushButton>
-
 QT_BEGIN_NAMESPACE
 class QCheckBox;
-class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QRadioButton;
 QT_END_NAMESPACE
 
-//! [0]
-class ClassWizard : public QWizard
+//! [0] //! [1]
+class LicenseWizard : public QWizard
 {
+//! [0]
     Q_OBJECT
 
 public:
-    ClassWizard(QWidget *parent = 0);
+//! [2]
+    enum { Page_Intro, Page_Evaluate, Page_Register, Page_Details,
+           Page_Conclusion };
+//! [2]
 
-    void accept() override;
+    LicenseWizard(QWidget *parent = 0);
+
+private slots:
+    void showHelp();
+//! [3]
 };
-//! [0]
+//! [1] //! [3]
 
-//! [1]
+//! [4]
 class IntroPage : public QWizardPage
 {
     Q_OBJECT
@@ -84,96 +88,68 @@ class IntroPage : public QWizardPage
 public:
     IntroPage(QWidget *parent = 0);
 
-    bool validatePage() override;
-    bool isComplete() const override;
-
-//    int nextId() const override;
-
-    bool hasAcceptableInput();
-
-public slots:
-    void clickedSlot();
-
-//  void clickedSlot()
-//  {
-//      nextId();
-//      close();
-
-//    QMessageBox msgBox;
-//    msgBox.setWindowTitle("MessageBox Title");
-//    msgBox.setText("You Clicked "+ ((QPushButton*)sender())->text());
-//    msgBox.exec();
-//  }
+    int nextId() const override;
 
 private:
-    QLabel *label;
-    QPushButton *button;
+    QLabel *topLabel;
+    QRadioButton *registerRadioButton;
+    QRadioButton *evaluateRadioButton;
 };
-//! [1]
+//! [4]
 
-//! [2]
-class ClassInfoPage : public QWizardPage
+//! [5]
+class EvaluatePage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    ClassInfoPage(QWidget *parent = 0);
+    EvaluatePage(QWidget *parent = 0);
+
+    int nextId() const override;
 
 private:
-    QLabel *classNameLabel;
-    QLabel *baseClassLabel;
-    QLineEdit *classNameLineEdit;
-    QLineEdit *baseClassLineEdit;
-    QCheckBox *qobjectMacroCheckBox;
-    QGroupBox *groupBox;
-    QRadioButton *qobjectCtorRadioButton;
-    QRadioButton *qwidgetCtorRadioButton;
-    QRadioButton *defaultCtorRadioButton;
-    QCheckBox *copyCtorCheckBox;
+    QLabel *nameLabel;
+    QLabel *emailLabel;
+    QLineEdit *nameLineEdit;
+    QLineEdit *emailLineEdit;
 };
-//! [2]
+//! [5]
 
-//! [3]
-class CodeStylePage : public QWizardPage
+class RegisterPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    CodeStylePage(QWidget *parent = 0);
+    RegisterPage(QWidget *parent = 0);
 
-protected:
-    void initializePage() override;
+    int nextId() const override;
 
 private:
-    QCheckBox *commentCheckBox;
-    QCheckBox *protectCheckBox;
-    QCheckBox *includeBaseCheckBox;
-    QLabel *macroNameLabel;
-    QLabel *baseIncludeLabel;
-    QLineEdit *macroNameLineEdit;
-    QLineEdit *baseIncludeLineEdit;
+    QLabel *nameLabel;
+    QLabel *upgradeKeyLabel;
+    QLineEdit *nameLineEdit;
+    QLineEdit *upgradeKeyLineEdit;
 };
-//! [3]
 
-class OutputFilesPage : public QWizardPage
+class DetailsPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    OutputFilesPage(QWidget *parent = 0);
+    DetailsPage(QWidget *parent = 0);
 
-protected:
-    void initializePage() override;
+    int nextId() const override;
 
 private:
-    QLabel *outputDirLabel;
-    QLabel *headerLabel;
-    QLabel *implementationLabel;
-    QLineEdit *outputDirLineEdit;
-    QLineEdit *headerLineEdit;
-    QLineEdit *implementationLineEdit;
+    QLabel *companyLabel;
+    QLabel *emailLabel;
+    QLabel *postalLabel;
+    QLineEdit *companyLineEdit;
+    QLineEdit *emailLineEdit;
+    QLineEdit *postalLineEdit;
 };
 
+//! [6]
 class ConclusionPage : public QWizardPage
 {
     Q_OBJECT
@@ -181,11 +157,17 @@ class ConclusionPage : public QWizardPage
 public:
     ConclusionPage(QWidget *parent = 0);
 
-protected:
     void initializePage() override;
+    int nextId() const override;
+    void setVisible(bool visible) override;
+
+private slots:
+    void printButtonClicked();
 
 private:
-    QLabel *label;
+    QLabel *bottomLabel;
+    QCheckBox *agreeCheckBox;
 };
+//! [6]
 
 #endif

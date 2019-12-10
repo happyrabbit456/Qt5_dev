@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
@@ -67,6 +67,7 @@ ClassWizard::ClassWizard(QWidget *parent)
     setPixmap(QWizard::BackgroundPixmap, QPixmap(":/images/background.png"));
 
     setWindowTitle(tr("Class Wizard"));
+
 //! [2]
 }
 //! [1] //! [2]
@@ -213,6 +214,9 @@ void ClassWizard::accept()
 IntroPage::IntroPage(QWidget *parent)
     : QWizardPage(parent)
 {
+    void *pp=wizard();
+    qDebug()<<"pp:"<<pp;
+
     setTitle(tr("Introduction"));
     setPixmap(QWizard::WatermarkPixmap, QPixmap(":/images/watermark1.png"));
 
@@ -223,10 +227,45 @@ IntroPage::IntroPage(QWidget *parent)
                           "implementation file for your new C++ class."));
     label->setWordWrap(true);
 
+    button = new QPushButton();
+    button->setText("Button No. 1");
+    connect(button, SIGNAL(clicked()),this, SLOT(clickedSlot()));
+
+
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(label);
+    layout->addWidget(button);
     setLayout(layout);
+
+    void *ppp=wizard();
+    qDebug()<<"ppp:"<<ppp;
 }
+
+bool IntroPage::validatePage()
+{
+    void *ppp=wizard();
+    qDebug()<<"ppp:"<<ppp;
+
+    qDebug()<<"validatePage() done";
+    return true;//false;//true;
+}
+
+bool IntroPage::isComplete() const
+{
+    qDebug()<<"isComplete()";
+    return true;
+}
+
+void IntroPage::clickedSlot()
+{
+    QAbstractButton *bt = this->wizard()->button(QWizard::NextButton);
+    bt->click();
+}
+
+//int IntroPage::nextId() const
+//{
+//return 1;
+//}
 //! [7]
 
 //! [8] //! [9]
@@ -262,11 +301,10 @@ ClassInfoPage::ClassInfoPage(QWidget *parent)
 
     defaultCtorRadioButton->setChecked(true);
 
-    connect(defaultCtorRadioButton, &QAbstractButton::toggled,
-            copyCtorCheckBox, &QWidget::setEnabled);
-
-//! [11] //! [12]
-    registerField("className*", classNameLineEdit);
+ //! [11] //! [12]
+    //caijx fix
+//    registerField("className*", classNameLineEdit);
+    registerField("className", classNameLineEdit);
     registerField("baseClass", baseClassLineEdit);
     registerField("qobjectMacro", qobjectMacroCheckBox);
 //! [11]
@@ -291,6 +329,10 @@ ClassInfoPage::ClassInfoPage(QWidget *parent)
     layout->addWidget(qobjectMacroCheckBox, 2, 0, 1, 2);
     layout->addWidget(groupBox, 3, 0, 1, 2);
     setLayout(layout);
+
+
+//    emit completeChanged();
+
 //! [13]
 }
 //! [13]

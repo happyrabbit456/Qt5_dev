@@ -1,4 +1,4 @@
-﻿/****************************************************************************
+/****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
@@ -53,11 +53,11 @@
 #include <QLocale>
 #include <QLibraryInfo>
 
-#include "classwizard.h"
+#include "licensewizard.h"
 
 int main(int argc, char *argv[])
 {
-    Q_INIT_RESOURCE(classwizard);
+    Q_INIT_RESOURCE(licensewizard);
 
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
@@ -71,9 +71,7 @@ int main(int argc, char *argv[])
         app.installTranslator(translator);
 #endif
 
-    ClassWizard wizard;
-    //caijx fix
-    wizard.resize(1200,600);
+    LicenseWizard wizard;
     wizard.show();
     return app.exec();
 }
