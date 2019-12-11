@@ -71,6 +71,20 @@ ClassWizard::ClassWizard(QWidget *parent)
 
     setWindowTitle(tr("Class Wizard"));
 
+
+    this->setWizardStyle( QWizard::ModernStyle );
+
+//    this->setOption(QWizard::NoDefaultButton, true);
+    this->setOption( QWizard::NoCancelButton );
+
+    QList<QWizard::WizardButton> layout;
+//         layout << QWizard::Stretch << QWizard::BackButton << QWizard::CancelButton
+//                << QWizard::NextButton << QWizard::FinishButton;
+
+         layout << QWizard::Stretch // << QWizard::BackButton << QWizard::CancelButton
+                << QWizard::NextButton << QWizard::FinishButton;
+         setButtonLayout(layout);
+
 //! [2]
 }
 //! [1] //! [2]
