@@ -8,6 +8,7 @@
 
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QTextCodec>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -270,4 +271,37 @@ void MainWindow::on_pushButton_clicked()
 //                                             "statements on a live database"));
 
 
+}
+
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+{
+    qDebug()<<arg1;
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+//    QString path=QString().fromLocal8Bit("D:\\database\\20191211170204.xls");
+//    QXlsx::Document xlsx(path);
+
+    QString path=QString().sprintf("%s","D:\\database\\刻录任务汇总_20191211170204 - 副本.xls");
+    QTextCodec *code = QTextCodec::codecForName("GB2312");//解决中文路径问题
+    std::string name = code->fromUnicode(path).data();
+    QString path2=QString(QString::fromLocal8Bit(name.c_str()));
+    QXlsx::Document xlsx(path2);
+
+
+    QXlsx::Workbook *workBook = xlsx.workbook();
+    QXlsx::Worksheet *workSheet = static_cast<QXlsx::Worksheet*>(workBook->sheet(0));
+
+    qDebug()<<"rowCount:"<<workSheet->dimension().rowCount();
+    qDebug()<<"columnCount:"<<workSheet->dimension().columnCount();
+    int rowCount=workSheet->dimension().rowCount();
+    int columnCount=workSheet->dimension().columnCount();
+
+    int i=rowCount;
+    for(int j=1;j<=columnCount;j++){
+        xlsx.write(i + 1, j, QString("ddd"));
+    }
+
+    xlsx.save();
 }
