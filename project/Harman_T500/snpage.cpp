@@ -166,8 +166,8 @@ bool SNPage::eventFilter(QObject *obj, QEvent  *event)
                 }
             }
         }
-
-        // standard event processing
-        return QObject::eventFilter(obj, event);
     }
+
+    // standard event processing
+    return QObject::eventFilter(obj, event);
 }
