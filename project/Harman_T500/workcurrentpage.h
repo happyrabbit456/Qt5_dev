@@ -9,6 +9,8 @@
 
 class WorkCurrentPage : public QWizardPage
 {
+    Q_OBJECT
+
 public:
     WorkCurrentPage(QWidget *parent = nullptr);
 

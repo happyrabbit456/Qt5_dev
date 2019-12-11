@@ -19,7 +19,9 @@ SNPage::SNPage(QWidget *parent)
     QLabel *nameLabel = new QLabel("SN");
     snLineEdit = new QLineEdit;
 
-    connect(snLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(lineEditSN_textChanged(const QString &)));
+    snLineEdit->setObjectName("snLineEdit");
+
+    connect(snLineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(snLineEdit_textChanged(const QString &)));
 
     QGridLayout *layout_SN = new QGridLayout;
     layout_SN->addWidget(nameLabel, 0, 0);
@@ -47,6 +49,8 @@ bool SNPage::validatePage()
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     pCurrentForm->m_sn=snLineEdit->text();
 
+    resetSNPage();
+
     return true;
 }
 
@@ -65,8 +69,10 @@ void SNPage::resetSNPage()
     m_bAutoScan=false;
 }
 
-void SNPage::lineEditSN_textChanged(const QString &arg1)
+void SNPage::snLineEdit_textChanged(const QString &arg1)
 {
+    qDebug()<<arg1;
+
     /*
     1.判断是扫描枪扫描
     字符变动+1，并且和上次字符间隔时间小于50ms，考虑原有字符串中间插入的情况不能处理，所以比较字串的方法不可取
@@ -114,6 +120,8 @@ void SNPage::CheckAutoScannerHandle()
     QTime checkTime=QTime::currentTime();
     int elapsed = m_lastTime.msecsTo(checkTime);
 
+    qDebug()<<"CheckAutoScannerHandle()"<<" elapsed:"<<elapsed<<" "<<m_bAutoScan;
+
     if(elapsed>50 && m_bAutoScan) //扫描完成
     {
         qDebug()<<"m_strLastChangedCode:"<<m_strLastChangedCode;
@@ -138,21 +146,27 @@ bool SNPage::ScanningCodeHandle(QString strCode)
     return true;
 }
 
-bool SNPage::eventFilter(QObject *obj, QKeyEvent *event)
+bool SNPage::eventFilter(QObject *obj, QEvent  *event)
 {
-    if(event->key() == Qt::Key_Return)//16777220)//enter
-    {
-        qDebug()<<snLineEdit->text();
-
-        QString strLineEdit=snLineEdit->text();
-        bool ret=ScanningCodeHandle(strLineEdit);
-        if(ret)
+    if(obj==snLineEdit){
+        if(event->type() == QEvent::KeyPress)
         {
-            event->accept();
-            return true;
+            QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+
+            if(keyEvent->key() == Qt::Key_Return)//16777220)//enter
+            {
+                qDebug()<<snLineEdit->text();
+
+                QString strLineEdit=snLineEdit->text();
+                bool ret=ScanningCodeHandle(strLineEdit);
+                if(ret)
+                {
+                    event->accept();
+                    return true;
+                }
+            }
         }
-    }
-    else{
+
         // standard event processing
         return QObject::eventFilter(obj, event);
     }

@@ -9,6 +9,8 @@
 
 class IdleCurrentPage : public QWizardPage
 {
+    Q_OBJECT
+
 public:
     IdleCurrentPage(QWidget *parent = nullptr);
 

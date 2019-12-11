@@ -8,6 +8,8 @@
 
 class ConclusionPage : public QWizardPage
 {
+    Q_OBJECT
+
 public:
     ConclusionPage(QWidget *parent = nullptr);
 

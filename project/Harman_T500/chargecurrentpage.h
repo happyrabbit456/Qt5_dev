@@ -9,6 +9,8 @@
 
 class ChargeCurrentPage : public QWizardPage
 {
+    Q_OBJECT
+
 public:
     ChargeCurrentPage(QWidget *parent = nullptr);
 

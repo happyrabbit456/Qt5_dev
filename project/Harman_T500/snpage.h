@@ -13,16 +13,18 @@
 
 class SNPage : public QWizardPage
 {
+    Q_OBJECT
+
 public:
     SNPage(QWidget *parent = nullptr);
 
     bool validatePage() override;
     void resetSNPage();
     void resetAutoScannerTimer();
-    void CheckAutoScannerHandle();
+
     bool ScanningCodeHandle(QString strCode);
 
-    bool eventFilter(QObject *obj, QKeyEvent *event);
+    bool eventFilter(QObject *obj, QEvent  *event) override;
 
 private:
     void* currentForm;
@@ -40,8 +42,9 @@ private:
 
     QMutex m_mutexCheckTimer;
 
-private slots:
-    void lineEditSN_textChanged(const QString &arg1);
+public slots:
+    void snLineEdit_textChanged(const QString &arg1);
+    void CheckAutoScannerHandle();
 
 };
 
