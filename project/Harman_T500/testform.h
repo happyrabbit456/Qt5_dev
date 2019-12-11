@@ -95,9 +95,7 @@ private:
 
     QSqlQueryModel  *m_model;
 
-    //    QWizard wizard;
     QWizard *m_wizard;
-
 };
 
 #endif // TESTFORM_H

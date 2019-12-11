@@ -88,7 +88,11 @@ int main(int argc, char *argv[])
 #endif
 
     MainWindow w;
+    w.setWindowTitle(QString::fromLocal8Bit("Harman T500 测试系统"));
     w.show();
+
+//    从Qt 5.10开始，您可以使用单个QApplication属性全局禁用/隐藏/删除Qt对话框“标题栏”上的“?”帮助按钮这些按钮！
+//    QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 
     return a.exec();
 }

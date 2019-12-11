@@ -109,6 +109,22 @@ bool TestForm::updateChargeCurrent(bool bOK, string str)
             ui->labelChargeCurrentStatus->setText("Pass");
         }
 
+        //update result label
+        if(m_idlecurrentpf.compare("P")==0
+                &&m_workcurrentpf.compare("P")==0
+                &&m_chargecurrentpf.compare("P")==0){
+            m_pf="P";
+            ui->labelResultStatus->setVisible(true);
+            ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
+            ui->labelResultStatus->setText("Pass");
+        }
+        else{
+            m_pf="F";
+            ui->labelResultStatus->setVisible(true);
+            ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
+            ui->labelResultStatus->setText("Fail");
+        }
+
         return true;
     }
 
@@ -168,20 +184,20 @@ bool TestForm::insertRecordHandle()
 
 bool TestForm::conclusionHandle()
 {
-    if(m_idlecurrentpf.compare("P")==0
-            &&m_workcurrentpf.compare("P")==0
-            &&m_chargecurrentpf.compare("P")==0){
-        m_pf="P";
-        ui->labelResultStatus->setVisible(true);
-        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
-        ui->labelResultStatus->setText("Pass");
-    }
-    else{
-        m_pf="F";
-        ui->labelResultStatus->setVisible(true);
-        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
-        ui->labelResultStatus->setText("Fail");
-    }
+//    if(m_idlecurrentpf.compare("P")==0
+//            &&m_workcurrentpf.compare("P")==0
+//            &&m_chargecurrentpf.compare("P")==0){
+//        m_pf="P";
+//        ui->labelResultStatus->setVisible(true);
+//        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
+//        ui->labelResultStatus->setText("Pass");
+//    }
+//    else{
+//        m_pf="F";
+//        ui->labelResultStatus->setVisible(true);
+//        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
+//        ui->labelResultStatus->setText("Fail");
+//    }
 
 //    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
     bool bInsert=insertRecordHandle();
@@ -236,30 +252,25 @@ void TestForm::on_btnTest_clicked()
     m_wizard->addPage(new ChargeCurrentPage(this));
     m_wizard->addPage(new ConclusionPage(this));
 
-//    //去掉帮助按钮
-//    this->setWindowFlags(windowFlags()&~Qt::WindowContextHelpButtonHint);
-
     //设置导航样式
     m_wizard->setWizardStyle( QWizard::ModernStyle );
 
     //去掉向导页面按钮
-//    m_wizard->setOption( QWizard::NoBackButtonOnStartPage );
-//    m_wizard->setOption( QWizard::NoBackButtonOnLastPage );
-//    m_wizard->setOption( QWizard::NoCancelButton );
+    m_wizard->setOption( QWizard::NoBackButtonOnStartPage );
+    m_wizard->setOption( QWizard::NoBackButtonOnLastPage );
+    m_wizard->setOption( QWizard::NoCancelButton );
 
     m_wizard->resize(320,160);
 
+    //禁用/隐藏/删除Qt对话框“标题栏”上的“?”帮助按钮这些按钮！
+    Qt::WindowFlags flags = m_wizard->windowFlags();
+    Qt::WindowFlags helpFlag =
+    Qt::WindowContextHelpButtonHint;
+    flags = flags & (~helpFlag);
+    m_wizard->setWindowFlags(flags);
+
     m_wizard->setWindowTitle(QString::fromLocal8Bit("电流测试向导"));
     m_wizard->show();
-
-//    wizard.addPage(new SNPage(this));
-//    wizard.addPage(new IdleCurrentPage(this));
-//    wizard.addPage(new WorkCurrentPage(this));
-//    wizard.addPage(new ChargeCurrentPage(this));
-//    wizard.addPage(new ConclusionPage(this));
-
-//    wizard.setWindowTitle(QString::fromLocal8Bit("电流测试向导"));
-//    wizard.show();
 }
 
 void TestForm::initializeModel(QSqlQueryModel *model)

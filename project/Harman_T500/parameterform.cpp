@@ -57,7 +57,7 @@ void ParameterForm::ReadAppSettings()
 
     CurrentForm* pCurrentForm=static_cast<CurrentForm*>(currentForm);
 
-    d=m_settings->value("MinIdleCurrent",1.000).toDouble();
+    d=m_settings->value("MinIdleCurrent",0.000).toDouble();
     pCurrentForm->m_pTestForm->m_dMinIdleCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
     ui->editMinIdleCurrent->setText(qstr);
@@ -67,7 +67,7 @@ void ParameterForm::ReadAppSettings()
     qstr=QString().sprintf("%5.3f",d);
     ui->editMaxIdleCurrent->setText(qstr);
 
-    d=m_settings->value("MinWorkCurrent",1.000).toDouble();
+    d=m_settings->value("MinWorkCurrent",0.000).toDouble();
     pCurrentForm->m_pTestForm->m_dMinWorkCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
     ui->editMinWorkCurrent->setText(qstr);
@@ -77,7 +77,7 @@ void ParameterForm::ReadAppSettings()
     qstr=QString().sprintf("%5.3f",d);
     ui->editMaxWorkCurrent->setText(qstr);
 
-    d=m_settings->value("MinChargeCurrent",1.000).toDouble();
+    d=m_settings->value("MinChargeCurrent",0.000).toDouble();
     pCurrentForm->m_pTestForm->m_dMinChargeCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
     ui->editMinChargeCurrent->setText(qstr);
