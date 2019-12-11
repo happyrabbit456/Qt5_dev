@@ -260,6 +260,13 @@ void TestForm::on_btnTest_clicked()
     m_wizard->setOption( QWizard::NoBackButtonOnLastPage );
     m_wizard->setOption( QWizard::NoCancelButton );
 
+    //去掉BackButton
+    QList<QWizard::WizardButton> layout;
+    layout << QWizard::Stretch // << QWizard::BackButton << QWizard::CancelButton
+           << QWizard::NextButton << QWizard::FinishButton;
+    m_wizard->setButtonLayout(layout);
+
+
     m_wizard->resize(320,160);
 
     //禁用/隐藏/删除Qt对话框“标题栏”上的“?”帮助按钮这些按钮！
