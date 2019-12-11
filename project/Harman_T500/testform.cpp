@@ -168,6 +168,50 @@ bool TestForm::insertRecordHandle()
                 QMessageBox::warning(this,"warning",pMainWindow->m_querySQLite.lastError().text());
             }
             else{
+                //直接写到文件
+                QString strDatabaseDir=QString().sprintf("%s","D:\\database\\Harman_T500");
+                QDir dir(strDatabaseDir);
+                if(dir.exists())
+                {
+                    QDateTime z_curDateTime = QDateTime::currentDateTime();
+                    QString z_strCurTime = z_curDateTime.toString(tr("yyyyMMdd"));
+                    QString fileName = strDatabaseDir+"\\"+QString("dc") + "_" + z_strCurTime + tr(".xlsx");
+
+                    QFile file(fileName);
+                    if(file.exists())
+                    {
+                        QXlsx::Document xlsx(fileName); //OK
+
+
+                        QXlsx::Workbook *workBook = xlsx.workbook();
+                        QXlsx::Worksheet *workSheet = static_cast<QXlsx::Worksheet*>(workBook->sheet(0));
+
+                        qDebug()<<"rowCount:"<<workSheet->dimension().rowCount();
+                        qDebug()<<"columnCount:"<<workSheet->dimension().columnCount();
+                        int rowCount=workSheet->dimension().rowCount();
+                        int columnCount=workSheet->dimension().columnCount();
+
+                        QVariant lastid= xlsx.read(rowCount,1);
+
+                        int i=rowCount;
+                        for(int j=1;j<=columnCount;j++){
+                            xlsx.write(i + 1, j, QString("ddd"));
+                        }
+
+                        xlsx.save();
+                    }
+                    else{
+
+                    }
+                }
+                else
+                {
+                    bool ok = dir.mkpath(strDatabaseDir);//创建多级目录
+                    if(ok){
+
+                    }
+                }
+
                 return true;
             }
         }
