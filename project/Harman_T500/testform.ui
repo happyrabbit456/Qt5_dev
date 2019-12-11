@@ -328,6 +328,12 @@
     <property name="text">
      <string>Test</string>
     </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="btnReset">
     <property name="geometry">
@@ -350,6 +356,9 @@
     </property>
     <property name="text">
      <string>Reset</string>
+    </property>
+    <property name="default">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

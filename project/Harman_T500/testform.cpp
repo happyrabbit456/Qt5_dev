@@ -392,7 +392,8 @@ void TestForm::on_btnExport_clicked()
     QXlsx::Document z_xlsx;
     QStringList z_titleList;
     QString z_filePathName;
-    QString z_defaultFileName = QString::fromLocal8Bit("电流测试.xls");//tr("电流测试.xls");
+
+    QString z_defaultFileName = QString::fromLocal8Bit("电流测试.xlsx");//tr("电流测试.xls");
 
     qDebug()<<z_defaultFileName;
 
@@ -400,7 +401,7 @@ void TestForm::on_btnExport_clicked()
     QFileInfo z_fileinfo(z_defaultFileName);
     QDateTime z_curDateTime = QDateTime::currentDateTime();
     QString z_strCurTime = z_curDateTime.toString(tr("yyyyMMddhhmmss"));
-    z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + tr(".xls");
+    z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + tr(".xlsx");
 
     // 获取保存文件路径
     QFileDialog *z_fileDlg = new QFileDialog(this);
@@ -408,7 +409,7 @@ void TestForm::on_btnExport_clicked()
     z_fileDlg->setAcceptMode(QFileDialog::AcceptSave);
     z_fileDlg->selectFile(z_defaultFileName);
     z_fileDlg->setNameFilter(tr("Excel Files(*.xls *.xlsx)"));
-    z_fileDlg->setDefaultSuffix(tr("xls"));
+    z_fileDlg->setDefaultSuffix(tr("xlsx"));
 
     if (z_fileDlg->exec() == QDialog::Accepted)
     {
@@ -419,15 +420,18 @@ void TestForm::on_btnExport_clicked()
     z_fileinfo =  QFileInfo(z_filePathName);
     if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != tr("xlsx"))
     {
-        z_filePathName += tr(".xls");
+        z_filePathName += tr(".xlsx");
     }
+
+
+
 
     QXlsx::Format format1;/*设置该单元的样式*/
     format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
     //           format1.setPatternBackgroundColor(QColor(152,251,152));/*北京颜色*/
     format1.setFontSize(15);/*设置字体大小*/
     format1.setHorizontalAlignment(QXlsx::Format::AlignHCenter);/*横向居中*/
-    //           format1.setBorderStyle(QXlsx::Format::BorderDashDotDot);/*边框样式*/
+    format1.setBorderStyle(QXlsx::Format::BorderThin);//QXlsx::Format::BorderDashDotDot);/*边框样式*/
 
     // 设置excel任务标题
     z_titleList << "id" << "time" << "sn" << "idlecurrent"<<"idlecurrentpf"
