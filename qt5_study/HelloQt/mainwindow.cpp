@@ -283,11 +283,20 @@ void MainWindow::on_pushButton_2_clicked()
 //    QString path=QString().fromLocal8Bit("D:\\database\\20191211170204.xls");
 //    QXlsx::Document xlsx(path);
 
+
+//    QString fileName=QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image Files(*.png *.jpg *jpeg *.bmp *.avi *.mp4)"));
+//    QTextCodec *code = QTextCodec::codecForName("GB2312");//解决中文路径问题
+//    std::string name = code->fromUnicode(fileName).data();
+//    ————————————————
+//    版权声明：本文为CSDN博主「骑着毛驴去旅行」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+//    原文链接：https://blog.csdn.net/m0_37906001/article/details/76672634
+
     QString path=QString().sprintf("%s","D:\\database\\刻录任务汇总_20191211170204 - 副本.xls");
     QTextCodec *code = QTextCodec::codecForName("GB2312");//解决中文路径问题
     std::string name = code->fromUnicode(path).data();
     QString path2=QString(QString::fromLocal8Bit(name.c_str()));
-    QXlsx::Document xlsx(path2);
+//    QXlsx::Document xlsx(path2); //OK
+    QXlsx::Document xlsx(path); //OK
 
 
     QXlsx::Workbook *workBook = xlsx.workbook();
