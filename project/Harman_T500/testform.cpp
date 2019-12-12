@@ -300,76 +300,76 @@ void TestForm::writeRecordToExcel(QString strTIME)
         qDebug()<<"dir.mkpath(strDatabaseDir) ok:"<<ok;
     }
 
-        qDebug()<<"dir.exists() true";
-        QFile file(fileName);
-        if(file.exists())
+    qDebug()<<"dir.exists() true";
+    QFile file(fileName);
+    if(file.exists())
+    {
+        qDebug()<<"file.exists() true";
+        //存在文件
+        QXlsx::Document xlsx(fileName); //OK
+
+
+        QXlsx::Workbook *workBook = xlsx.workbook();
+        QXlsx::Worksheet *workSheet = static_cast<QXlsx::Worksheet*>(workBook->sheet(0));
+
+        qDebug()<<"rowCount:"<<workSheet->dimension().rowCount();
+        qDebug()<<"columnCount:"<<workSheet->dimension().columnCount();
+        int rowCount=workSheet->dimension().rowCount();
+        int columnCount=workSheet->dimension().columnCount();
+
+        QVariant lastid= xlsx.read(rowCount,1);
+        int newid=lastid.toInt()+1;
+        QVariant newIDValue(newid);
+
+        writeOnewRecord(xlsx,rowCount,columnCount, strTIME,newIDValue);
+
+        xlsx.save();
+    }
+    else{
+        //不存在文件
+        QXlsx::Document z_xlsx;
+        QStringList z_titleList;
+
+        QXlsx::Format format1;/*设置该单元的样式*/
+        format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
+        //           format1.setPatternBackgroundColor(QColor(152,251,152));/*北京颜色*/
+        format1.setFontSize(15);/*设置字体大小*/
+        format1.setHorizontalAlignment(QXlsx::Format::AlignHCenter);/*横向居中*/
+        format1.setBorderStyle(QXlsx::Format::BorderThin);//QXlsx::Format::BorderDashDotDot);/*边框样式*/
+
+        // 设置excel任务标题
+        z_titleList << "id" << "time" << "sn" << "idlecurrent"<<"idlecurrentpf"
+                    <<"workcurrent"<<"workcurrentpf"<<"chargecurrent"<< "chargecurrentpf"
+                   << "idlemincurrent"<<"idlemaxcurrent"<<"workmincurrent"<<"workmaxcurrent"
+                   <<"chargemincurrent"<<"chargemaxcurrent"<<"pf";
+        for (int i = 0; i < z_titleList.size(); i++)
         {
-            qDebug()<<"file.exists() true";
-            //存在文件
-            QXlsx::Document xlsx(fileName); //OK
+            //           z_xlsx.write(1, i+1, z_titleList.at(i));
 
-
-            QXlsx::Workbook *workBook = xlsx.workbook();
-            QXlsx::Worksheet *workSheet = static_cast<QXlsx::Worksheet*>(workBook->sheet(0));
-
-            qDebug()<<"rowCount:"<<workSheet->dimension().rowCount();
-            qDebug()<<"columnCount:"<<workSheet->dimension().columnCount();
-            int rowCount=workSheet->dimension().rowCount();
-            int columnCount=workSheet->dimension().columnCount();
-
-            QVariant lastid= xlsx.read(rowCount,1);
-            int newid=lastid.toInt()+1;
-            QVariant newIDValue(newid);
-
-            writeOnewRecord(xlsx,rowCount,columnCount, strTIME,newIDValue);
-
-            xlsx.save();
+            z_xlsx.write(1, i+1, z_titleList.at(i),format1);
         }
-        else{
-            //不存在文件
-            QXlsx::Document z_xlsx;
-            QStringList z_titleList;
 
-            QXlsx::Format format1;/*设置该单元的样式*/
-            format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
-            //           format1.setPatternBackgroundColor(QColor(152,251,152));/*北京颜色*/
-            format1.setFontSize(15);/*设置字体大小*/
-            format1.setHorizontalAlignment(QXlsx::Format::AlignHCenter);/*横向居中*/
-            format1.setBorderStyle(QXlsx::Format::BorderThin);//QXlsx::Format::BorderDashDotDot);/*边框样式*/
-
-            // 设置excel任务标题
-            z_titleList << "id" << "time" << "sn" << "idlecurrent"<<"idlecurrentpf"
-                        <<"workcurrent"<<"workcurrentpf"<<"chargecurrent"<< "chargecurrentpf"
-                       << "idlemincurrent"<<"idlemaxcurrent"<<"workmincurrent"<<"workmaxcurrent"
-                       <<"chargemincurrent"<<"chargemaxcurrent"<<"pf";
-            for (int i = 0; i < z_titleList.size(); i++)
-            {
-                //           z_xlsx.write(1, i+1, z_titleList.at(i));
-
-                z_xlsx.write(1, i+1, z_titleList.at(i),format1);
+        // 设置烈宽
+        for(int i=1;i<17;i++){
+            if(i==2 || i==3){
+                z_xlsx.setColumnWidth(i, 30);
             }
-
-            // 设置烈宽
-            for(int i=1;i<17;i++){
-                if(i==2 || i==3){
-                    z_xlsx.setColumnWidth(i, 20);
-                }
-                else{
-                    z_xlsx.setColumnWidth(i, 30);
-                }
+            else{
+                z_xlsx.setColumnWidth(i, 30);
             }
-
-
-            int rowCount=2;
-            int columnCount=16;
-            int newid=1;
-            QVariant newIDValue(newid);
-
-            writeOnewRecord(z_xlsx,rowCount,columnCount, strTIME,newIDValue);
-
-            // 保存文件
-            z_xlsx.saveAs(fileName);
         }
+
+
+        int rowCount=2;
+        int columnCount=16;
+        int newid=1;
+        QVariant newIDValue(newid);
+
+        writeOnewRecord(z_xlsx,rowCount,columnCount, strTIME,newIDValue);
+
+        // 保存文件
+        z_xlsx.saveAs(fileName);
+    }
 }
 
 void TestForm::resetTestHandle()
@@ -421,6 +421,11 @@ void TestForm::on_btnTest_clicked()
 
 
     m_wizard->resize(320,160);
+    QPoint pos=pMainWindow->pos();
+    pos.setX(pos.x()-120);
+    pos.setY(pos.y()+500);
+    m_wizard->move(pos);
+
 
     //禁用/隐藏/删除Qt对话框“标题栏”上的“?”帮助按钮这些按钮！
     Qt::WindowFlags flags = m_wizard->windowFlags();
@@ -601,7 +606,7 @@ void TestForm::on_btnExport_clicked()
     // 设置烈宽
     for(int i=1;i<17;i++){
         if(i==2 || i==3){
-            z_xlsx.setColumnWidth(i, 20);
+            z_xlsx.setColumnWidth(i, 30);
         }
         else{
             z_xlsx.setColumnWidth(i, 30);
