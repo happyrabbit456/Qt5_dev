@@ -62,6 +62,9 @@ public:
     bool createSQLiteConnection();
     bool createMSSQLConnection();
 
+    void writeRecordToExcel(QString strTIME);
+    void writeOnewRecord(QXlsx::Document &xlsx,int rowCount,int columnCount, QString strTIME,QVariant newIDValue);
+
 private slots:
 
     void on_btnReset_clicked();

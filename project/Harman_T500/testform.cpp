@@ -140,11 +140,16 @@ bool TestForm::insertRecordHandle()
     int nSupportDatabase =pMainWindow->getSupportDatabase();
     if(pMainWindow!=nullptr && (nSupportDatabase==enum_SQLite||nSupportDatabase==enum_SQLite_MSSQL)){
         if(pMainWindow->m_bSQLLiteConnection){
-            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime'))";
+//            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime'))";
 
-            strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
+            QDateTime z_curDateTime = QDateTime::currentDateTime();
+            QString strTIME = z_curDateTime.toString(tr("yyyy/MM/dd hh:mm"));
+
+//            strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
+            strQuery = QString("%1 '%2', '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
                     .arg("insert into currentrecord values(NULL,")
-                    .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
+//                    .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
+                    .arg(strTIME)
                     .arg(m_sn)
                     .arg(m_idlecurrent)
                     .arg(m_idlecurrentpf)
@@ -169,48 +174,7 @@ bool TestForm::insertRecordHandle()
             }
             else{
                 //直接写到文件
-                QString strDatabaseDir=QString().sprintf("%s","D:\\database\\Harman_T500");
-                QDir dir(strDatabaseDir);
-                if(dir.exists())
-                {
-                    QDateTime z_curDateTime = QDateTime::currentDateTime();
-                    QString z_strCurTime = z_curDateTime.toString(tr("yyyyMMdd"));
-                    QString fileName = strDatabaseDir+"\\"+QString("dc") + "_" + z_strCurTime + tr(".xlsx");
-
-                    QFile file(fileName);
-                    if(file.exists())
-                    {
-                        QXlsx::Document xlsx(fileName); //OK
-
-
-                        QXlsx::Workbook *workBook = xlsx.workbook();
-                        QXlsx::Worksheet *workSheet = static_cast<QXlsx::Worksheet*>(workBook->sheet(0));
-
-                        qDebug()<<"rowCount:"<<workSheet->dimension().rowCount();
-                        qDebug()<<"columnCount:"<<workSheet->dimension().columnCount();
-                        int rowCount=workSheet->dimension().rowCount();
-                        int columnCount=workSheet->dimension().columnCount();
-
-                        QVariant lastid= xlsx.read(rowCount,1);
-
-                        int i=rowCount;
-                        for(int j=1;j<=columnCount;j++){
-                            xlsx.write(i + 1, j, QString("ddd"));
-                        }
-
-                        xlsx.save();
-                    }
-                    else{
-
-                    }
-                }
-                else
-                {
-                    bool ok = dir.mkpath(strDatabaseDir);//创建多级目录
-                    if(ok){
-
-                    }
-                }
+                writeRecordToExcel(strTIME);
 
                 return true;
             }
@@ -261,6 +225,151 @@ bool TestForm::getCurrentTestConclusion(QString &idleDCStatus, QString &workDCSt
     chargeDCStatus=m_chargecurrentpf;
 
     return true;
+}
+
+void TestForm::writeOnewRecord(QXlsx::Document &xlsx,int rowCount,int columnCount, QString strTIME,QVariant newIDValue)
+{
+    int i=rowCount;
+    for(int j=1;j<=columnCount;j++){
+        switch (j) {
+        case 1:
+            xlsx.write(i + 1, j,newIDValue);
+            break;
+        case 2:
+            xlsx.write(i + 1, j,strTIME);
+            break;
+        case 3:
+            xlsx.write(i + 1, j,m_sn);
+            break;
+        case 4:
+            xlsx.write(i + 1, j,m_idlecurrent);
+            break;
+        case 5:
+            xlsx.write(i + 1, j,m_idlecurrentpf);
+            break;
+        case 6:
+            xlsx.write(i + 1, j,m_workcurrent);
+            break;
+        case 7:
+            xlsx.write(i + 1, j,m_workcurrentpf);
+            break;
+        case 8:
+            xlsx.write(i + 1, j,m_chargecurrent);
+            break;
+        case 9:
+            xlsx.write(i + 1, j,m_chargecurrentpf);
+            break;
+        case 10:
+            xlsx.write(i + 1, j,QString().sprintf("%5.3f",m_dMinIdleCurrent));
+            break;
+        case 11:
+            xlsx.write(i + 1, j,QString().sprintf("%5.3f",m_dMaxIdleCurrent));
+            break;
+        case 12:
+            xlsx.write(i + 1, j,QString().sprintf("%5.3f",m_dMinWorkCurrent));
+            break;
+        case 13:
+            xlsx.write(i + 1, j,QString().sprintf("%5.3f",m_dMaxWorkCurrent));
+            break;
+        case 14:
+            xlsx.write(i + 1, j,QString().sprintf("%5.3f",m_dMinChargeCurrent));
+            break;
+        case 15:
+            xlsx.write(i + 1, j,QString().sprintf("%5.3f",m_dMaxChargeCurrent));
+            break;
+        case 16:
+            xlsx.write(i + 1, j,m_pf);
+            break;
+        }
+    }
+}
+
+void TestForm::writeRecordToExcel(QString strTIME)
+{
+    //直接写到文件
+    QString strDatabaseDir=QString().sprintf("%s","D:\\database\\Harman_T500");
+
+    QDateTime z_curDateTime = QDateTime::currentDateTime();
+    QString z_strCurTime = z_curDateTime.toString(tr("yyyyMMdd"));
+    QString fileName = strDatabaseDir+"\\"+QString("dc") + "_" + z_strCurTime + tr(".xlsx");
+    qDebug()<<"fileName:"<<fileName;
+
+    QDir dir(strDatabaseDir);
+    if(!dir.exists()){
+        bool ok = dir.mkpath(strDatabaseDir);//创建多级目录
+        qDebug()<<"dir.mkpath(strDatabaseDir) ok:"<<ok;
+    }
+
+        qDebug()<<"dir.exists() true";
+        QFile file(fileName);
+        if(file.exists())
+        {
+            qDebug()<<"file.exists() true";
+            //存在文件
+            QXlsx::Document xlsx(fileName); //OK
+
+
+            QXlsx::Workbook *workBook = xlsx.workbook();
+            QXlsx::Worksheet *workSheet = static_cast<QXlsx::Worksheet*>(workBook->sheet(0));
+
+            qDebug()<<"rowCount:"<<workSheet->dimension().rowCount();
+            qDebug()<<"columnCount:"<<workSheet->dimension().columnCount();
+            int rowCount=workSheet->dimension().rowCount();
+            int columnCount=workSheet->dimension().columnCount();
+
+            QVariant lastid= xlsx.read(rowCount,1);
+            int newid=lastid.toInt()+1;
+            QVariant newIDValue(newid);
+
+            writeOnewRecord(xlsx,rowCount,columnCount, strTIME,newIDValue);
+
+            xlsx.save();
+        }
+        else{
+            //不存在文件
+            QXlsx::Document z_xlsx;
+            QStringList z_titleList;
+
+            QXlsx::Format format1;/*设置该单元的样式*/
+            format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
+            //           format1.setPatternBackgroundColor(QColor(152,251,152));/*北京颜色*/
+            format1.setFontSize(15);/*设置字体大小*/
+            format1.setHorizontalAlignment(QXlsx::Format::AlignHCenter);/*横向居中*/
+            format1.setBorderStyle(QXlsx::Format::BorderThin);//QXlsx::Format::BorderDashDotDot);/*边框样式*/
+
+            // 设置excel任务标题
+            z_titleList << "id" << "time" << "sn" << "idlecurrent"<<"idlecurrentpf"
+                        <<"workcurrent"<<"workcurrentpf"<<"chargecurrent"<< "chargecurrentpf"
+                       << "idlemincurrent"<<"idlemaxcurrent"<<"workmincurrent"<<"workmaxcurrent"
+                       <<"chargemincurrent"<<"chargemaxcurrent"<<"pf";
+            for (int i = 0; i < z_titleList.size(); i++)
+            {
+                //           z_xlsx.write(1, i+1, z_titleList.at(i));
+
+                z_xlsx.write(1, i+1, z_titleList.at(i),format1);
+            }
+
+            // 设置烈宽
+            for(int i=1;i<17;i++){
+                if(i==2 || i==3){
+                    z_xlsx.setColumnWidth(i, 20);
+                }
+                else{
+                    z_xlsx.setColumnWidth(i, 30);
+                }
+            }
+
+
+            int rowCount=2;
+            int columnCount=16;
+            int newid=1;
+            QVariant newIDValue(newid);
+
+            writeOnewRecord(z_xlsx,rowCount,columnCount, strTIME,newIDValue);
+
+            // 保存文件
+            z_xlsx.saveAs(fileName);
+        }
 }
 
 void TestForm::resetTestHandle()
