@@ -192,21 +192,6 @@ bool TestForm::insertRecordHandle()
 
 bool TestForm::conclusionHandle()
 {
-//    if(m_idlecurrentpf.compare("P")==0
-//            &&m_workcurrentpf.compare("P")==0
-//            &&m_chargecurrentpf.compare("P")==0){
-//        m_pf="P";
-//        ui->labelResultStatus->setVisible(true);
-//        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
-//        ui->labelResultStatus->setText("Pass");
-//    }
-//    else{
-//        m_pf="F";
-//        ui->labelResultStatus->setVisible(true);
-//        ui->labelResultStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
-//        ui->labelResultStatus->setText("Fail");
-//    }
-
 //    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
     bool bInsert=insertRecordHandle();
 
@@ -566,7 +551,7 @@ void TestForm::on_btnExport_clicked()
     z_fileDlg->setWindowTitle(QString::fromLocal8Bit("保存文件"));
     z_fileDlg->setAcceptMode(QFileDialog::AcceptSave);
     z_fileDlg->selectFile(z_defaultFileName);
-    z_fileDlg->setNameFilter(tr("Excel Files(*.xls *.xlsx)"));
+    z_fileDlg->setNameFilter(tr("Excel Files(*.xlsx)"));
     z_fileDlg->setDefaultSuffix(tr("xlsx"));
 
     if (z_fileDlg->exec() == QDialog::Accepted)
@@ -576,13 +561,10 @@ void TestForm::on_btnExport_clicked()
 
     // 保存文件添加后缀名
     z_fileinfo =  QFileInfo(z_filePathName);
-    if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != tr("xlsx"))
+    if (z_fileinfo.suffix() != tr("xlsx"))
     {
         z_filePathName += tr(".xlsx");
     }
-
-
-
 
     QXlsx::Format format1;/*设置该单元的样式*/
     format1.setFontColor(QColor(Qt::blue));/*文字为红色*/
@@ -632,6 +614,15 @@ void TestForm::on_btnExport_clicked()
     }
 
     // 保存文件
-    z_xlsx.saveAs(z_filePathName);
+    bool bSaveAs=z_xlsx.saveAs(z_filePathName);
+    if(bSaveAs){
+        if (QMessageBox::question(nullptr,QString::fromLocal8Bit("完成"),QString::fromLocal8Bit("文件已经导出，是否现在打开？"),QMessageBox::Yes|QMessageBox::No)==QMessageBox::Yes)
+        {
+            QDesktopServices::openUrl(QUrl("file:///" + QDir::toNativeSeparators(z_filePathName))); //乱码
+        }
+    }
+    else{
+        QMessageBox::warning(nullptr,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("保存到Excel文件失败"));
+    }
 }
 
