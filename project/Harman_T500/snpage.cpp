@@ -13,11 +13,17 @@ SNPage::SNPage(QWidget *parent)
 
 //    setTitle(QString::fromLocal8Bit("获取扫描码"));
 
+    QFont font;
+    font.setPointSize(12);
+
     QLabel *label = new QLabel(QString::fromLocal8Bit("请先扫描测试设备上的二维码，然后点击下一步。"));
     label->setWordWrap(true);
+    label->setFont(font);
 
     QLabel *nameLabel = new QLabel("SN");
+    nameLabel->setFont(font);
     snLineEdit = new QLineEdit;
+    snLineEdit->setFont(font);
 
     snLineEdit->setObjectName("snLineEdit");
 

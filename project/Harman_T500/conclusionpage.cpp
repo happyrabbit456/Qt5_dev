@@ -13,6 +13,9 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 
 //    setTitle(QString::fromLocal8Bit("电流测试结果"));
 
+    QFont font;
+    font.setPointSize(12);
+
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     QString idleDCStatus;
     QString workDCStatus;
@@ -51,9 +54,13 @@ ConclusionPage::ConclusionPage(QWidget *parent)
     }
 
     QLabel *labelIdle = new QLabel(idleResult);
+    labelIdle->setFont(font);
     QLabel *labelWork = new QLabel(idleResult);
+    labelWork->setFont(font);
     QLabel *labelCharge = new QLabel(idleResult);
+    labelCharge->setFont(font);
     QLabel *labelResult=new QLabel(result);
+    labelResult->setFont(font);
     labelIdle->setWordWrap(true);
     labelWork->setWordWrap(true);
     labelCharge->setWordWrap(true);
