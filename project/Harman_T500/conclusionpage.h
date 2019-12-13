@@ -14,8 +14,7 @@ public:
     ConclusionPage(QWidget *parent = nullptr);
 
     bool validatePage() override;
-
-    bool updateConclusionValue();
+    void initializePage() override;
 
 private:
 

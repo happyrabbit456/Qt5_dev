@@ -88,10 +88,8 @@ bool ConclusionPage::validatePage()
     }
 }
 
-bool ConclusionPage::updateConclusionValue()
+void ConclusionPage::initializePage()
 {
-    qDebug()<<"updateConclusionValue() done";
-
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     QString idleDCStatus;
     QString workDCStatus;
@@ -133,6 +131,4 @@ bool ConclusionPage::updateConclusionValue()
     labelWork->setText(workResult);
     labelCharge->setText(chargeResult);
     labelResult->setText(result);
-
-    return true;
 }

@@ -125,10 +125,6 @@ bool TestForm::updateChargeCurrent(bool bOK, string str)
             ui->labelResultStatus->setText("Fail");
         }
 
-        //update conclusion page
-        QWizardPage *conclusionPage=m_wizard->page(5);
-        qobject_cast<ConclusionPage*>(conclusionPage)->updateConclusionValue();
-
         return true;
     }
 
