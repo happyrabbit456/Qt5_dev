@@ -366,6 +366,95 @@ ViStatus NIVisaGPIB::initGPIB()
     return status;
 }
 
+bool NIVisaGPIB::reset()
+{
+    ViStatus status;
+
+    if(m_nCurrGPIBIndex >=0){
+
+        int j=0;
+        //用key()和data()分别获取“键”和“值”
+        QMap<string,ViSession>::iterator it; //遍历map
+        for ( it = m_mapGPIB.begin(); it != m_mapGPIB.end(); ++it ) {
+    //        qDebug()<<"key:"<<it.key().data()<<" "<<"value:"<<it.value();
+            if(j==m_nCurrGPIBIndex){
+                ViSession instr;
+
+                instr=it.value();
+
+                status = viPrintf(instr,ViString("*RST"));
+                if (status != VI_SUCCESS){
+                    qDebug("*RST setting fail");
+                    QMessageBox::warning(nullptr,"warning","An error occurred writing setting *RST command.");
+
+                    return false;
+                }
+                if(status == VI_SUCCESS){
+                    status = viPrintf(instr,ViString("*CLS"));
+                    if (status != VI_SUCCESS){
+                        qDebug("*CLS setting fail");
+                        QMessageBox::warning(nullptr,"warning","An error occurred writing setting *CLS command.");
+                    }
+                    else{
+                        return true;
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool NIVisaGPIB::autoZero(bool autoZero)
+{
+    ViStatus status;
+
+    if(m_nCurrGPIBIndex >=0){
+
+        int j=0;
+        //用key()和data()分别获取“键”和“值”
+        QMap<string,ViSession>::iterator it; //遍历map
+        for ( it = m_mapGPIB.begin(); it != m_mapGPIB.end(); ++it ) {
+    //        qDebug()<<"key:"<<it.key().data()<<" "<<"value:"<<it.value();
+            if(j==m_nCurrGPIBIndex){
+                ViSession instr;
+
+                instr=it.value();
+
+                if(autoZero){
+                    status = viPrintf(instr,ViString("ZERO:AUTO ON"));
+                    if (status != VI_SUCCESS){
+                        qDebug("ZERO:AUTO ON setting fail");
+                        QMessageBox::warning(nullptr,"warning","An error occurred writing setting ZERO:AUTO ON command.");
+//                        return false;
+                    }
+                    else{
+                         return true;
+                    }
+                }
+                else{
+                    status = viPrintf(instr,ViString("ZERO:AUTO OFF"));
+                    if (status != VI_SUCCESS){
+                        qDebug("ZERO:AUTO OFF setting fail");
+                        QMessageBox::warning(nullptr,"warning","An error occurred writing setting ZERO:AUTO OFF command.");
+//                        return false;
+                    }
+                    else{
+                        return true;
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool NIVisaGPIB::getCurrent(string &value)
 {
     ViStatus status;
@@ -386,10 +475,30 @@ bool NIVisaGPIB::getCurrent(string &value)
 
                 instr=it.value();
 
-                status = viPrintf(instr,ViString("CONF:CURR:DC"));
+                status = viPrintf(instr,ViString("CONF:CURR:DC  DEF"));
                 if (status != VI_SUCCESS){
                     qDebug("CONF:CURR:DC setting fail");
-                    QMessageBox::warning(nullptr,"warning","An error occurred writing setting CONF:CURR:DC command.");
+                    QMessageBox::warning(nullptr,"warning","An error occurred writing setting MEASure? command.");
+                    return false;
+                }
+
+                //MEASure? 开始扫描，并直接将读数发送到仪器的输出缓冲区，但不在存储器存储读数；
+                //同时将重新定义扫描表，自动将扫描间隔设为“立即”（即0秒），将扫描次数设为1次
+
+                //INITiate 开始扫描，并在存储器中存储读数；
+                //ABOTt 停止扫描
+//                status = viPrintf(instr,ViString("MEASure?"));
+//                if (status != VI_SUCCESS){
+//                    qDebug("MEASure? setting fail");
+//                    QMessageBox::warning(nullptr,"warning","An error occurred writing setting MEASure? command.");
+//                    return false;
+//                }
+
+                status = viPrintf(instr,ViString("INITiate"));
+                if (status != VI_SUCCESS){
+                    qDebug("INITiate setting fail");
+                    QMessageBox::warning(nullptr,"warning","An error occurred writing setting INITiate command.");
+                    return false;
                 }
 
                 strcpy_s(stringinput,"READ?");
@@ -398,6 +507,7 @@ bool NIVisaGPIB::getCurrent(string &value)
                 {
                     qDebug("Error writing to the device\n");
                     QMessageBox::warning(nullptr,"warning","Error writing to the device\n");
+                    return false;
                 }
 
                 status = viRead (instr, buffer, 100, &retCount);
@@ -405,6 +515,7 @@ bool NIVisaGPIB::getCurrent(string &value)
                 {
                     qDebug("Error reading a response from the device\n");
                     QMessageBox::warning(nullptr,"warning","Error reading a response from the device\n");
+                    return false;
                 }
                 else
                 {
@@ -423,6 +534,7 @@ bool NIVisaGPIB::getCurrent(string &value)
                     }
                     else{
                         QMessageBox::warning(nullptr,"warning","Error reading a response from the device\n");
+//                        return false;
                     }
                 }
 

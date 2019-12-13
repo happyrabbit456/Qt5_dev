@@ -25,6 +25,8 @@ public:
     ViStatus sample_getCurrent();
 
     ViStatus initGPIB();
+    bool reset();
+    bool autoZero(bool autoZero);
     bool getCurrent(string &value);
 
 signals:

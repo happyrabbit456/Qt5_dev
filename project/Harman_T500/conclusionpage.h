@@ -15,8 +15,14 @@ public:
 
     bool validatePage() override;
 
+    bool updateConclusionValue();
+
 private:
-    QLabel *conclusionLabel;
+
+    QLabel *labelIdle;
+    QLabel *labelWork;
+    QLabel *labelCharge;
+    QLabel *labelResult;
 
     void* currentForm;
 };

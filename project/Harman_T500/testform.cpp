@@ -125,6 +125,10 @@ bool TestForm::updateChargeCurrent(bool bOK, string str)
             ui->labelResultStatus->setText("Fail");
         }
 
+        //update conclusion page
+        QWizardPage *conclusionPage=m_wizard->page(5);
+        qobject_cast<ConclusionPage*>(conclusionPage)->updateConclusionValue();
+
         return true;
     }
 
@@ -499,7 +503,7 @@ void TestForm::updateTableView()
      // column width
      tableView->setColumnWidth(0, 100);
      tableView->setColumnWidth(1, 120);
-     tableView->setColumnWidth(2, 120);
+     tableView->setColumnWidth(2, 150);
      tableView->setColumnWidth(3, 100);
      tableView->setColumnWidth(4, 100);
      tableView->setColumnWidth(5, 100);
