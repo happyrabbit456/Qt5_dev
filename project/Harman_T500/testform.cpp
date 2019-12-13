@@ -11,10 +11,6 @@ TestForm::TestForm(QWidget *parent) :
 
     resetTestHandle();
 
-    //    QXlsx::Document xlsx;
-    //    xlsx.write("A1", "Hello Qt!");
-    //    xlsx.saveAs("Test.xlsx");
-
     m_model = new QSqlQueryModel(ui->tableView);
     updateTableView();
 
@@ -140,15 +136,15 @@ bool TestForm::insertRecordHandle()
     int nSupportDatabase =pMainWindow->getSupportDatabase();
     if(pMainWindow!=nullptr && (nSupportDatabase==enum_SQLite||nSupportDatabase==enum_SQLite_MSSQL)){
         if(pMainWindow->m_bSQLLiteConnection){
-//            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime'))";
+            //            QString strTIME="(select strftime('%Y/%m/%d %H:%M','now','localtime'))";
 
             QDateTime z_curDateTime = QDateTime::currentDateTime();
             QString strTIME = z_curDateTime.toString(tr("yyyy/MM/dd hh:mm"));
 
-//            strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
+            //            strQuery = QString("%1 %2 '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
             strQuery = QString("%1 '%2', '%3', '%4', '%5', '%6', '%7', '%8', '%9', '%10', '%11', '%12', '%13', '%14', '%15', '%16')")
                     .arg("insert into currentrecord values(NULL,")
-//                    .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
+                    //                    .arg("(select strftime('%Y/%m/%d %H:%M','now','localtime')),")
                     .arg(strTIME)
                     .arg(m_sn)
                     .arg(m_idlecurrent)
@@ -192,7 +188,7 @@ bool TestForm::insertRecordHandle()
 
 bool TestForm::conclusionHandle()
 {
-//    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
+    //    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
     bool bInsert=insertRecordHandle();
 
     updateTableView();
@@ -415,7 +411,7 @@ void TestForm::on_btnTest_clicked()
     //禁用/隐藏/删除Qt对话框“标题栏”上的“?”帮助按钮这些按钮！
     Qt::WindowFlags flags = m_wizard->windowFlags();
     Qt::WindowFlags helpFlag =
-    Qt::WindowContextHelpButtonHint;
+            Qt::WindowContextHelpButtonHint;
     flags = flags & (~helpFlag);
     m_wizard->setWindowFlags(flags);
 
@@ -489,38 +485,38 @@ void TestForm::updateTableView()
     //设置选中单行
     tableView->setSelectionMode( QAbstractItemView::SingleSelection);
 
-     tableView->setSortingEnabled(false);
-     tableView->verticalHeader()->hide();
-     tableView->setWordWrap(false);
+    tableView->setSortingEnabled(false);
+    tableView->verticalHeader()->hide();
+    tableView->setWordWrap(false);
 
-     tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignHCenter);//表头居中
-     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);//设置固定宽度
+    tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignHCenter);//表头居中
+    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);//设置固定宽度
 
-     // column width
-     tableView->setColumnWidth(0, 100);
-     tableView->setColumnWidth(1, 120);
-     tableView->setColumnWidth(2, 150);
-     tableView->setColumnWidth(3, 100);
-     tableView->setColumnWidth(4, 100);
-     tableView->setColumnWidth(5, 100);
-     tableView->setColumnWidth(6, 100);
-     tableView->setColumnWidth(7, 100);
-     tableView->setColumnWidth(8, 120);
-     tableView->setColumnWidth(9, 120);
-     tableView->setColumnWidth(10, 120);
-     tableView->setColumnWidth(11, 120);
-     tableView->setColumnWidth(12, 120);
-     tableView->setColumnWidth(13, 120);
-     tableView->setColumnWidth(14, 120);
-     tableView->setColumnWidth(15, 120);
+    // column width
+    tableView->setColumnWidth(0, 100);
+    tableView->setColumnWidth(1, 120);
+    tableView->setColumnWidth(2, 150);
+    tableView->setColumnWidth(3, 100);
+    tableView->setColumnWidth(4, 100);
+    tableView->setColumnWidth(5, 100);
+    tableView->setColumnWidth(6, 100);
+    tableView->setColumnWidth(7, 100);
+    tableView->setColumnWidth(8, 120);
+    tableView->setColumnWidth(9, 120);
+    tableView->setColumnWidth(10, 120);
+    tableView->setColumnWidth(11, 120);
+    tableView->setColumnWidth(12, 120);
+    tableView->setColumnWidth(13, 120);
+    tableView->setColumnWidth(14, 120);
+    tableView->setColumnWidth(15, 120);
 
     /*设置tableview等宽*/
-//    QHeaderView* headerView = ui->tableWidget->horizontalHeader();
-//    headerView->setSectionResizeMode(QHeaderView::Stretch);
+    //    QHeaderView* headerView = ui->tableWidget->horizontalHeader();
+    //    headerView->setSectionResizeMode(QHeaderView::Stretch);
     /*或者下面的代码*/
-//    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    //    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-//    ui->tableView->resizeColumnsToContents();
+    //    ui->tableView->resizeColumnsToContents();
 
     ui->tableView->show();
 }
@@ -576,8 +572,8 @@ void TestForm::on_btnExport_clicked()
     // 设置excel任务标题
     z_titleList << "id" << "time" << "sn" << "idlecurrent"<<"idlecurrentpf"
                 <<"workcurrent"<<"workcurrentpf"<<"chargecurrent"<< "chargecurrentpf"
-                << "idlemincurrent"<<"idlemaxcurrent"<<"workmincurrent"<<"workmaxcurrent"
-                <<"chargemincurrent"<<"chargemaxcurrent"<<"pf";
+               << "idlemincurrent"<<"idlemaxcurrent"<<"workmincurrent"<<"workmaxcurrent"
+               <<"chargemincurrent"<<"chargemaxcurrent"<<"pf";
     for (int i = 0; i < z_titleList.size(); i++)
     {
         //           z_xlsx.write(1, i+1, z_titleList.at(i));
