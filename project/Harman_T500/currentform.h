@@ -8,6 +8,7 @@
 
 #include "parameterform.h"
 #include "testform.h"
+#include "databaseform.h"
 
 namespace Ui {
 class CurrentForm;
@@ -25,6 +26,7 @@ public:
 
     TestForm *m_pTestForm;
     ParameterForm *m_pParameterForm;
+    DatabaseForm *m_pDatabaseForm;
 
 private:
     Ui::CurrentForm *ui;

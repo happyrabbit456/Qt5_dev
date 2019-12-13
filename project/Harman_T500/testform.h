@@ -42,10 +42,6 @@ public:
     ~TestForm();
 
 protected:
-    void initializeModel(QSqlQueryModel *model);
-    void updateTableView();
-
-protected:
     void resetTestHandle();
 
 public:
@@ -71,10 +67,8 @@ private slots:
 
     void on_btnTest_clicked();
 
-    void on_btnQuery_clicked();
-
-    void on_btnExport_clicked();
-
+signals:
+    void updateDatabaseTabelView();
 
 public:
     QString m_sn;
@@ -94,9 +88,7 @@ public:
     double m_dMaxChargeCurrent;
 
 private:
-    Ui::TestForm *ui;
-
-    QSqlQueryModel  *m_model;
+    Ui::TestForm *ui;    
 
     QWizard *m_wizard;
 };

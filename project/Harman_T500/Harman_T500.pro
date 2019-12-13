@@ -20,6 +20,7 @@ SOURCES += \
     chargecurrentpage.cpp \
     conclusionpage.cpp \
     currentform.cpp \
+    databaseform.cpp \
     gpib.cpp \
     idlecurrentpage.cpp \
     main.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     chargecurrentpage.h \
     conclusionpage.h \
     currentform.h \
+    databaseform.h \
     gpib.h \
     idlecurrentpage.h \
     mainwindow.h \
@@ -45,6 +47,7 @@ HEADERS += \
 
 FORMS += \
     currentform.ui \
+    databaseform.ui \
     mainwindow.ui \
     parameterform.ui \
     testform.ui
