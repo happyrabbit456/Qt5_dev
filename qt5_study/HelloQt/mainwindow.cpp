@@ -16,6 +16,44 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    QString str = "球形";//"相等";
+    if(str ==QString::fromLocal8Bit("球形"))
+    {
+        qDebug()<<"相等";
+    }
+    else{
+        qDebug()<<"不相等";
+    }
+
+    if(str ==QLatin1String("球形"))
+    {
+        qDebug()<<"相等";
+    }
+    else{
+        qDebug()<<"不相等";
+    }
+
+
+
+    if(str ==QString("球形"))
+    {
+        qDebug()<<"相等";
+    }
+    else{
+        qDebug()<<"不相等";
+    }
+
+    if(str.compare("球形")==0){
+        qDebug()<<"相等";
+    }
+    else{
+        qDebug()<<"不相等";
+    }
+
+    QDateTime z_curDateTime = QDateTime::currentDateTime();
+    QString z_strCurTime = z_curDateTime.toString(tr("yyyy/MM/dd hh:mm"));
+    qDebug()<<z_strCurTime;
+
 #if defined(DB_SQLite)
 
     qDebug()<<"DB_SQLite";
@@ -105,13 +143,13 @@ void MainWindow::toExcel()
     QXlsx::Document z_xlsx;
        QStringList z_titleList;
        QString z_filePathName;
-       QString z_defaultFileName = "刻录任务汇总.xls";
+       QString z_defaultFileName = "刻录任务汇总.xlsx";
 
        // 设置保存的默认文件名称 文件名_当前时间.xls
        QFileInfo z_fileinfo(z_defaultFileName);
        QDateTime z_curDateTime = QDateTime::currentDateTime();
        QString z_strCurTime = z_curDateTime.toString("yyyyMMddhhmmss");
-       z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + ".xls";
+       z_defaultFileName = z_fileinfo.baseName() + "_" + z_strCurTime + ".xlsx";
 
        // 获取保存文件路径
        QFileDialog *z_fileDlg = new QFileDialog(this);
@@ -119,7 +157,7 @@ void MainWindow::toExcel()
        z_fileDlg->setAcceptMode(QFileDialog::AcceptSave);
        z_fileDlg->selectFile(z_defaultFileName);
        z_fileDlg->setNameFilter("Excel Files(*.xls *.xlsx)");
-       z_fileDlg->setDefaultSuffix("xls");
+       z_fileDlg->setDefaultSuffix("xlsx");
 
        if (z_fileDlg->exec() == QDialog::Accepted)
        {
@@ -130,7 +168,7 @@ void MainWindow::toExcel()
        z_fileinfo =  QFileInfo(z_filePathName);
        if (z_fileinfo.suffix() != "xls" && z_fileinfo.suffix() != "xlsx")
        {
-           z_filePathName += ".xls";
+           z_filePathName += ".xlsx";
        }
 
        QXlsx::Format format1;/*设置该单元的样式*/
@@ -307,10 +345,38 @@ void MainWindow::on_pushButton_2_clicked()
     int rowCount=workSheet->dimension().rowCount();
     int columnCount=workSheet->dimension().columnCount();
 
+    QVariant lastid= xlsx.read(rowCount,1);
+
+
     int i=rowCount;
     for(int j=1;j<=columnCount;j++){
         xlsx.write(i + 1, j, QString("ddd"));
     }
 
     xlsx.save();
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    {
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                                        tr("保存当前日志"),
+                                                        "",
+                                                        tr("日志文件(*.txt)"));
+        QFile file(fileName);
+
+//        if (!file.open(QIODevice::WriteOnly|QIODevice::Text))
+//        {
+//            QMessageBox::critical(this, "critical", tr("文件保存失败！"),
+//                                  QMessageBox::Yes, QMessageBox::Yes);
+//        }
+//        else
+//        {
+//            QTextStream stream(&file);
+//            stream << ui->textBrowser->toPlainText();
+//            stream.flush();
+//            file.close();
+//        }
+    }
+
 }
