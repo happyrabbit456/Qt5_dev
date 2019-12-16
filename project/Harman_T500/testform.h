@@ -56,9 +56,6 @@ public:
 
     bool getCurrentTestConclusion(QString &idleDCStatus,QString &workDCStatus,QString &chargeDCStatus);
 
-    bool createSQLiteConnection();
-    bool createMSSQLConnection();
-
     void writeRecordToExcel(QString strTIME);
     void writeOnewRecord(QXlsx::Document &xlsx,int rowCount,int columnCount, QString strTIME,QVariant newIDValue);
 
