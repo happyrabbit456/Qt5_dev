@@ -10,6 +10,8 @@ TestForm::TestForm(QWidget *parent) :
     ui->setupUi(this);
 
     resetTestHandle();
+
+    appendMessagebox(tr("Please set the parameters, then click Test button, the test can begin to go. "));
 }
 
 TestForm::~TestForm()
@@ -31,12 +33,18 @@ bool TestForm::updateIdleCurrent(bool bOK, string str)
             ui->labelIdleCurrentStatus->setVisible(true);
             ui->labelIdleCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
             ui->labelIdleCurrentStatus->setText("Fail");
+
+            QString strValue=QString("The idle current value is %1 mA , threshold exceeded, the test fail.").arg(qstr);
+            appendMessagebox(strValue);
         }
         else{
             m_idlecurrentpf="P";
             ui->labelIdleCurrentStatus->setVisible(true);
             ui->labelIdleCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
             ui->labelIdleCurrentStatus->setText("Pass");
+
+            QString strValue=QString("The idle current value is %1 mA , the test pass.").arg(qstr);
+            appendMessagebox(strValue);
         }
 
         return true;
@@ -59,12 +67,18 @@ bool TestForm::updateWorkCurrent(bool bOK, string str)
             ui->labelWorkCurrentStatus->setVisible(true);
             ui->labelWorkCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
             ui->labelWorkCurrentStatus->setText("Fail");
+
+            QString strValue=QString("The work current value is %1 mA , threshold exceeded, the test fail.").arg(qstr);
+            appendMessagebox(strValue);
         }
         else{
             m_workcurrentpf="P";
             ui->labelWorkCurrentStatus->setVisible(true);
             ui->labelWorkCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
             ui->labelWorkCurrentStatus->setText("Pass");
+
+            QString strValue=QString("The work current value is %1 mA , the test pass.").arg(qstr);
+            appendMessagebox(strValue);
         }
 
         return true;
@@ -87,12 +101,18 @@ bool TestForm::updateChargeCurrent(bool bOK, string str)
             ui->labelChargeCurrentStatus->setVisible(true);
             ui->labelChargeCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
             ui->labelChargeCurrentStatus->setText("Fail");
+
+            QString strValue=QString("The charge current value is %1 mA , threshold exceeded, the test fail.").arg(qstr);
+            appendMessagebox(strValue);
         }
         else{
             m_chargecurrentpf="P";
             ui->labelChargeCurrentStatus->setVisible(true);
             ui->labelChargeCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
             ui->labelChargeCurrentStatus->setText("Pass");
+
+            QString strValue=QString("The charge current value is %1 mA , the test pass.").arg(qstr);
+            appendMessagebox(strValue);
         }
 
         //update result label
@@ -180,8 +200,13 @@ bool TestForm::conclusionHandle()
 {
     //    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
     bool bInsert=insertRecordHandle();
-
-    emit updateDatabaseTabelView();
+    if(bInsert){
+        appendMessagebox("The test record is success to insert database and save to local file. ");
+        emit updateDatabaseTabelView();
+    }
+    else{
+        appendMessagebox("The test record is fail to insert database and save to local file. ");
+    }
 
     return bInsert;
 }
@@ -250,6 +275,16 @@ void TestForm::writeOnewRecord(QXlsx::Document &xlsx,int rowCount,int columnCoun
             break;
         }
     }
+}
+
+void TestForm::appendMessagebox(QString str)
+{
+    ui->editMessagebox->appendPlainText(str);
+}
+
+void TestForm::clearMessagebox()
+{
+    ui->editMessagebox->clear();
 }
 
 void TestForm::writeRecordToExcel(QString strTIME)
@@ -354,6 +389,8 @@ void TestForm::resetTestHandle()
 void TestForm::on_btnReset_clicked()
 {
     resetTestHandle();
+
+    clearMessagebox();
 }
 
 void TestForm::on_btnTest_clicked()

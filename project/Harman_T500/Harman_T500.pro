@@ -29,6 +29,7 @@ SOURCES += \
     parameterform.cpp \
     snpage.cpp \
     testform.cpp \
+    voltageform.cpp \
     workcurrentpage.cpp
 
 HEADERS += \
@@ -43,6 +44,7 @@ HEADERS += \
     parameterform.h \
     snpage.h \
     testform.h \
+    voltageform.h \
     workcurrentpage.h
 
 FORMS += \
@@ -50,7 +52,8 @@ FORMS += \
     databaseform.ui \
     mainwindow.ui \
     parameterform.ui \
-    testform.ui
+    testform.ui \
+    voltageform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

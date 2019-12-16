@@ -61,6 +61,9 @@ public:
     void writeRecordToExcel(QString strTIME);
     void writeOnewRecord(QXlsx::Document &xlsx,int rowCount,int columnCount, QString strTIME,QVariant newIDValue);
 
+    void appendMessagebox(QString str);
+    void clearMessagebox();
+
 private slots:
 
     void on_btnReset_clicked();

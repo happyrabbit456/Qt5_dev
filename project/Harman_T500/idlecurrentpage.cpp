@@ -33,6 +33,7 @@ bool IdleCurrentPage::validatePage()
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     MainWindow *pMainWindow=MainWindow::getMainWindow();
     string value;
+    pCurrentForm->appendMessagebox(tr("The idle current test begin to test ......"));
     pMainWindow->m_niVisaGPIB.reset();
 //    pMainWindow->m_niVisaGPIB.autoZero(true);
     bool bGetCurrent=pMainWindow->m_niVisaGPIB.getCurrent(value);

@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_pCurrentForm=new CurrentForm(this);
     ui->stackedWidget->addWidget(m_pCurrentForm);
     ui->stackedWidget->setCurrentIndex(0);
+    m_pVoltageForm=new VoltageForm(this);
+    ui->stackedWidget->addWidget(m_pVoltageForm);
 
     SetCurrDateTime();
 
@@ -101,12 +103,15 @@ MainWindow *MainWindow::getMainWindow()
 void MainWindow::on_listViewSelector_clicked(const QModelIndex &index)
 {
     qDebug()<<"row:"<<index.row();
-    QString strTemp;
-    strTemp = index.data().toString();
 
-    QMessageBox msg;
-    msg.setText(strTemp);
-    msg.exec();
+//    QString strTemp;
+//    strTemp = index.data().toString();
+
+//    QMessageBox msg;
+//    msg.setText(strTemp);
+//    msg.exec();
+
+    ui->stackedWidget->setCurrentIndex(index.row());
 }
 
 void MainWindow::timerEvent(QTimerEvent *event)

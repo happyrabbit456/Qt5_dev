@@ -17,6 +17,7 @@
 #include "gpib.h"
 #include "currentform.h"
 #include "nivisagpib.h"
+#include "voltageform.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -58,6 +59,7 @@ private:
 
 public:
     CurrentForm *m_pCurrentForm;
+    VoltageForm *m_pVoltageForm;
 
     DataBaseEnum m_databaseEnum;
 
