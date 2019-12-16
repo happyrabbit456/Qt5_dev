@@ -191,7 +191,7 @@
      <string notr="true">color: rgb(0, 85, 255);</string>
     </property>
     <property name="text">
-     <string>mA</string>
+     <string>uA</string>
     </property>
    </widget>
    <widget class="QLabel" name="txtWorkCurrentUnit">

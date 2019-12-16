@@ -213,7 +213,7 @@
      <string notr="true">color: rgb(85, 85, 255);</string>
     </property>
     <property name="text">
-     <string>mA</string>
+     <string>uA</string>
     </property>
    </widget>
    <widget class="QLabel" name="labelIdleCurrent">

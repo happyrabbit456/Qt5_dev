@@ -23,7 +23,7 @@ bool TestForm::updateIdleCurrent(bool bOK, string str)
 {
     if(bOK){
         double d=atof(str.c_str());
-        d=qAbs(d*1000); //mA
+        d=qAbs(d*1000*1000); //uA
         QString qstr=QString().sprintf("%5.3f",qAbs(d));
         ui->editIdleCurrent->setText(qstr);
 
@@ -34,7 +34,7 @@ bool TestForm::updateIdleCurrent(bool bOK, string str)
             ui->labelIdleCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:red");
             ui->labelIdleCurrentStatus->setText("Fail");
 
-            QString strValue=QString("The idle current value is %1 mA , threshold exceeded, the test fail.").arg(qstr);
+            QString strValue=QString("The idle current value is %1 uA , threshold exceeded, the test fail.").arg(qstr);
             appendMessagebox(strValue);
         }
         else{
@@ -43,7 +43,7 @@ bool TestForm::updateIdleCurrent(bool bOK, string str)
             ui->labelIdleCurrentStatus->setStyleSheet("color: rgb(255, 192, 128);background:green");
             ui->labelIdleCurrentStatus->setText("Pass");
 
-            QString strValue=QString("The idle current value is %1 mA , the test pass.").arg(qstr);
+            QString strValue=QString("The idle current value is %1 uA , the test pass.").arg(qstr);
             appendMessagebox(strValue);
         }
 

@@ -154,15 +154,6 @@ bool SNPage::ScanningCodeHandle(QString strCode)
 {
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
 
-    if(snLineEdit->text().isEmpty()){
-        pCurrentForm->appendMessagebox(tr("Two-dimensional code cannot be empty, please try again"));
-        return false;
-    }
-    else{
-        QString code=QString("Two-dimensional code is %1").arg(snLineEdit->text());
-        pCurrentForm->appendMessagebox(code);
-    }
-
     pCurrentForm->m_sn=snLineEdit->text();
 
     QAbstractButton *bt = this->wizard()->button(QWizard::NextButton);
