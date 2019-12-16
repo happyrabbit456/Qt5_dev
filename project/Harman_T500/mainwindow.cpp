@@ -100,6 +100,23 @@ MainWindow *MainWindow::getMainWindow()
     return nullptr;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    int r=QMessageBox::question(this,tr("Close Hint"),tr("Are you sure you want to quit?"),QMessageBox::Yes|QMessageBox::Default,QMessageBox::No|QMessageBox::Escape);
+    if (r==QMessageBox::Yes){
+
+        //电流测试
+        if(ui->stackedWidget->currentIndex() == Selector_Current){
+            if(m_pCurrentForm!=nullptr && m_pCurrentForm->m_pParameterForm != nullptr)
+//                qDebug()<<"m_pCurrentForm->m_pParameterForm->WriteAppSettings() done";
+                m_pCurrentForm->m_pParameterForm->WriteAppSettings();
+        }
+        event->accept();
+    }
+    else
+        event->ignore();
+}
+
 void MainWindow::on_listViewSelector_clicked(const QModelIndex &index)
 {
     qDebug()<<"row:"<<index.row();

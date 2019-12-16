@@ -72,7 +72,7 @@ void ParameterForm::ReadAppSettings()
     qstr=QString().sprintf("%5.3f",d);
     ui->editMinWorkCurrent->setText(qstr);
 
-    d=m_settings->value("MaxWorkCurrent",10.000).toDouble();
+    d=m_settings->value("MaxWorkCurrent",26.000).toDouble();
     pCurrentForm->m_pTestForm->m_dMaxWorkCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
     ui->editMaxWorkCurrent->setText(qstr);
@@ -82,7 +82,7 @@ void ParameterForm::ReadAppSettings()
     qstr=QString().sprintf("%5.3f",d);
     ui->editMinChargeCurrent->setText(qstr);
 
-    d=m_settings->value("MaxChargeCurrent",10.000).toDouble();
+    d=m_settings->value("MaxChargeCurrent",300.000).toDouble();
     pCurrentForm->m_pTestForm->m_dMaxChargeCurrent=qAbs(d);//d;
     qstr=QString().sprintf("%5.3f",d);
     ui->editMaxChargeCurrent->setText(qstr);
