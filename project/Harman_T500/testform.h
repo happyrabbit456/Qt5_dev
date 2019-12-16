@@ -90,6 +90,8 @@ public:
     double m_dMinChargeCurrent;
     double m_dMaxChargeCurrent;
 
+    QMap<int, QString> m_mapString;
+
 private:
     Ui::TestForm *ui;    
 

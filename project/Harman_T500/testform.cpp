@@ -9,9 +9,11 @@ TestForm::TestForm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    resetTestHandle();
+    m_mapString.insert(1,tr("Please set the parameters, then click Test button, the test can begin to go. "));
 
-    appendMessagebox(tr("Please set the parameters, then click Test button, the test can begin to go. "));
+    resetTestHandle();
+    clearMessagebox();
+    appendMessagebox(m_mapString[1]);
 }
 
 TestForm::~TestForm()
@@ -391,6 +393,14 @@ void TestForm::on_btnReset_clicked()
     resetTestHandle();
 
     clearMessagebox();
+    appendMessagebox(m_mapString[1]);
+
+    if(m_wizard!=nullptr){
+        if(m_wizard->currentId()>-1){
+            m_wizard->setVisible(false);
+            m_wizard->close();
+        }
+    }
 }
 
 void TestForm::on_btnTest_clicked()
