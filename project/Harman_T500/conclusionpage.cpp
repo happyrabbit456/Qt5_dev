@@ -14,7 +14,7 @@ ConclusionPage::ConclusionPage(QWidget *parent)
 //    setTitle(QString::fromLocal8Bit("电流测试结果"));
 
     QFont font;
-    font.setPointSize(12);
+    font.setPointSize(11);
 
     TestForm* pCurrentForm=static_cast<TestForm*>(currentForm);
     QString idleDCStatus;

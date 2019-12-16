@@ -217,7 +217,7 @@
       <x>10</x>
       <y>120</y>
       <width>151</width>
-      <height>360</height>
+      <height>421</height>
      </rect>
     </property>
     <property name="title">
@@ -229,15 +229,19 @@
        <x>10</x>
        <y>10</y>
        <width>131</width>
-       <height>331</height>
+       <height>401</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(240, 240, 240);
+color: rgb(85, 85, 255);</string>
      </property>
     </widget>
    </widget>

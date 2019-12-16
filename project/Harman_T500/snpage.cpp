@@ -14,9 +14,9 @@ SNPage::SNPage(QWidget *parent)
 //    setTitle(QString::fromLocal8Bit("获取扫描码"));
 
     QFont font;
-    font.setPointSize(12);
+    font.setPointSize(11);
 
-    QLabel *label = new QLabel(QString::fromLocal8Bit("请先扫描测试设备上的二维码，然后点击下一步。"));
+    QLabel *label = new QLabel(QString::fromLocal8Bit("扫描枪准备完成，请扫描测试模块上的二维码到编辑框内，成功后向导会自动跳转。"));
     label->setWordWrap(true);
     label->setFont(font);
 

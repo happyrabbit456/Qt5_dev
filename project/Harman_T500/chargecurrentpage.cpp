@@ -15,9 +15,9 @@ ChargeCurrentPage::ChargeCurrentPage(QWidget *parent)
 //    setTitle(QString::fromLocal8Bit("充电电流测试"));
 
     QFont font;
-    font.setPointSize(12);
+    font.setPointSize(11);
 
-    QLabel *label = new QLabel(QString::fromLocal8Bit("请准备好充电电流可测状态，点击测试按钮，开始测试充电电流。"));
+    QLabel *label = new QLabel(QString::fromLocal8Bit("开机电流测试操作完成了，现在请连接USB线，准备好充电电流测试，然后点击测试按钮，开始测试。"));
     label->setWordWrap(true);
     label->setFont(font);
 

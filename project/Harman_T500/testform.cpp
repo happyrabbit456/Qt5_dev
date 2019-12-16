@@ -390,8 +390,9 @@ void TestForm::on_btnTest_clicked()
 
     m_wizard->resize(320,160);
     QPoint pos=pMainWindow->pos();
-    pos.setX(pos.x()-120);
-    pos.setY(pos.y()+500);
+    QSize size=pMainWindow->size();
+    pos.setX(pos.x()+size.width()+5);
+    pos.setY(pos.y());
     m_wizard->move(pos);
 
 
