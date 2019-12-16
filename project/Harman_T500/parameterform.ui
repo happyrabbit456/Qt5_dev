@@ -19,7 +19,7 @@
      <x>30</x>
      <y>10</y>
      <width>451</width>
-     <height>331</height>
+     <height>351</height>
     </rect>
    </property>
    <property name="font">
@@ -339,7 +339,7 @@
      <x>500</x>
      <y>10</y>
      <width>281</width>
-     <height>331</height>
+     <height>351</height>
     </rect>
    </property>
    <property name="font">
