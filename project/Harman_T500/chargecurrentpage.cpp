@@ -34,7 +34,7 @@ bool ChargeCurrentPage::validatePage()
     MainWindow *pMainWindow=MainWindow::getMainWindow();
 
     string value;
-//    pMainWindow->m_niVisaGPIB.reset();
+    pMainWindow->m_niVisaGPIB.reset();
 //    pMainWindow->m_niVisaGPIB.autoZero(true);
     bool bGetCurrent=pMainWindow->m_niVisaGPIB.getCurrent(value);
     if(bGetCurrent){
