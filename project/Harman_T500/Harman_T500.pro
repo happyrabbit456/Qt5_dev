@@ -9,7 +9,7 @@ CONFIG += c++11
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS DB_SQLite
-#DB_SQLite DB_MSSQL
+#DB_SQLite DB_MSSQL USE_WIZARD
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -27,6 +27,7 @@ SOURCES += \
     mainwindow.cpp \
     nivisagpib.cpp \
     parameterform.cpp \
+    sndialog.cpp \
     snpage.cpp \
     testform.cpp \
     voltageform.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
     mainwindow.h \
     nivisagpib.h \
     parameterform.h \
+    sndialog.h \
     snpage.h \
     testform.h \
     voltageform.h \
@@ -52,6 +54,7 @@ FORMS += \
     databaseform.ui \
     mainwindow.ui \
     parameterform.ui \
+    sndialog.ui \
     testform.ui \
     voltageform.ui
 

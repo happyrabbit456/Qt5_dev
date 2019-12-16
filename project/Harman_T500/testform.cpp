@@ -203,7 +203,9 @@ bool TestForm::conclusionHandle()
     //    ui->tableView->setUpdatesEnabled(false);//暂停界面刷新
     bool bInsert=insertRecordHandle();
     if(bInsert){
-        appendMessagebox("The test record is success to insert database and save to local file. ");
+        appendMessagebox("The test record is success to insert database.");
+        QString str=QString().sprintf("The test record is success to save to local file. The dir path: %s .","D:\\database\\Harman_T500");
+        appendMessagebox(str);
         emit updateDatabaseTabelView();
     }
     else{
@@ -395,12 +397,16 @@ void TestForm::on_btnReset_clicked()
     clearMessagebox();
     appendMessagebox(m_mapString[1]);
 
+#ifdef USE_WIZARD
+
     if(m_wizard!=nullptr){
         if(m_wizard->currentId()>-1){
             m_wizard->setVisible(false);
             m_wizard->close();
         }
     }
+
+#endif
 }
 
 void TestForm::on_btnTest_clicked()
@@ -413,6 +419,7 @@ void TestForm::on_btnTest_clicked()
         return;
     }
 
+#ifdef USE_WIZARD
     m_wizard=new QWizard(this);
     m_wizard->addPage(new SNPage(this));
     m_wizard->addPage(new IdleCurrentPage(this));
@@ -452,6 +459,18 @@ void TestForm::on_btnTest_clicked()
 
     m_wizard->setWindowTitle(QString::fromLocal8Bit("电流测试向导"));
     m_wizard->show();
+
+#else
+    m_snDlg=new SNDialog(this);
+    //禁用/隐藏/删除Qt对话框“标题栏”上的“?”帮助按钮这些按钮！
+    Qt::WindowFlags flags = m_snDlg->windowFlags();
+    Qt::WindowFlags helpFlag =
+            Qt::WindowContextHelpButtonHint;
+    flags = flags & (~helpFlag);
+    m_snDlg->setWindowFlags(flags);
+    m_snDlg->setWindowTitle("Get scan code");
+    m_snDlg->show();
+#endif
 }
 
 

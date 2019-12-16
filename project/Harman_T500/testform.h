@@ -24,6 +24,7 @@
 #include "workcurrentpage.h"
 #include "chargecurrentpage.h"
 #include "conclusionpage.h"
+#include "sndialog.h"
 
 #include <string>
 
@@ -96,6 +97,7 @@ private:
     Ui::TestForm *ui;    
 
     QWizard *m_wizard;
+    SNDialog *m_snDlg;
 };
 
 #endif // TESTFORM_H
