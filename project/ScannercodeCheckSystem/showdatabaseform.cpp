@@ -1,4 +1,4 @@
-#include "showdatabaseform.h"
+﻿#include "showdatabaseform.h"
 #include "ui_showdatabaseform.h"
 
 #include <QTableWidget>
@@ -25,8 +25,11 @@ ShowDataBaseForm::ShowDataBaseForm(QWidget *parent) :
 
 ShowDataBaseForm::~ShowDataBaseForm()
 {    
-    delete m_model;
-    m_model=nullptr;
+    if(m_model!=nullptr){
+        delete m_model;
+        m_model=nullptr;
+    }
+
     delete ui;
 }
 
